@@ -1,0 +1,34 @@
+{
+  "name": "node-vault",
+  "version": "0.0.1",
+  "description": "Javascript client for HashiCorp's Vault",
+  "main": "index.coffee",
+  "directories": {
+    "example": "example"
+  },
+  "dependencies": {
+    "debug": "^2.1.3",
+    "request": "^2.55.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kr1sp1n/node-vault.git"
+  },
+  "keywords": [
+    "vault",
+    "hashicorp",
+    "secrets",
+    "manage",
+    "client"
+  ],
+  "author": "kr1sp1n",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kr1sp1n/node-vault/issues"
+  },
+  "homepage": "https://github.com/kr1sp1n/node-vault"
+}
