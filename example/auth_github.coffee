@@ -1,1 +1,0 @@
-process.env['DEBUG'] = 'vault'
