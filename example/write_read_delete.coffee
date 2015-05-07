@@ -3,6 +3,6 @@
 process.env['DEBUG'] = 'vault' # switch on debug mode
 vault = require("#{__dirname}/../index")()
 
-vault.write 'secret/hello', { value: 'world' }, (err, result)->
+vault.write 'secret/hello', { value: 'world', lease: '1s' }, (err, result)->
   vault.read 'secret/hello', (err, result)->
     vault.delete 'secret/hello', (err, result)->

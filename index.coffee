@@ -59,6 +59,16 @@ class Vault
     disableAudit:
       method: 'DELETE'
       path: '/sys/audit/{{name}}'
+    renew:
+      method: 'PUT'
+      path: '/sys/renew/{{lease_id}}'
+    revoke:
+      method: 'PUT'
+      path: '/sys/revoke/{{lease_id}}'
+    revokePrefix:
+      method: 'PUT'
+      path: '/sys/revoke-prefix/{{path_prefix}}'
+
 
   constructor: (opts={})->
     @mustache = opts.mustache or require 'mustache'
@@ -103,8 +113,10 @@ class Vault
     debug data if data?
     j = @request.jar()
     uri = "#{@endpoint}/#{@apiVersion}#{path}"
-    # replace variables in uri
-    uri = @mustache.render uri, data
+    # for k, v of data
+    #   data[k] = encodeURIComponent(v)
+    uri = @mustache.render uri, data # replace variables in uri
+    uri = uri.replace(/&#x2F;/g, '/') # replace unicode encodings
     debug "#{method} #{uri}"
     cookie = @request.cookie "token=#{@token}"
     j.setCookie cookie, @endpoint
@@ -116,7 +128,9 @@ class Vault
     , (err, res, body)->
       debug err if err
       debug "RES #{res.statusCode}"
-      debug body if body
+      if body
+        body = JSON.parse body if typeof body != 'object'
+        debug body
       done err, res, body
 
 module.exports = (opts)->
