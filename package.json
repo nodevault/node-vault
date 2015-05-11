@@ -9,11 +9,19 @@
   "dependencies": {
     "debug": "^2.1.3",
     "request": "^2.55.0",
-    "mustache": "^2.0.0"
+    "mustache": "^2.0.0",
+    "coffee-script": "^1.9.2",
+    "mocha": "^2.2.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "blanket": "^1.1.7",
+    "should": "^6.0.1",
+    "sinon": "^1.14.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha",
+    "test-watch": "./node_modules/.bin/mocha --require blanket -w",
+    "cov-html": "./node_modules/.bin/mocha --require blanket -R html-cov > cov.html"
   },
   "repository": {
     "type": "git",
@@ -31,5 +39,18 @@
   "bugs": {
     "url": "https://github.com/kr1sp1n/node-vault/issues"
   },
-  "homepage": "https://github.com/kr1sp1n/node-vault"
+  "homepage": "https://github.com/kr1sp1n/node-vault",
+  "config": {
+    "blanket": {
+      "pattern": "index.coffee",
+      "loader": "./node-loaders/coffee-script",
+      "data-cover-never": [
+        "node_modules",
+        "test"
+      ],
+      "spec-cov": {
+        "threshold": 100
+      }
+    }
+  }
 }

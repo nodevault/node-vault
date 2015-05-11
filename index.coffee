@@ -11,7 +11,7 @@ class Vault
     initialized:
       method: 'GET'
       path: '/sys/init'
-    initialize:
+    init:
       method: 'PUT'
       path: '/sys/init'
     unseal:
@@ -96,9 +96,12 @@ class Vault
 
   _handleErrors: (done)->
     return (err, res, body)->
+      debug err if err
       return done err if err
-      return done new Error(body.errors[0]) if body?.errors?
+      err = new Error(body.errors[0]) if body?.errors?
+      return done err if err
       done null, body
+
 
   _generate: (name, opts)->
     @[name] = ->

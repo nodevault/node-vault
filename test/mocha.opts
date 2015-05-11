@@ -1,0 +1,8 @@
+--reporter spec
+--compilers coffee:coffee-script/register
+--ui bdd
+--colors
+--growl
+--timeout 2000
+--require should
+--require blanket
