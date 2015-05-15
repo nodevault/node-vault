@@ -17,7 +17,8 @@
     "sinon": "^1.14.1",
     "mocha": "^2.2.5",
     "should": "^6.0.1",
-    "mocha-lcov-reporter": "0.0.2"
+    "mocha-lcov-reporter": "0.0.2",
+    "coveralls": "^2.11.2"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha",
