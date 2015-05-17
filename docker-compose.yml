@@ -1,0 +1,12 @@
+vault:
+  image: cgswong/vault
+  volumes:
+    - $PWD/example:/tmp/example
+  cap_add:
+    - IPC_LOCK
+  command: server -config /tmp/example/config.hcl
+
+client:
+  build: .
+  links:
+   - vault
