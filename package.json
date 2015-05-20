@@ -1,6 +1,6 @@
 {
   "name": "node-vault",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "index.coffee",
   "directories": {
