@@ -20,22 +20,27 @@ Usage
 
 ### Init and unseal
 
-```coffeescript
-vault = require("node-vault")()
+```
+vault = require("node-vault")();
 
-vault.init { secret_shares: 1, secret_threshold: 1 }, (err, result)->
-  # in the result object you can find the keys and the root_token
-  { keys, root_token } = result
-  vault.token = root_token # set token for any further requests to the server
-  vault.unseal { secret_shares: 1, key: keys[0] }, (err, result)->
+vault.init({ secret_shares: 1, secret_threshold: 1 }, function(err, result) {
+  var keys = result.keys;
+  vault.token = result.root_token;
+  vault.unseal({ secret_shares: 1, key: keys[0] }, function(err, result) {
+    // Done
+  });
+});
 ```
 
 ### Write, read and delete secrets
 
-```coffeescript
-vault.write 'secret/hello', { value: 'world', lease: '1s' }, (err, result)->
-  vault.read 'secret/hello', (err, result)->
-    vault.delete 'secret/hello', (err, result)->
+```
+vault.write('secret/hello', { value: 'world', lease: '1s' }, function(err, result) {
+  vault.read('secret/hello', function(err, result) {
+    vault.delete('secret/hello', function(err, result) {
+    });
+  });
+});
 ```
 
 Please have a look at the [example][examples] dir for a list of implemented features.
