@@ -38,9 +38,24 @@ vault.write 'secret/hello', { value: 'world', lease: '1s' }, (err, result)->
     vault.delete 'secret/hello', (err, result)->
 ```
 
+Examples
+-------------------------------
 Please have a look at the [example][examples] dir for a list of implemented features.
 
+```bash
+git clone git@github.com:kr1sp1n/node-vault.git
+cd node-vault
+npm install
+```
 
+Test
+-------------------------------
+You can run the tests inside a docker container via docker-compose:
+
+```bash
+brew install docker-compose
+docker-compose up
+```
 
 [examples]: https://github.com/kr1sp1n/node-vault/tree/master/example
 [vaultproject]: https://vaultproject.io/
