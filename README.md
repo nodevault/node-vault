@@ -20,7 +20,7 @@ Usage
 
 ### Init and unseal
 
-```
+```javascript
 vault = require("node-vault")();
 
 vault.init({ secret_shares: 1, secret_threshold: 1 }, function(err, result) {
@@ -34,7 +34,7 @@ vault.init({ secret_shares: 1, secret_threshold: 1 }, function(err, result) {
 
 ### Write, read and delete secrets
 
-```
+```javascript
 vault.write('secret/hello', { value: 'world', lease: '1s' }, function(err, result) {
   vault.read('secret/hello', function(err, result) {
     vault.delete('secret/hello', function(err, result) {
