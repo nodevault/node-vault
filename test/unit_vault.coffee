@@ -3,11 +3,9 @@ sinon = require 'sinon'
 describe 'node-vault', ->
 
   describe 'module', ->
-    it 'should export a function that returns a new client', ->
-      fn = require("#{__dirname}/../index")
-      v = fn()
-      fn.should.be.a.Function
-      v.should.be.an.Object
+    it 'should export an object', ->
+      Vault = require("#{__dirname}/../index")
+      Vault.should.be.an.Object
 
   describe 'client', ->
 
@@ -25,7 +23,8 @@ describe 'node-vault', ->
         @request.jar = sinon.stub().returns @jar
         @request.cookie = sinon.stub()
 
-        @vault = require("#{__dirname}/../index")
+        Vault = require("#{__dirname}/../index")
+        @vault = Vault.createClient
           request: @request
 
         # helper

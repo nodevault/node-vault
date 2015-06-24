@@ -136,5 +136,8 @@ class Vault
         debug body
       done err, res, body
 
-module.exports = (opts)->
+createClient = (opts) ->
   return new Vault(opts)
+
+module.exports =
+  createClient : createClient
