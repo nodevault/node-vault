@@ -1,7 +1,8 @@
 # file: example/init.coffee
 
 process.env['DEBUG'] = 'vault' # switch on debug mode
-vault = require("#{__dirname}/../index")()
+Vault = require("#{__dirname}/../index")
+vault = Vault.createClient()
 
 vault.initialized (err, result)->
   vault.init { secret_shares: 1, secret_threshold: 1 }, (err, result)->

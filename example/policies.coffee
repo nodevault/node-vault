@@ -1,7 +1,8 @@
 # file: example/policies.coffee
 
 process.env['DEBUG'] = 'vault' # switch on debug mode
-vault = require("#{__dirname}/../index")()
+Vault = require("#{__dirname}/../index")
+vault = Vault.createClient()
 
 vault.policies (err, result)->
   vault.addPolicy { name: 'mypolicy' }, (err, result)->
