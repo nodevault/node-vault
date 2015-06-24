@@ -1,7 +1,8 @@
 # file: example/auth.coffee
 
 process.env['DEBUG'] = 'vault' # switch on debug mode
-vault = require("#{__dirname}/../index")()
+Vault = require("#{__dirname}/../index")
+vault = Vault.createClient()
 
 org = process.env['GITHUB_ORG']
 team = process.env['GITHUB_TEAM'] or 'owners'

@@ -1,7 +1,8 @@
 # file: example/audits.coffee
 
 process.env['DEBUG'] = 'vault' # switch on debug mode
-vault = require("#{__dirname}/../index")()
+Vault = require("#{__dirname}/../index")
+vault = Vault.createClient()
 fs = require 'fs'
 
 file_path = "#{__dirname}/../test.log"

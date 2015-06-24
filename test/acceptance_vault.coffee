@@ -1,9 +1,11 @@
+
 describe 'node-vault', ->
 
   describe 'acceptance testing', ->
 
     before (done)->
-      vault = require("#{__dirname}/../index")()
+      Vault = require("#{__dirname}/../index")
+      vault = Vault.createClient()
       vault.init { secret_shares: 1, secret_threshold: 1 }, (err, result)=>
         done err if err
         { keys, root_token } = result

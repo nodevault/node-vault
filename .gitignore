@@ -28,3 +28,10 @@ node_modules
 
 cov.html
 .env
+.idea
+node-vault.js
+node-vault.js.map
+example/*.js
+example/*.js.map
+test/*.js
+test/*.js.map
