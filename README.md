@@ -57,7 +57,17 @@ Instead of installing all the dependencies like vault itself, postgres and other
 use [docker] and [docker-compose] to link and run multiple docker containers with all of its dependencies.
 
 The setup for node-vault is defined in a single file: [docker-compose.yml].
-To run the examples you need to install [docker] first.
+To run the examples you need to install the [docker toolbox] first.
+
+A best practice is to add the dockerhost to `/etc/hosts`:
+```bash
+echo "$(docker-machine ip default) dockerhost" | sudo tee -a /etc/hosts
+```
+
+Please set the endpoint of the vault server to the dockerhost:
+```bash
+export VAULT_ADDR=http://dockerhost:8200
+```
 
 To start just run:
 ```bash
@@ -66,7 +76,7 @@ docker-compose up
 
 First of all you should initialize and unseal the vault:
 ```bash
-coffee example/init.coffee
+$(npm bin)/coffee example/init.coffee
 ```
 You should see `root_token: ` followed by a long key in the response.
 Please copy that long key and export it as environment variable:
@@ -76,7 +86,7 @@ export VAULT_TOKEN=<insert long key here>
 
 Now you are able to run all of the other [examples]:
 ```bash
-coffee example/policies.coffee
+$(npm bin)/coffee example/policies.coffee
 ```
 
 
@@ -87,3 +97,4 @@ coffee example/policies.coffee
 [Vault]: https://vaultproject.io/
 [docker-compose]: https://www.docker.com/docker-compose
 [docker]: http://docs.docker.com/
+[docker toolbox]: https://www.docker.com/toolbox
