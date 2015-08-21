@@ -63,6 +63,11 @@ A best practice is to add the dockerhost to `/etc/hosts`:
 ```bash
 echo "$(docker-machine ip default) dockerhost" | sudo tee -a /etc/hosts
 ```
+and to add the env variables of the docker machine via:
+```bash
+eval "$(docker-machine env default)"
+```
+This line could also be added to you local `.bashrc` or whatever shell you are using.
 
 Please set the endpoint of the vault server to the dockerhost:
 ```bash
