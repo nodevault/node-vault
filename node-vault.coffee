@@ -95,13 +95,20 @@ class Vault
     @_request 'DELETE', '/'+path, null, @_handleErrors(done)
 
   _handleErrors: (done)->
+    extend = exports.extend = (object, properties) ->
+      for key, val of properties
+        object[key] = val
+      object
     return (err, res, body)->
       debug err if err
       return done err if err
       err = new Error(body.errors[0]) if body?.errors?
+      if err
+        if res.statusCode
+          extend err, statusCode: res.statusCode
+          extend err, statusMessage: res.statusMessage
       return done err if err
       done null, body
-
 
   _generate: (name, opts)->
     @[name] = ->
