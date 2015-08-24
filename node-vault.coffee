@@ -121,17 +121,13 @@ class Vault
 
   _request: (method, path, data, done)->
     debug data if data?
-    j = @request.jar()
     uri = "#{@endpoint}/#{@apiVersion}#{path}"
-    # for k, v of data
-    #   data[k] = encodeURIComponent(v)
     uri = @mustache.render uri, data # replace variables in uri
     uri = uri.replace(/&#x2F;/g, '/') # replace unicode encodings
     debug "#{method} #{uri}"
-    cookie = @request.cookie "token=#{@token}"
-    j.setCookie cookie, @endpoint
     @request
-      jar: j
+      headers:
+        'X-Vault-Token': @token
       method: method
       json: data
       uri: uri
