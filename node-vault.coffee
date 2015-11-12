@@ -132,8 +132,10 @@ class Vault
       json: data
       uri: uri
     , (err, res, body)->
-      debug err if err
-      debug "RES #{res.statusCode}"
+      if err
+        debug err
+        return done err
+      debug "RES #{res?.statusCode}"
       if body
         body = JSON.parse body if typeof body != 'object'
         debug body
