@@ -15,15 +15,11 @@ describe 'node-vault', ->
 
       beforeEach ->
         # stub requests
-        @jar =
-          setCookie: sinon.stub()
         @request = sinon.stub()
         @res = sinon.stub()
         @res.statusCode = 200
         @body ={}
         @request.callsArgWith 1, null, @res, @body
-        @request.jar = sinon.stub().returns @jar
-        @request.cookie = sinon.stub()
 
         @vault = require("#{__dirname}/../index")
           request: @request
@@ -42,10 +38,10 @@ describe 'node-vault', ->
       describe 'help(path, done)', ->
         it 'should response help text for any path', (done)->
           path = 'sys/policy'
-          params =
+          opts =
             method: 'GET'
             uri: @getURI(path)+'?help=1'
-          @vault.help path, @assertRequest(@request, params, done)
+          @vault.help path, @assertRequest(@request, opts, done)
 
       describe 'write(path, data, done)', ->
         it 'should write data to path', (done)->

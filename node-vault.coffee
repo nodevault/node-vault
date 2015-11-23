@@ -78,21 +78,44 @@ class Vault
     @token = opts.token or process.env['VAULT_TOKEN']
     @_generate k, v for k, v of commands
 
-  help: (path, done)->
+  help: (path, opts = {}, done)->
     debug "help for #{path}"
-    @_request 'GET', '/'+path+'?help=1', null, @_handleErrors(done)
+    [opts, done] = @_handleCallback opts, done
+    opts.path = '/' + path + '?help=1'
+    opts.json = null
+    opts.method = 'GET'
+    @_request opts, @_handleErrors(done)
 
-  write: (path, data, done)->
+  write: (path, data, opts = {}, done)->
     debug "write #{path}"
-    @_request 'PUT', '/'+path, data, @_handleErrors(done)
+    [opts, done] = @_handleCallback opts, done
+    opts.path = '/' + path
+    opts.json = data
+    opts.method = 'PUT'
+    @_request opts, @_handleErrors(done)
 
-  read: (path, done)->
+  read: (path, opts = {}, done)->
     debug "read #{path}"
-    @_request 'GET', '/'+path, null, @_handleErrors(done)
+    [opts, done] = @_handleCallback opts, done
+    opts.path = '/' + path
+    opts.json = null
+    opts.method = 'GET'
+    @_request opts, @_handleErrors(done)
 
-  delete: (path, done)->
+  delete: (path, opts = {}, done)->
     debug "delete #{path}"
-    @_request 'DELETE', '/'+path, null, @_handleErrors(done)
+    [opts, done] = @_handleCallback opts, done
+    opts.path = '/' + path
+    opts.json = null
+    opts.method = 'DELETE'
+    @_request opts, @_handleErrors(done)
+
+  # backwards compatibility for version 0.3.x
+  _handleCallback: (opts, done)->
+    if typeof opts is 'function'
+      done = opts
+      opts = {}
+    return [opts, done]
 
   _handleErrors: (done)->
     extend = exports.extend = (object, properties) ->
@@ -110,28 +133,24 @@ class Vault
       return done err if err
       done null, body
 
-  _generate: (name, opts)->
+  _generate: (name, config)->
     @[name] = ->
       debug "#{name}"
-      [params, done] = arguments
-      if typeof params == 'function'
-        done = params
-        params = null
-      @_request opts.method, opts.path, params, @_handleErrors(done)
+      [opts, done] = arguments
+      [opts, done] = @_handleCallback opts, done
+      opts.method = config.method
+      opts.path = config.path
+      @_request opts, @_handleErrors(done)
 
-  _request: (method, path, data, done)->
-    debug data if data?
-    uri = "#{@endpoint}/#{@apiVersion}#{path}"
-    uri = @mustache.render uri, data # replace variables in uri
+  _request: (opts = {}, done)->
+    uri = "#{@endpoint}/#{@apiVersion}#{opts.path}"
+    uri = @mustache.render uri, opts.json # replace variables in uri
     uri = uri.replace(/&#x2F;/g, '/') # replace unicode encodings
-    debug "#{method} #{uri}"
-    @request
-      headers:
-        'X-Vault-Token': @token
-      method: method
-      json: data
-      uri: uri
-    , (err, res, body)->
+    debug "#{opts.method} #{uri}"
+    opts.headers = {} if not opts['headers']
+    opts.headers['X-Vault-Token'] = @token
+    opts.uri = uri
+    @request opts, (err, res, body)->
       if err
         debug err
         return done err
