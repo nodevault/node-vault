@@ -68,6 +68,9 @@ class Vault
     revokePrefix:
       method: 'PUT'
       path: '/sys/revoke-prefix/{{path_prefix}}'
+    rotate:
+      method: 'PUT'
+      path: '/sys/rotate'
 
 
   constructor: (opts={})->
