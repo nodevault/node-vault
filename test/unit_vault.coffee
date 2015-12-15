@@ -4,7 +4,7 @@ describe 'node-vault', ->
 
   describe 'module', ->
     it 'should export a function that returns a new client', ->
-      fn = require("#{__dirname}/../index")
+      fn = require("#{__dirname}/../src/index")
       v = fn()
       fn.should.be.a.Function
       v.should.be.an.Object
@@ -21,7 +21,7 @@ describe 'node-vault', ->
         @body ={}
         @request.callsArgWith 1, null, @res, @body
 
-        @vault = require("#{__dirname}/../index")
+        @vault = require("#{__dirname}/../src/index")
           request: @request
 
         # helper
