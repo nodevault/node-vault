@@ -34,6 +34,9 @@ module.exports =
   addPolicy:
     method: 'PUT'
     path: '/sys/policy/{{name}}'
+  getPolicy:
+    method: 'GET'
+    path: '/sys/policy/{{name}}'
   removePolicy:
     method: 'DELETE'
     path: '/sys/policy/{{name}}'
