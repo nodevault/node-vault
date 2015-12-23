@@ -21,7 +21,13 @@ Usage
 ### Init and unseal
 
 ```javascript
-vault = require("node-vault")();
+var options = {
+  apiVersion: 'v1', // default
+  endpoint: 'http://127.0.0.1:8200', // default
+  token: '1234' // client token; can be fetched after valid initialization of the server
+};
+
+var vault = require("node-vault")(options);
 
 vault.init({ secret_shares: 1, secret_threshold: 1 }, function(err, result) {
   var keys = result.keys;
