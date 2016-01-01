@@ -1,7 +1,7 @@
 # file: example/pass_request_options.coffee
 
 process.env['DEBUG'] = 'vault' # switch on debug mode
-vault = require("#{__dirname}/../index")()
+vault = require("#{__dirname}/../src/index")()
 
 request_options =
   headers:

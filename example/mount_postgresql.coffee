@@ -1,7 +1,7 @@
 # file: example/mount_postgresql.coffee
 
 process.env['DEBUG'] = 'vault' # switch on debug mode
-vault = require("#{__dirname}/../index")()
+vault = require("#{__dirname}/../src/index")()
 
 connection = 'postgresql://root:test@postgres:5432/postgres?sslmode=disable'
 

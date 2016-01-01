@@ -51,6 +51,10 @@ class Vault
     if typeof opts is 'function'
       done = opts
       opts = {}
+    else
+      json = opts
+      opts = {}
+      opts.json = json
     return [opts, done]
 
   _handleErrors: (done)->
@@ -84,7 +88,7 @@ class Vault
     uri = uri.replace(/&#x2F;/g, '/') # replace unicode encodings
     debug "#{opts.method} #{uri}"
     opts.headers = {} if not opts['headers']
-    opts.headers['X-Vault-Token'] = @token
+    opts.headers['X-Vault-Token'] = @token if @token?
     opts.uri = uri
     @request opts, (err, res, body)->
       if err
