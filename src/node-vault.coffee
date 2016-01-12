@@ -1,6 +1,7 @@
 # file: index.coffee
 
 debug = require('debug')('vault')
+tv4 = require 'tv4'
 
 class Vault
 
@@ -63,8 +64,9 @@ class Vault
         object[key] = val
       object
     return (err, res, body)->
-      debug err if err
-      return done err if err
+      if err
+        debug err
+        return done err
       err = new Error(body.errors[0]) if body?.errors?
       if err
         if res.statusCode
@@ -74,12 +76,19 @@ class Vault
       done null, body
 
   _generate: (name, config)->
-    @[name] = ->
+    @[name] = =>
       debug "#{name}"
       [opts, done] = arguments
       [opts, done] = @_handleCallback opts, done
       opts.method = config.method
       opts.path = config.path
+      # validate via json schema
+      if config.schema?
+        valid = tv4.validate(opts.json, config.schema.req)
+        if not valid
+          debug tv4.error.dataPath
+          debug tv4.error.message
+          return done(tv4.error)
       @_request opts, @_handleErrors(done)
 
   _request: (opts = {}, done)->

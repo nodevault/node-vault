@@ -10,6 +10,33 @@ module.exports =
   init:
     method: 'PUT'
     path: '/sys/init'
+    schema:
+      req:
+        type:'object'
+        properties:
+          'secret_shares':
+            type: 'integer'
+            minimum: 1
+          'secret_threshold':
+            type: 'integer'
+            minimum: 1
+          'pgp_keys':
+            type: 'array'
+            items:
+              type: 'string'
+            uniqueItems: true
+        required: ['secret_shares', 'secret_threshold']
+      res:
+        type: 'object'
+        properties:
+          'keys':
+            type: 'array'
+            items:
+              type: 'string'
+            uniqueItems: true
+          'root_token':
+            type: 'string'
+        required: ['keys', 'root_token']
   unseal:
     method: 'PUT'
     path: '/sys/unseal'
