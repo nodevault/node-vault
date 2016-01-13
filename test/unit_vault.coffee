@@ -131,7 +131,7 @@ describe 'node-vault', ->
 
       describe '_generate(name, config)', ->
 
-        it 'should generate funtions as defined in implemented_routes', ->
+        it 'should generate funtions as defined in routes.coffee', ->
           name = 'myGeneratedFunction'
           config =
             method: 'GET'

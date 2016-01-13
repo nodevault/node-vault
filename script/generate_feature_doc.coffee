@@ -1,14 +1,12 @@
-# file script/generate_feature_doc.coffee
-
-# generate markdown of implemented features
+# Generate markdown of supported features.
 fs = require 'fs'
 
-routes = require("#{__dirname}/../src/implemented_routes")
+routes = require("#{__dirname}/../src/routes")
 
-result = "# API\n"
-
+result = "# Supported Vault Features\n"
+result += "\n This is a generated list of Vault features supported by node-vault."
 for name, route of routes
   result += "\n## vault.#{name}\n"
   result += "\n `#{route.method} #{route.path}`\n"
 
-fs.writeSync("#{__dirname}/../docs/implemented_routes.md", result)
+fs.writeFileSync("#{__dirname}/../features.md", result)

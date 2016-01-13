@@ -27,13 +27,15 @@ var options = {
   token: '1234' // client token; can be fetched after valid initialization of the server
 };
 
+// get new instance of the client
 var vault = require("node-vault")(options);
 
+// init vault server
 vault.init({ secret_shares: 1, secret_threshold: 1 }, function(err, result) {
   var keys = result.keys;
   vault.token = result.root_token;
+  // unseal vault server
   vault.unseal({ secret_shares: 1, key: keys[0] }, function(err, result) {
-    // Done
   });
 });
 ```
@@ -49,9 +51,14 @@ vault.write('secret/hello', { value: 'world', lease: '1s' }, function(err, resul
 });
 ```
 
+Docs
+-------------------------------
+Just generate [docco] docs via `npm run docs`.
+
+
 Examples
 -------------------------------
-Please have a look at the [examples] for a list of implemented features.
+Please have a look at the [examples] and the generated [feature list] to see what is already implemented.
 
 ```bash
 git clone git@github.com:kr1sp1n/node-vault.git
@@ -102,10 +109,11 @@ $(npm bin)/coffee example/policies.coffee
 
 
 
-
 [examples]: https://github.com/kr1sp1n/node-vault/tree/master/example
 [docker-compose.yml]: https://github.com/kr1sp1n/node-vault/tree/master/docker-compose.yml
 [Vault]: https://vaultproject.io/
 [docker-compose]: https://www.docker.com/docker-compose
 [docker]: http://docs.docker.com/
 [docker toolbox]: https://www.docker.com/toolbox
+[docco]: http://jashkenas.github.io/docco
+[feature list]: https://github.com/kr1sp1n/node-vault/tree/master/features.md

@@ -1,11 +1,10 @@
-# file: index.coffee
-
 debug = require('debug')('vault')
 tv4 = require 'tv4'
 
 class Vault
 
-  commands = require "#{__dirname}/implemented_routes"
+  # See [routes.coffee](routes.html) for a list of commands
+  commands = require "#{__dirname}/routes"
 
   constructor: (opts={})->
     @mustache = opts.mustache or require 'mustache'
@@ -47,7 +46,7 @@ class Vault
     opts.method = 'DELETE'
     @_request opts, @_handleErrors(done)
 
-  # backwards compatibility for version 0.3.x
+  # Backwards compatibility for version 0.3.x
   _handleCallback: (opts, done)->
     if typeof opts is 'function'
       done = opts
@@ -75,6 +74,7 @@ class Vault
       return done err if err
       done null, body
 
+  # Generate functions defined in [routes.coffee](routes.html).
   _generate: (name, config)->
     @[name] = =>
       debug "#{name}"
@@ -82,7 +82,7 @@ class Vault
       [opts, done] = @_handleCallback opts, done
       opts.method = config.method
       opts.path = config.path
-      # validate via json schema
+      # Validate via json schema.
       if config.schema?
         valid = tv4.validate(opts.json, config.schema.req)
         if not valid
@@ -91,10 +91,13 @@ class Vault
           return done(tv4.error)
       @_request opts, @_handleErrors(done)
 
+  # Handle any HTTP requests.
   _request: (opts = {}, done)->
     uri = "#{@endpoint}/#{@apiVersion}#{opts.path}"
-    uri = @mustache.render uri, opts.json # replace variables in uri
-    uri = uri.replace(/&#x2F;/g, '/') # replace unicode encodings
+    # Replace variables in uri.
+    uri = @mustache.render uri, opts.json
+    # Replace unicode encodings.
+    uri = uri.replace(/&#x2F;/g, '/')
     debug "#{opts.method} #{uri}"
     opts.headers = {} if not opts['headers']
     opts.headers['X-Vault-Token'] = @token if @token?
@@ -105,9 +108,11 @@ class Vault
         return done err
       debug "RES #{res?.statusCode}"
       if body
+        # Try to parse body if it's not an object.
         body = JSON.parse body if typeof body != 'object'
         debug body
       done err, res, body
 
+# Module exports a function that returns an instance of a new client.
 module.exports = (opts)->
   return new Vault(opts)

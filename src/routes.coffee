@@ -1,5 +1,3 @@
-# file: src/implemented_routes.coffee
-
 module.exports =
   status:
     method: 'GET'
