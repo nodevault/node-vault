@@ -1,0 +1,1 @@
+const sinon = require('sinon');
