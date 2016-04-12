@@ -22,7 +22,7 @@ describe('node-vault', function () {
 
     // helper
     const getURI = function (path) {
-      return `${vault.endpoint}/${vault.apiVersion}/${path}`;
+      return [vault.endpoint, vault.apiVersion, path].join('/');
     };
 
     const assertRequest = function (request, params, done) {
