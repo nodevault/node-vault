@@ -43,14 +43,14 @@ module.exports = function (config) {
     valid = tv4.validate(options, requestSchema);
     if (!valid) return Promise.reject(tv4.error);
 
-    var uri = `${client.endpoint}/${client.apiVersion}${options.path}`;
+    var uri = client.endpoint + '/' + client.apiVersion + options.path;
 
     // Replace variables in uri.
     uri = mustache.render(uri, options.json);
 
     // Replace unicode encodings.
     uri = uri.replace(/&#x2F;/g, '/');
-    debug(`${options.method} ${uri}`);
+    debug(options.method, uri);
 
     options.headers = options.headers || {};
 
@@ -72,26 +72,26 @@ module.exports = function (config) {
   };
 
   client.help = function (path, options) {
-    debug(`help for ${path}`);
+    debug('help for ' + path);
     options = options || {};
-    options.path = `/${path}?help=1`;
+    options.path = '/' + path + '?help=1';
     options.method = 'GET';
     return client.request(options).then(handleVaultError);
   };
 
   client.write = function (path, data, options) {
-    debug(`write ${data} to ${path}`);
+    debug('write' + data + ' to ' + path);
     options = options || {};
-    options.path = `/${path}`;
+    options.path = '/' + path;
     options.json = data;
     options.method = 'PUT';
     return client.request(options).then(handleVaultError);
   };
 
   client.read = function (path, options) {
-    debug(`read ${path}`);
+    debug('read ' + path);
     options = options || {};
-    options.path = `/${path}`;
+    options.path = '/' + path;
 
     // options.json = null;
     options.method = 'GET';
@@ -99,9 +99,9 @@ module.exports = function (config) {
   };
 
   client.delete = function (path, options) {
-    debug(`delete ${path}`);
+    debug('delete ' + path);
     options = options || {};
-    options.path = `/${path}`;
+    options.path = '/' + path;
     options.method = 'DELETE';
     return client.request(options).then(handleVaultError);
   };
