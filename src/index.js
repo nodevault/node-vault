@@ -7,24 +7,42 @@ module.exports = function (config) {
   const rp = config['request-promise'] || require('request-promise');
   const Promise = config.Promise || require('bluebird');
 
+  const client = {};
+
   const handleVaultError = function (response) {
-    // console.log(response.statusCode);
     if (response.statusCode !== 200 && response.statusCode !== 204) {
       return Promise.reject(new Error(response.body.errors[0]));
     } else {
-      return response.body;
+      return Promise.resolve(response.body);
     }
   };
 
-  const client = {};
+  client.handleVaultError = handleVaultError;
 
   // defaults
   client.apiVersion = config.apiVersion || 'v1';
   client.endpoint = config.endpoint || process.env.VAULT_ADDR || 'http://127.0.0.1:8200';
   client.token = config.token || process.env.VAULT_TOKEN;
 
+  const requestSchema = {
+    type: 'object',
+    properties: {
+      path: {
+        type: 'string',
+      },
+      method: {
+        type: 'string',
+      },
+    },
+    required: ['path', 'method'],
+  };
+
   // Handle any HTTP requests.
   client.request = function (options) {
+    options = options || {};
+    valid = tv4.validate(options, requestSchema);
+    if (!valid) return Promise.reject(tv4.error);
+
     var uri = `${client.endpoint}/${client.apiVersion}${options.path}`;
 
     // Replace variables in uri.
@@ -35,9 +53,11 @@ module.exports = function (config) {
     debug(`${options.method} ${uri}`);
 
     options.headers = options.headers || {};
-    if (client.token !== undefined || client.token !== null || client.token !== '') {
-      options.headers['X-Vault-Token'] = client.token;
-    }
+
+    // if (client.token !== undefined || client.token !== null || client.token !== '') {
+    options.headers['X-Vault-Token'] = client.token;
+
+    // }
 
     options.uri = uri;
     options.json = options.json || true;
@@ -45,19 +65,11 @@ module.exports = function (config) {
     options.resolveWithFullResponse = options.resolveWithFullResponse || true;
 
     debug(options);
-    return rp(options);
-  };
 
-  // .then, (err, res, body)->
-  //   if err
-  //     debug err
-  //     return done err
-  //   debug "RES #{res?.statusCode}"
-  //   if body
-  //     # Try to parse body if it's not an object.
-  //     body = JSON.parse body if typeof body != 'object'
-  //     debug body
-  //   done err, res, body
+    const promise = rp(options);
+
+    return promise;
+  };
 
   client.help = function (path, options) {
     debug(`help for ${path}`);
@@ -67,7 +79,34 @@ module.exports = function (config) {
     return client.request(options).then(handleVaultError);
   };
 
-  const generateFunctions = function (name, config) {
+  client.write = function (path, data, options) {
+    debug(`write ${data} to ${path}`);
+    options = options || {};
+    options.path = `/${path}`;
+    options.json = data;
+    options.method = 'PUT';
+    return client.request(options).then(handleVaultError);
+  };
+
+  client.read = function (path, options) {
+    debug(`read ${path}`);
+    options = options || {};
+    options.path = `/${path}`;
+
+    // options.json = null;
+    options.method = 'GET';
+    return client.request(options).then(handleVaultError);
+  };
+
+  client.delete = function (path, options) {
+    debug(`delete ${path}`);
+    options = options || {};
+    options.path = `/${path}`;
+    options.method = 'DELETE';
+    return client.request(options).then(handleVaultError);
+  };
+
+  const generateFunction = function (name, config) {
     client[name] = function (args) {
       args = args || {};
       const options = args.requestOptions || {};
@@ -89,53 +128,12 @@ module.exports = function (config) {
     };
   };
 
+  client.generateFunction = generateFunction;
+
   for (name in commands) {
-    generateFunctions(name, commands[name]);
+    generateFunction(name, commands[name]);
   }
 
   return client;
 
 };
-
-  //
-  //
-  //
-  //
-  // write: (path, data, opts = {}, done)->
-  //   debug "write #{path}"
-  //   [opts, done] = @_handleCallback opts, done
-  //   opts.path = '/' + path
-  //   opts.json = data
-  //   opts.method = 'PUT'
-  //   @_request opts, @_handleErrors(done)
-  //
-  // read: (path, opts = {}, done)->
-  //   debug "read #{path}"
-  //   [opts, done] = @_handleCallback opts, done
-  //   opts.path = '/' + path
-  //   opts.json = null
-  //   opts.method = 'GET'
-  //   @_request opts, @_handleErrors(done)
-  //
-  // delete: (path, opts = {}, done)->
-  //   debug "delete #{path}"
-  //   [opts, done] = @_handleCallback opts, done
-  //   opts.path = '/' + path
-  //   opts.json = null
-  //   opts.method = 'DELETE'
-  //   @_request opts, @_handleErrors(done)
-  //
-  // # Backwards compatibility for version 0.3.x
-  // _handleCallback: (opts, done)->
-  //   if typeof opts is 'function'
-  //     done = opts
-  //     opts = {}
-  //   else
-  //     json = opts
-  //     opts = {}
-  //     opts.json = json
-  //   return [opts, done]
-  //
-  //
-  //
-  // # Generate functions defined in [routes.coffee](routes.html).
