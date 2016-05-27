@@ -74,6 +74,9 @@ module.exports =
   disableAuth:
     method: 'DELETE'
     path: '/sys/auth/{{mount_point}}'
+  userpass:
+    method: 'POST'
+    path: '/auth/userpass/login/{{username}}'
   audits:
     method: 'GET'
     path: '/sys/audit'
