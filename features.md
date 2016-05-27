@@ -65,6 +65,10 @@
 
  `DELETE /sys/auth/{{mount_point}}`
 
+## vault.userpass
+
+ `POST /auth/userpass/login/{{username}}`
+
 ## vault.audits
 
  `GET /sys/audit`
