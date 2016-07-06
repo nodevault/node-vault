@@ -17,7 +17,7 @@ A client for the HTTP API of HashiCorp's [Vault] written for Node.js.
 
 Run tests inside docker to do also nice integration testing:
 
-    docker-compose up --force-recreate --abort-on-container-exit
+    docker-compose up --force-recreate test
 
 This will create containers for vault, postgres and running the tests inside
 docker.
@@ -31,31 +31,31 @@ docker.
 var options = {
   apiVersion: 'v1', // default
   endpoint: 'http://127.0.0.1:8200', // default
-  token: '1234' // client token; can be fetched after valid initialization of the server
+  token: '1234' // optional client token; can be fetched after valid initialization of the server
 };
 
 // get new instance of the client
 var vault = require("node-vault")(options);
 
 // init vault server
-vault.init({ secret_shares: 1, secret_threshold: 1 }, function(err, result) {
+vault.init({ secret_shares: 1, secret_threshold: 1 })
+.then( (result) => {
   var keys = result.keys;
+  // set token for all following requests
   vault.token = result.root_token;
   // unseal vault server
-  vault.unseal({ secret_shares: 1, key: keys[0] }, function(err, result) {
-  });
-});
+  return vault.unseal({ secret_shares: 1, key: keys[0] })
+})
+.catch(console.error);
 ```
 
 ### write, read and delete secrets
 
 ```javascript
-vault.write('secret/hello', { value: 'world', lease: '1s' }, function(err, result) {
-  vault.read('secret/hello', function(err, result) {
-    vault.delete('secret/hello', function(err, result) {
-    });
-  });
-});
+vault.write('secret/hello', { value: 'world', lease: '1s' })
+.then( () => vault.read('secret/hello'))
+.then( () => vault.delete('secret/hello'))
+.catch(console.error);
 ```
 
 ## docs
@@ -65,22 +65,16 @@ Just generate [docco] docs via `npm run docs`.
 ## examples
 Please have a look at the [examples] and the generated [feature list] to see what is already implemented.
 
-```bash
-git clone git@github.com:kr1sp1n/node-vault.git
-cd node-vault
-npm install
-```
-
 Instead of installing all the dependencies like vault itself, postgres and other stuff you can
 use [docker] and [docker-compose] to link and run multiple docker containers with all of its dependencies.
 
-The setup for node-vault is defined in a single file: [docker-compose.yml].
-To run the examples you need to install the [docker toolbox] first.
-
-To start just run:
 ```bash
-docker-compose up
+git clone git@github.com:kr1sp1n/node-vault.git
+cd node-vault
+docker-compose up vault
 ```
+
+Now you can run the examples from another terminal window.
 
 First of all you should initialize and unseal the vault:
 ```bash
