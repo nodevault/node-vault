@@ -7,6 +7,14 @@ node_js:
   - "4"
   - "0.12"
   - "0.11"
-script: docker-compose up --force-recreate --abort-on-container-exit
+env:
+  DOCKER_COMPOSE_VERSION: 1.7.1
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+script: docker-compose --version && docker-compose up --force-recreate --abort-on-container-exit
 after_success:
   - npm run coveralls
