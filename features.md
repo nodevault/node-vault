@@ -97,3 +97,7 @@
 ## vault.githubLogin
 
 `POST /auth/github/login`
+
+## vault.userpassLogin
+
+`POST /auth/userpass/login/{{username}}`

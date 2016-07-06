@@ -134,4 +134,8 @@ module.exports = {
     method: 'POST',
     path: '/auth/github/login',
   },
+  userpassLogin: {
+    method: 'POST',
+    path: '/auth/userpass/login/{{username}}',
+  },
 };
