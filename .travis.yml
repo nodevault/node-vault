@@ -1,23 +1,37 @@
 sudo: required
+
 language: node_js
+
 services:
   - docker
+
 node_js:
   - "5"
   - "4"
   - "0.12"
   - "0.11"
+
 env:
-  DOCKER_COMPOSE_VERSION: 1.7.1
+  global:
+    - DOCKER_VERSION=1.10.1-0~trusty
+    - DOCKER_COMPOSE_VERSION=1.6.0
 
 before_install:
+  # list docker-engine versions
+  - apt-cache madison docker-engine
+
+  # upgrade docker-engine to specific version
+  - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine=${DOCKER_VERSION}
+
+  # reinstall docker-compose at specific version
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
+
 script:
-  - docker-compose up
+  - docker-compose up --force-recreate --abort-on-container-exit
   - docker-compose ps
-# --force-recreate --abort-on-container-exit
+
 after_success:
   - npm run coveralls
