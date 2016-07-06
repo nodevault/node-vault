@@ -1,24 +1,49 @@
-vault:
-  image: kr1sp1n/vault
-  volumes:
-    - $PWD/example:/tmp/example
-  cap_add:
-    - IPC_LOCK
-  command: server -config /tmp/example/config.hcl
-  ports:
-    - "8200:8200"
-  links:
-    - postgres
+version: '2'
+services:
+  test:
+    build: .
+    command: npm test
+    environment:
+      - VAULT_ADDR=http://vault:8200
+    depends_on:
+      - vault
 
-postgres:
-  image: postgres
-  ports:
-    - "5432:5432"
-  environment:
-    POSTGRES_USER: root
-    POSTGRES_PASSWORD: test
+  vault:
+    image: kr1sp1n/vault
+    volumes:
+      - $PWD/example:/tmp/example
+      - $PWD/logs/:/tmp/logs
+    cap_add:
+      - IPC_LOCK
+    command: server -config /tmp/example/config.hcl
+    ports:
+      - "8200:8200"
+    depends_on:
+      - postgres
 
-# client:
-#   build: .
-#   links:
-#    - vault
+  postgres:
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: test
+
+  cov:
+    build: .
+    command: npm run cov
+    environment:
+      - VAULT_ADDR=http://vault:8200
+    volumes:
+      - $PWD/coverage:/app/coverage
+    depends_on:
+      - vault
+
+  coveralls:
+    build: .
+    command: npm run coveralls
+    environment:
+      - VAULT_ADDR=http://vault:8200
+      - COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN}
+    depends_on:
+      - vault
