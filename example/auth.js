@@ -1,9 +1,9 @@
-// file: example/help.js
+// file: example/auth.js
 
 process.env.DEBUG = 'node-vault'; // switch on debug mode
 
-const vault = require('./../src/index.js')();
+const vault = require('./../src/index')();
 
-vault.help('sys/policy')
+vault.auths()
 .then(console.log)
 .catch(console.error);

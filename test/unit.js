@@ -176,17 +176,17 @@ describe('node-vault', function () {
 
     });
 
-    describe('handleVaultError(response)', function () {
+    describe('handleVaultResponse(response)', function () {
 
       it('should return a function that handles errors from vault server', function () {
-        fn = vault.handleVaultError;
+        fn = vault.handleVaultResponse;
         fn.should.be.a.Function;
       });
 
       it('should return a Promise with the body if successful', function (done) {
         const data = { hello: 1 };
         response.body = data;
-        const promise = vault.handleVaultError(response);
+        const promise = vault.handleVaultResponse(response);
         promise.then(function (body) {
           body.should.equal(data);
           return done();
@@ -198,7 +198,7 @@ describe('node-vault', function () {
         response.body = {
           errors: ['Something went wrong.'],
         };
-        const promise = vault.handleVaultError(response);
+        const promise = vault.handleVaultResponse(response);
         promise.catch(function (err) {
           err.message.should.equal(response.body.errors[0]);
           return done();
@@ -324,56 +324,56 @@ describe('node-vault', function () {
 
 });
 
-  //
-  //
-  //     describe '_request(opts, done)', ->
-  //
-  //       it 'should handle undefined opts', ->
-  //         cb = sinon.spy()
-  //         @vault._request(null, cb)
-  //         cb.calledOnce.should.be.ok
-  //
-  //       it 'should set X-Vault-Token in HTTP headers if token is set', ->
-  //         cb = sinon.spy()
-  //         @vault.token = '123'
-  //         @vault._request(null, cb)
-  //         cb.calledOnce.should.be.ok
-  //
-  //       it 'should callback any error', ->
-  //         error = new Error('stupid error')
-  //         @request.callsArgWith 1, error
-  //         cb = sinon.spy()
-  //         @vault._request null, cb
-  //         cb.calledOnce.should.be.ok
-  //         cb.calledWithMatch(error).should.be.ok
-  //
-  //       it 'should parse body if is not object', ->
-  //         json_string = '{ "test": 1 }'
-  //         @request.callsArgWith 1, null, @res, json_string
-  //         cb = sinon.spy()
-  //         @vault._request null, cb
-  //         cb.calledOnce.should.be.ok
-  //         cb.calledWithExactly(null, @res, JSON.parse(json_string))
-  //
-  //
-  //     describe 'init(opts, done)', ->
-  //
-  //       it 'should throw an error if opts is null', (done)->
-  //         @vault.init null, (err, result)->
-  //           err.message.should.equal 'Invalid type: null (expected object)'
-  //           done()
-  //
-  //       it 'should throw an error if secret_shares in opts is missing', (done)->
-  //         @vault.init {}, (err, result)->
-  //           err.message.should.equal 'Missing required property: secret_shares'
-  //           done()
-  //
-  //       it 'should throw an error if secret_threshold in opts is missing', (done)->
-  //         @vault.init { secret_shares: 1}, (err, result)->
-  //           err.message.should.equal 'Missing required property: secret_threshold'
-  //           done()
-  //
-  //       it 'should throw an error if secret_shares in opts is less than 1', (done)->
+//
+//
+//     describe '_request(opts, done)', ->
+//
+//       it 'should handle undefined opts', ->
+//         cb = sinon.spy()
+//         @vault._request(null, cb)
+//         cb.calledOnce.should.be.ok
+//
+//       it 'should set X-Vault-Token in HTTP headers if token is set', ->
+//         cb = sinon.spy()
+//         @vault.token = '123'
+//         @vault._request(null, cb)
+//         cb.calledOnce.should.be.ok
+//
+//       it 'should callback any error', ->
+//         error = new Error('stupid error')
+//         @request.callsArgWith 1, error
+//         cb = sinon.spy()
+//         @vault._request null, cb
+//         cb.calledOnce.should.be.ok
+//         cb.calledWithMatch(error).should.be.ok
+//
+//       it 'should parse body if is not object', ->
+//         json_string = '{ "test": 1 }'
+//         @request.callsArgWith 1, null, @res, json_string
+//         cb = sinon.spy()
+//         @vault._request null, cb
+//         cb.calledOnce.should.be.ok
+//         cb.calledWithExactly(null, @res, JSON.parse(json_string))
+//
+//
+//     describe 'init(opts, done)', ->
+//
+//       it 'should throw an error if opts is null', (done)->
+//         @vault.init null, (err, result)->
+//           err.message.should.equal 'Invalid type: null (expected object)'
+//           done()
+//
+//       it 'should throw an error if secret_shares in opts is missing', (done)->
+//         @vault.init {}, (err, result)->
+//           err.message.should.equal 'Missing required property: secret_shares'
+//           done()
+//
+//       it 'should throw an error if secret_threshold in opts is missing', (done)->
+//         @vault.init { secret_shares: 1}, (err, result)->
+//           err.message.should.equal 'Missing required property: secret_threshold'
+//           done()
+//
+//       it 'should throw an error if secret_shares in opts is less than 1', (done)->
   //         @vault.init { secret_shares: 0, secret_threshold: 1}, (err, result)->
   //           err.message.should.equal 'Value 0 is less than minimum 1'
   //           err.dataPath.should.equal '/secret_shares'

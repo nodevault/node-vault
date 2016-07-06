@@ -130,4 +130,8 @@ module.exports = {
     method: 'PUT',
     path: '/sys/rotate',
   },
+  githubLogin: {
+    method: 'POST',
+    path: '/auth/github/login',
+  },
 };

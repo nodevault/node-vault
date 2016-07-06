@@ -1,5 +1,4 @@
-node-vault
-============
+# node-vault
 
 [![Build Status](https://img.shields.io/travis/kr1sp1n/node-vault/javascript.svg?style=flat-square)](https://travis-ci.org/kr1sp1n/node-vault)
 [![Coverage Status](https://img.shields.io/coveralls/kr1sp1n/node-vault/javascript.svg?style=flat-square)](https://coveralls.io/r/kr1sp1n/node-vault)
@@ -9,16 +8,24 @@ node-vault
 A client for the HTTP API of HashiCorp's [Vault] written for Node.js.
 
 
-Install
--------------------------------
+## install
 
     npm install node-vault
 
 
-Usage
--------------------------------
+## test
 
-### Init and unseal
+Run tests inside docker to do also nice integration testing:
+
+    docker-compose up --force-recreate --abort-on-container-exit
+
+This will create containers for vault, postgres and running the tests inside
+docker.
+
+
+## usage
+
+### init and unseal
 
 ```javascript
 var options = {
@@ -40,7 +47,7 @@ vault.init({ secret_shares: 1, secret_threshold: 1 }, function(err, result) {
 });
 ```
 
-### Write, read and delete secrets
+### write, read and delete secrets
 
 ```javascript
 vault.write('secret/hello', { value: 'world', lease: '1s' }, function(err, result) {
@@ -51,13 +58,11 @@ vault.write('secret/hello', { value: 'world', lease: '1s' }, function(err, resul
 });
 ```
 
-Docs
--------------------------------
+## docs
 Just generate [docco] docs via `npm run docs`.
 
 
-Examples
--------------------------------
+## examples
 Please have a look at the [examples] and the generated [feature list] to see what is already implemented.
 
 ```bash
@@ -72,21 +77,6 @@ use [docker] and [docker-compose] to link and run multiple docker containers wit
 The setup for node-vault is defined in a single file: [docker-compose.yml].
 To run the examples you need to install the [docker toolbox] first.
 
-A best practice is to add the dockerhost to `/etc/hosts`:
-```bash
-echo "$(docker-machine ip default) dockerhost" | sudo tee -a /etc/hosts
-```
-and to add the env variables of the docker machine via:
-```bash
-eval "$(docker-machine env default)"
-```
-This line could also be added to you local `.bashrc` or whatever shell you are using.
-
-Please set the endpoint of the vault server to the dockerhost:
-```bash
-export VAULT_ADDR=http://dockerhost:8200
-```
-
 To start just run:
 ```bash
 docker-compose up
@@ -94,7 +84,7 @@ docker-compose up
 
 First of all you should initialize and unseal the vault:
 ```bash
-$(npm bin)/coffee example/init.coffee
+node example/init.js
 ```
 You should see `root_token: ` followed by a long key in the response.
 Please copy that long key and export it as environment variable:
@@ -104,7 +94,7 @@ export VAULT_TOKEN=<insert long key here>
 
 Now you are able to run all of the other [examples]:
 ```bash
-$(npm bin)/coffee example/policies.coffee
+node example/policies.js
 ```
 
 

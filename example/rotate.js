@@ -1,9 +1,7 @@
-// file: example/status.js
+// file: example/rotate.js
 
 process.env.DEBUG = 'node-vault'; // switch on debug mode
 
 const vault = require('./../src/index')();
 
-vault.status()
-.then(console.log)
-.catch(console.error);
+vault.rotate().catch(console.error);

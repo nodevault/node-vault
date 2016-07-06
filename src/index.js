@@ -9,7 +9,8 @@ module.exports = function (config) {
 
   const client = {};
 
-  const handleVaultError = function (response) {
+  const handleVaultResponse = function (response) {
+    // debug(response.statusCode);
     if (response.statusCode !== 200 && response.statusCode !== 204) {
       return Promise.reject(new Error(response.body.errors[0]));
     } else {
@@ -17,7 +18,7 @@ module.exports = function (config) {
     }
   };
 
-  client.handleVaultError = handleVaultError;
+  client.handleVaultResponse = handleVaultResponse;
 
   // defaults
   client.apiVersion = config.apiVersion || 'v1';
@@ -37,7 +38,7 @@ module.exports = function (config) {
     required: ['path', 'method'],
   };
 
-  // Handle any HTTP requests.
+  // Handle any HTTP requests
   client.request = function (options) {
     options = options || {};
     valid = tv4.validate(options, requestSchema);
@@ -53,22 +54,15 @@ module.exports = function (config) {
     debug(options.method, uri);
 
     options.headers = options.headers || {};
-
-    // if (client.token !== undefined || client.token !== null || client.token !== '') {
     options.headers['X-Vault-Token'] = client.token;
-
-    // }
-
     options.uri = uri;
     options.json = options.json || true;
     options.simple = options.simple || false;
     options.resolveWithFullResponse = options.resolveWithFullResponse || true;
 
-    debug(options);
+    // debug(options.json);
 
-    const promise = rp(options);
-
-    return promise;
+    return rp(options);
   };
 
   client.help = function (path, options) {
@@ -76,26 +70,26 @@ module.exports = function (config) {
     options = options || {};
     options.path = '/' + path + '?help=1';
     options.method = 'GET';
-    return client.request(options).then(handleVaultError);
+    return client.request(options).then(handleVaultResponse);
   };
 
   client.write = function (path, data, options) {
-    debug('write' + data + ' to ' + path);
+    debug('write %o to %s', data, path);
     options = options || {};
     options.path = '/' + path;
     options.json = data;
     options.method = 'PUT';
-    return client.request(options).then(handleVaultError);
+    return client.request(options).then(handleVaultResponse);
   };
 
   client.read = function (path, options) {
-    debug('read ' + path);
+    debug('read %s', path);
     options = options || {};
     options.path = '/' + path;
 
     // options.json = null;
     options.method = 'GET';
-    return client.request(options).then(handleVaultError);
+    return client.request(options).then(handleVaultResponse);
   };
 
   client.delete = function (path, options) {
@@ -103,7 +97,7 @@ module.exports = function (config) {
     options = options || {};
     options.path = '/' + path;
     options.method = 'DELETE';
-    return client.request(options).then(handleVaultError);
+    return client.request(options).then(handleVaultResponse);
   };
 
   const generateFunction = function (name, config) {
@@ -124,7 +118,7 @@ module.exports = function (config) {
         }
       }
 
-      return client.request(options).then(handleVaultError);
+      return client.request(options).then(handleVaultResponse);
     };
   };
 

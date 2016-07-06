@@ -8,7 +8,7 @@
     "cov": "istanbul cover _mocha -- test/",
     "test-watch": "_mocha --watch",
     "coveralls": "istanbul cover _mocha && istanbul-coveralls",
-    "docs": "$(npm bin)/docco src/*.coffee && $(npm bin)/coffee script/generate_feature_doc.coffee"
+    "docs": "docco src/*.js && node script/generate_feature_doc"
   },
   "directories": {
     "example": "example"
