@@ -7,7 +7,7 @@ result += '\n This is a generated list of Vault features supported by node-vault
 
 const renderCommand = (command) => {
   result += '\n\n## vault.' + name;
-  result += '\n\n' + command.method + ' ' + command.path;
+  result += '\n\n`' + command.method + ' ' + command.path + '`';
 };
 
 for (var name in commands) {
