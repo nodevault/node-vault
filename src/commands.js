@@ -2,6 +2,26 @@ module.exports = {
   status: {
     method: 'GET',
     path: '/sys/seal-status',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          sealed: {
+            type: 'boolean',
+          },
+          t: {
+            type: 'number',
+          },
+          n: {
+            type: 'number',
+          },
+          progress: {
+            type: 'number',
+          },
+        },
+        required: ['sealed', 't', 'n', 'progress'],
+      },
+    },
   },
   initialized: {
     method: 'GET',

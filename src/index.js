@@ -109,7 +109,7 @@ module.exports = function (config) {
       options.json = args;
 
       // Validate via json schema.
-      if (config.schema !== undefined) {
+      if (config.schema !== undefined && config.schema.req !== undefined) {
         valid = tv4.validate(options.json, config.schema.req);
         if (!valid) {
           debug(tv4.error.dataPath);
