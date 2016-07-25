@@ -4,11 +4,14 @@ const chai = require('chai');
 const dirtyChai = require('dirty-chai');
 const should = chai.Should;
 
+
 should();
 chai.use(dirtyChai);
 chai.use(sinonChai);
 
 const index = require('./../src/index.js');
+
+const error = new Error('should not be called');
 
 describe('node-vault', () => {
   describe('module', () => {
@@ -231,7 +234,8 @@ describe('node-vault', () => {
           const fn = vault[name];
           const promise = fn();
           request.calledOnce.should.be.ok();
-          promise.should.be.a.Promise;
+          /* eslint no-unused-expressions: 0*/
+          promise.should.be.promise;
           promise.then(done)
           .catch(done);
         });
@@ -241,7 +245,7 @@ describe('node-vault', () => {
           vault.generateFunction(name, configWithSchema);
           const fn = vault[name];
           const promise = fn({ testProperty: 3 });
-          promise.then(() => done())
+          promise.then(done)
           .catch(done);
         });
 
@@ -259,9 +263,10 @@ describe('node-vault', () => {
     });
 
     describe('request(options)', () => {
-      it('should handle undefined options', done => {
-        const promise = vault.request();
-        promise.catch(() => done());
+      it('should reject if options are undefined', done => {
+        vault.request()
+        .then(() => done(error))
+        .catch(() => done());
       });
 
       it('should handle undefined path in options', done => {

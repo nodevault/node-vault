@@ -6,10 +6,8 @@ const path = '/tmp/logs/test.log';
 
 vault.audits()
 .then((result) => {
-  if (!result.hasOwnProperty('testlog/')) {
-    return vault.enableAudit({ name: 'testlog', type: 'file', options: { path } });
-  }
-  return undefined;
+  if (result.hasOwnProperty('testlog/')) return undefined;
+  return vault.enableAudit({ name: 'testlog', type: 'file', options: { path } });
 })
 .then(() => vault.write('secret/hello', { value: 'world', lease: '1s' }))
 .then(() => vault.read('secret/hello'))

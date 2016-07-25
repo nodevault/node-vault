@@ -9,14 +9,12 @@ const password = 'foo';
 
 vault.auths()
 .then((result) => {
-  if (!result.hasOwnProperty('userpass/')) {
-    return vault.enableAuth({
-      mount_point: mountPoint,
-      type: 'userpass',
-      description: 'userpass auth',
-    });
-  }
-  return undefined;
+  if (result.hasOwnProperty('userpass/')) return undefined;
+  return vault.enableAuth({
+    mount_point: mountPoint,
+    type: 'userpass',
+    description: 'userpass auth',
+  });
 })
 .then(() => vault.write(`auth/userpass/users/${username}`, { password, policies: 'root' }))
 .then(() => vault.userpassLogin({ username, password }))

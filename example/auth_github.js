@@ -10,14 +10,12 @@ const mountPoint = 'github';
 
 vault.auths()
 .then((result) => {
-  if (!result.hasOwnProperty('github/')) {
-    return vault.enableAuth({
-      mount_point: mountPoint,
-      type: 'github',
-      description: 'GitHub auth',
-    });
-  }
-  return undefined;
+  if (result.hasOwnProperty('github/')) return undefined;
+  return vault.enableAuth({
+    mount_point: mountPoint,
+    type: 'github',
+    description: 'GitHub auth',
+  });
 })
 .then(() => vault.write('auth/github/config', { organization: org }))
 .then(() => vault.write(`auth/github/map/teams/${team}`, { value: 'root' }))
