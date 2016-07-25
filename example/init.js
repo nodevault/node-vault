@@ -13,9 +13,7 @@ vault.initialized()
   console.log(result);
   vault.token = result.root_token;
   const key = result.keys[0];
-  return vault.unseal({ secret_shares: 1, key: key });
+  return vault.unseal({ secret_shares: 1, key });
 })
 .then(console.log)
-.catch(function (err) {
-  console.error(err);
-});
+.catch(console.error);

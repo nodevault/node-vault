@@ -10,10 +10,15 @@ const password = 'foo';
 vault.auths()
 .then((result) => {
   if (!result.hasOwnProperty('userpass/')) {
-    return vault.enableAuth({ mount_point: mountPoint, type: 'userpass', description: 'userpass auth' });
+    return vault.enableAuth({
+      mount_point: mountPoint,
+      type: 'userpass',
+      description: 'userpass auth',
+    });
   }
+  return undefined;
 })
-.then(() => vault.write('auth/userpass/users/' + username, { password: password, policies: 'root' }))
-.then(() => vault.userpassLogin({ username: username, password: password }))
+.then(() => vault.write(`auth/userpass/users/${username}`, { password, policies: 'root' }))
+.then(() => vault.userpassLogin({ username, password }))
 .then(console.log)
 .catch((err) => console.error(err));

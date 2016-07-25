@@ -2,16 +2,14 @@
 const fs = require('fs');
 const commands = require('./../src/commands');
 
-var result = '# Supported Vault Features\n';
+let result = '# Supported Vault Features\n';
 result += '\n This is a generated list of Vault features supported by node-vault.';
 
-const renderCommand = (command) => {
-  result += '\n\n## vault.' + name;
-  result += '\n\n`' + command.method + ' ' + command.path + '`';
+const renderCommand = (name) => {
+  const command = commands[name];
+  result += `\n\n## vault.${name}`;
+  result += `\n\n '${command.method} ${command.path}'`;
 };
-
-for (var name in commands) {
-  renderCommand(commands[name]);
-}
+Object.keys(commands).forEach(renderCommand);
 
 fs.writeFileSync('./features.md', result);

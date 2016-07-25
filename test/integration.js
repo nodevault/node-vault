@@ -1,4 +1,4 @@
-const should = require('should');
+require('should');
 const vault = require('./../src/index.js')();
 // use json schema in commands.js validate response
 const commands = require('./../src/commands.js');

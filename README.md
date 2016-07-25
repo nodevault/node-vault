@@ -9,6 +9,7 @@ A client for the HTTP API of HashiCorp's [Vault] written for Node.js.
 
 
 ## install
+make sure to use node.js version > 6
 
     npm install node-vault
 

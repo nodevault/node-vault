@@ -16,20 +16,20 @@ const configure = () => {
 const createRole = () => vault.write('postgresql/roles/readonly', { sql: query });
 const getCredentials = () => vault.read('postgresql/creds/readonly');
 
-const run = () => {
-  return configure()
+const run = () => configure()
   .then(createRole)
   .then(getCredentials)
   .then(console.log);
-};
 
 vault.mounts()
 .then((result) => {
   if (!result.hasOwnProperty('postgresql/')) {
-    return vault.mount({ mount_point: 'postgresql', type: 'postgresql', description: 'postgresql mount test' })
-    .then(run);
-  } else {
-    return run();
+    return vault.mount({
+      mount_point: 'postgresql',
+      type: 'postgresql',
+      description: 'postgresql mount test',
+    }).then(run);
   }
+  return run();
 })
 .catch(console.error);

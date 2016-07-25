@@ -21,12 +21,19 @@
     "tv4": "^1.2.7"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "dirty-chai": "^1.2.2",
     "docco": "^0.7.0",
+    "eslint": "^3.1.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.11.1",
+    "eslint-plugin-jsx-a11y": "^2.0.1",
+    "eslint-plugin-react": "^5.2.2",
     "istanbul": "0.4.3",
     "istanbul-coveralls": "1.0.3",
     "mocha": "2.4.5",
-    "should": "8.3.0",
-    "sinon": "1.17.3"
+    "sinon": "1.17.3",
+    "sinon-chai": "^2.8.0"
   },
   "repository": {
     "type": "git",
