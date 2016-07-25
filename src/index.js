@@ -17,6 +17,7 @@ module.exports = (config = {}) => {
   Promise = config.Promise || Promise;
   const client = {};
 
+
   function handleVaultResponse(response) {
     // debug(response.statusCode);
     if (response.statusCode !== 200 && response.statusCode !== 204) {
