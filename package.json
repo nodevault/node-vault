@@ -2,13 +2,14 @@
   "name": "node-vault",
   "version": "0.5.1",
   "description": "Javascript client for HashiCorp's Vault",
-  "main": "./src/index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "test": "_mocha --recursive",
+    "test": "gulp test",
     "cov": "istanbul cover _mocha -- test/",
-    "test-watch": "_mocha --watch",
+    "test-watch": "gulp watch",
     "coveralls": "istanbul cover _mocha && istanbul-coveralls",
-    "docs": "docco src/*.js && node script/generate_feature_doc"
+    "docs": "docco src/*.js && node script/generate_feature_doc",
+    "build": "gulp build"
   },
   "directories": {
     "example": "example"

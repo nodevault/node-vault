@@ -9,12 +9,11 @@ const nsp = require('gulp-nsp');
 const plumber = require('gulp-plumber');
 const concat = require('gulp-concat');
 const babel = require('gulp-babel');
+const eslint = require('gulp-eslint');
 
 gulp.task('nsp', (cb) => {
   nsp({ package: path.resolve('package.json') }, cb);
 });
-
-const eslint = require('gulp-eslint');
 
 gulp.task('lint', () => gulp.src([
   '**/*.js',
@@ -39,7 +38,7 @@ gulp.task('transpile', () => gulp.src('src/**/*.js')
     .pipe(babel({
       presets: ['es2015'],
     }))
-    .pipe(concat('script.js'))
+    .pipe(concat('index.js'))
     .pipe(gulp.dest('dist'))
 );
 
