@@ -10,6 +10,12 @@ const plumber = require('gulp-plumber');
 const concat = require('gulp-concat');
 const babel = require('gulp-babel');
 const eslint = require('gulp-eslint');
+const coveralls = require('gulp-coveralls');
+
+// feature docs script dependencies
+const docco = require('gulp-docco');
+const fs = require('fs');
+const commands = require('./src/commands');
 
 gulp.task('nsp', (cb) => {
   nsp({ package: path.resolve('package.json') }, cb);
@@ -56,6 +62,30 @@ gulp.task('test', ['lint', 'pre-test'], (cb) => {
       cb(mochaErr);
     });
 });
+
+gulp.task('coveralls', ['test'], () => gulp.src('coverage/lcov.info')
+    .pipe(coveralls())
+);
+
+gulp.task('features', ['docco'], () => {
+  let result = '# Supported Vault Features\n';
+  result += '\n This is a generated list of Vault features supported by node-vault.';
+
+  const renderCommand = (name) => {
+    const command = commands[name];
+    result += `\n\n## vault.${name}`;
+    result += `\n\n '${command.method} ${command.path}'`;
+  };
+  Object.keys(commands).forEach(renderCommand);
+  fs.writeFileSync('./features.md', result);
+});
+
+gulp.task('docco', () => gulp.src('src/*.js')
+  .pipe(docco())
+  .pipe(gulp.dest('docs'))
+);
+
+gulp.task('docs', ['features']);
 
 gulp.task('watch', () => {
   gulp.watch(['service/**/*.js', 'test/**'], ['test']);
