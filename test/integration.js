@@ -1,4 +1,10 @@
-require('should');
+const chai = require('chai');
+const dirtyChai = require('dirty-chai');
+const should = chai.Should;
+
+should();
+chai.use(dirtyChai);
+
 const vault = require('./../src/index.js')();
 // use json schema in commands.js validate response
 const commands = require('./../src/commands.js');
