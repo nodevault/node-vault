@@ -21,4 +21,4 @@ vault.auths()
 .then(() => vault.write(`auth/github/map/teams/${team}`, { value: 'root' }))
 .then(() => vault.githubLogin({ token }))
 .then(console.log)
-.catch((err) => console.error(err));
+.catch(console.error);
