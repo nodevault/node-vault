@@ -7,7 +7,10 @@ const vault = require('./../src/index')();
 vault.policies()
 .then((result) => {
   console.log(result);
-  return vault.addPolicy({ name: 'mypolicy', rules: '{ "path": { "secret/*": { "policy": "write" } } }' });
+  return vault.addPolicy({
+    name: 'mypolicy',
+    rules: '{ "path": { "secret/*": { "policy": "write" } } }',
+  });
 })
 .then(() => vault.getPolicy({ name: 'mypolicy' }))
 .then(vault.policies)

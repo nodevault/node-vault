@@ -29,16 +29,6 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: test
 
-  cov:
-    build: .
-    command: npm run cov
-    environment:
-      - VAULT_ADDR=http://vault:8200
-    volumes:
-      - $PWD/coverage:/app/coverage
-    depends_on:
-      - vault
-
   coveralls:
     build: .
     command: npm run coveralls
