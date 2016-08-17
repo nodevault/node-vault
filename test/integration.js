@@ -1,15 +1,19 @@
-const chai = require('chai');
-const dirtyChai = require('dirty-chai');
-const should = chai.Should;
+'use strict';
+/* eslint-disable import/no-extraneous-dependencies */
 
+import chai from 'chai';
+import dirtyChai from 'dirty-chai';
+import tv4 from 'tv4';
+import assert from 'assert';
+// use json schema in commands.js validate response
+import commands from './../src/commands.js';
+import vaultjs from './../src/index.js';
+
+const should = chai.Should;
 should();
 chai.use(dirtyChai);
+const vault = vaultjs();
 
-const vault = require('./../src/index.js')();
-// use json schema in commands.js validate response
-const commands = require('./../src/commands.js');
-const tv4 = require('tv4');
-const assert = require('assert');
 
 const validResult = (commandName, result) => {
   const schema = commands[commandName].schema.res;

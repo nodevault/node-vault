@@ -1,21 +1,25 @@
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const chai = require('chai');
-const dirtyChai = require('dirty-chai');
+'use strict';
+/* eslint-disable import/no-extraneous-dependencies */
+
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
+import chai from 'chai';
+import dirtyChai from 'dirty-chai';
+
+import index from './../src/index.js';
+
 const should = chai.Should;
-
-
 should();
 chai.use(dirtyChai);
 chai.use(sinonChai);
 
-const index = require('./../src/index.js');
 
 const error = new Error('should not be called');
 
 describe('node-vault', () => {
   describe('module', () => {
     it('should export a function that returns a new client', () => {
+      console.log(index);
       const v = index();
       index.should.be.a('function');
       v.should.be.an('object');

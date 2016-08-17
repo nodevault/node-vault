@@ -10,7 +10,7 @@ const mountPoint = 'github';
 
 vault.auths()
 .then((result) => {
-  if (result.hasOwnProperty('github/')) return undefined;
+  if ({}.hasOwnProperty.call(result, 'github/')) return undefined;
   return vault.enableAuth({
     mount_point: mountPoint,
     type: 'github',

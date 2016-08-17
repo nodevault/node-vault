@@ -22,7 +22,7 @@ const run = () => configure()
 
 vault.mounts()
 .then((result) => {
-  if (result.hasOwnProperty('postgresql/')) return run();
+  if ({}.hasOwnProperty.call(result, 'postgresql/')) return run();
   return vault.mount({
     mount_point: 'postgresql',
     type: 'postgresql',
