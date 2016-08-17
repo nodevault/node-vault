@@ -1,6 +1,9 @@
 'use strict';
 
-module.exports = {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
   status: {
     method: 'GET',
     path: '/sys/seal-status',
@@ -163,23 +166,47 @@ module.exports = {
 };
 'use strict';
 
-var debug = require('debug')('node-vault');
-var tv4 = require('tv4');
-var commands = require('./commands.js');
-var mustache = require('mustache');
-var rp = require('request-promise');
-var Promise = require('bluebird');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = vault;
 
-module.exports = function () {
+var _debug = require('debug');
+
+var _debug2 = _interopRequireDefault(_debug);
+
+var _tv = require('tv4');
+
+var _tv2 = _interopRequireDefault(_tv);
+
+var _mustache = require('mustache');
+
+var _mustache2 = _interopRequireDefault(_mustache);
+
+var _bluebird = require('bluebird');
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
+
+var _requestPromise = require('request-promise');
+
+var _requestPromise2 = _interopRequireDefault(_requestPromise);
+
+var _commands = require('./commands');
+
+var _commands2 = _interopRequireDefault(_commands);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function vault() {
   var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
   // load conditional dependencies
-  debug = config.debug || debug;
-  tv4 = config.tv4 || tv4;
-  commands = config.commands || commands;
-  mustache = config.mustache || mustache;
-  rp = config['request-promise'] || rp;
-  Promise = config.Promise || Promise;
+  var debug = config.debug || (0, _debug2.default)('node-vault');
+  var tv4 = config.tv4 || _tv2.default;
+  var commands = config.commands || _commands2.default;
+  var mustache = config.mustache || _mustache2.default;
+  var rp = config['request-promise'] || _requestPromise2.default;
+  var Promise = config.Promise || _bluebird2.default;
   var client = {};
 
   function handleVaultResponse(response) {
@@ -311,4 +338,4 @@ module.exports = function () {
   Object.keys(commands).forEach(assignFunctions);
 
   return client;
-};
+}

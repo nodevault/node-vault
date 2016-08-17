@@ -9,7 +9,7 @@ const password = 'foo';
 
 vault.auths()
 .then((result) => {
-  if (result.hasOwnProperty('userpass/')) return undefined;
+  if ({}.hasOwnProperty.call(result, 'userpass/')) return undefined;
   return vault.enableAuth({
     mount_point: mountPoint,
     type: 'userpass',

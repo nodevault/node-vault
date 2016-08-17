@@ -1,28 +1,33 @@
 'use strict';
+/* eslint-disable import/no-extraneous-dependencies */
 
-const path = require('path');
-const gulp = require('gulp');
-const excludeGitignore = require('gulp-exclude-gitignore');
-const mocha = require('gulp-mocha');
-const istanbul = require('gulp-istanbul');
-const nsp = require('gulp-nsp');
-const plumber = require('gulp-plumber');
-const concat = require('gulp-concat');
-const babel = require('gulp-babel');
-const eslint = require('gulp-eslint');
-const coveralls = require('gulp-coveralls');
+import path from 'path';
+import gulp from 'gulp';
+import mocha from 'gulp-mocha';
+import istanbul from 'gulp-babel-istanbul';
+import nsp from 'gulp-nsp';
+import plumber from 'gulp-plumber';
+import concat from 'gulp-concat';
+import babel from 'gulp-babel';
+import eslint from 'gulp-eslint';
+import coveralls from 'gulp-coveralls';
 
 // feature docs script dependencies
-const docco = require('gulp-docco');
-const fs = require('fs');
-const commands = require('./src/commands');
+import docco from 'gulp-docco';
+import fs from 'fs';
+import commands from './src/commands';
+
+const files = {
+  src: 'src/**/*.js',
+  test: 'test/**/*.js',
+};
 
 gulp.task('nsp', (cb) => {
   nsp({ package: path.resolve('package.json') }, cb);
 });
 
 gulp.task('lint', () => gulp.src([
-  '**/*.js',
+  files.src,
   '!node_modules/**',
   '!coverage/**',
   '!logs/**',
@@ -32,28 +37,30 @@ gulp.task('lint', () => gulp.src([
       .pipe(eslint.failAfterError())
 );
 
-gulp.task('pre-test', () => gulp.src('src/**/*.js')
-    .pipe(excludeGitignore())
+gulp.task('pre-test', () => gulp.src(files.src)
     .pipe(istanbul({
       includeUntested: true,
     }))
     .pipe(istanbul.hookRequire())
 );
 
-gulp.task('transpile', () => gulp.src('src/**/*.js')
-    .pipe(babel({
-      presets: ['es2015'],
-    }))
+gulp.task('transpile', () => gulp.src(files.src)
+    .pipe(babel())
     .pipe(concat('index.js'))
     .pipe(gulp.dest('dist'))
 );
 
-gulp.task('test', ['lint', 'pre-test'], (cb) => {
+gulp.task('test', ['lint'], (cb) => {
   let mochaErr;
 
-  gulp.src('test/**/*.js')
+  gulp.src(files.test)
     .pipe(plumber())
-    .pipe(mocha({ reporter: 'spec' }))
+    .pipe(mocha({
+      reporter: 'spec',
+      compilers: {
+        js: babel,
+      },
+    }))
     .on('error', (err) => {
       mochaErr = err;
     })
@@ -80,7 +87,7 @@ gulp.task('features', ['docco'], () => {
   fs.writeFileSync('./features.md', result);
 });
 
-gulp.task('docco', () => gulp.src('src/*.js')
+gulp.task('docco', () => gulp.src(files.src)
   .pipe(docco())
   .pipe(gulp.dest('docs'))
 );
@@ -88,7 +95,7 @@ gulp.task('docco', () => gulp.src('src/*.js')
 gulp.task('docs', ['features']);
 
 gulp.task('watch', () => {
-  gulp.watch(['service/**/*.js', 'test/**'], ['test']);
+  gulp.watch(['src/**/*.js', 'test/**'], ['test']);
 });
 
 gulp.task('build', ['test', 'transpile']);

@@ -1,8 +1,5 @@
 {
   "extends": "airbnb",
-  "parserOptions": {
-        "sourceType": "script",
-  },
   "rules": {
     "strict": 0,
     no-param-reassign: [
@@ -11,17 +8,13 @@
     ],
     "no-console": 0
   },
-  "globals": {
-    "describe": true,
-    "it": true,
-    "after": true,
-    "afterEach": true,
-    "before": true,
-    "beforeEach": true,
-    "should": true
-  },
   "env": {
+     "es6": true,
     "node": true,
-    "mocha": true
-  }
+    "mocha" : true,
+  },
+  "ecmaFeatures": {
+    "classes": true,
+    "modules": true,
+  },
 }

@@ -1,4 +1,6 @@
-module.exports = {
+'use strict';
+
+export default {
   status: {
     method: 'GET',
     path: '/sys/seal-status',

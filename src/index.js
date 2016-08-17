@@ -1,20 +1,22 @@
 'use strict';
 
-let debug = require('debug')('node-vault');
-let tv4 = require('tv4');
-let commands = require('./commands.js');
-let mustache = require('mustache');
-let rp = require('request-promise');
-let Promise = require('bluebird');
+import debugLib from 'debug';
+import tv4Lib from 'tv4';
+import mustacheLib from 'mustache';
+import PromiseLib from 'bluebird';
+import rpLib from 'request-promise';
 
-module.exports = (config = {}) => {
+import commandsLib from './commands';
+
+
+export default function vault(config = {}) {
   // load conditional dependencies
-  debug = config.debug || debug;
-  tv4 = config.tv4 || tv4;
-  commands = config.commands || commands;
-  mustache = config.mustache || mustache;
-  rp = config['request-promise'] || rp;
-  Promise = config.Promise || Promise;
+  const debug = config.debug || debugLib('node-vault');
+  const tv4 = config.tv4 || tv4Lib;
+  const commands = config.commands || commandsLib;
+  const mustache = config.mustache || mustacheLib;
+  const rp = config['request-promise'] || rpLib;
+  const Promise = config.Promise || PromiseLib;
   const client = {};
 
 
@@ -133,4 +135,4 @@ module.exports = (config = {}) => {
   Object.keys(commands).forEach(assignFunctions);
 
   return client;
-};
+}
