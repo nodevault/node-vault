@@ -10,13 +10,13 @@ module.exports = {
             type: 'boolean',
           },
           t: {
-            type: 'number',
+            type: 'integer',
           },
           n: {
-            type: 'number',
+            type: 'integer',
           },
           progress: {
-            type: 'number',
+            type: 'integer',
           },
         },
         required: ['sealed', 't', 'n', 'progress'],
@@ -70,9 +70,155 @@ module.exports = {
       },
     },
   },
+  generateRootStatus: {
+    method: 'GET',
+    path: '/sys/generate-root/attempt',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          started: {
+            type: 'boolean',
+          },
+          nonce: {
+            type: 'string',
+          },
+          progress: {
+            type: 'integer',
+            minimum: 0,
+          },
+          required: {
+            type: 'integer',
+            minimum: 1,
+          },
+          pgp_fingerprint: {
+            type: 'string',
+          },
+          complete: {
+            type: 'boolean',
+          },
+        },
+        required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete'],
+      },
+    },
+  },
+  generateRootInit: {
+    method: 'PUT',
+    path: '/sys/generate-root/attempt',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          otp: {
+            type: 'string',
+          },
+          pgp_key: {
+            type: 'string',
+          },
+        },
+      },
+      res: {
+        type: 'object',
+        properties: {
+          started: {
+            type: 'boolean',
+          },
+          nonce: {
+            type: 'string',
+          },
+          progress: {
+            type: 'integer',
+            minimum: 0,
+          },
+          required: {
+            type: 'integer',
+            minimum: 1,
+          },
+          pgp_fingerprint: {
+            type: 'string',
+          },
+          complete: {
+            type: 'boolean',
+          },
+        },
+        required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete'],
+      },
+    },
+  },
+  generateRootCancel: {
+    method: 'DELETE',
+    path: '/sys/generate-root/attempt',
+  },
+  generateRootUpdate: {
+    method: 'PUT',
+    path: '/sys/generate-root/update',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          key: {
+            type: 'string',
+          },
+          nonce: {
+            type: 'string',
+          },
+        },
+        required: ['key', 'nonce'],
+      },
+      res: {
+        type: 'object',
+        properties: {
+          started: {
+            type: 'boolean',
+          },
+          nonce: {
+            type: 'string',
+          },
+          progress: {
+            type: 'integer',
+            minimum: 0,
+          },
+          required: {
+            type: 'integer',
+            minimum: 1,
+          },
+          pgp_fingerprint: {
+            type: 'string',
+          },
+          complete: {
+            type: 'boolean',
+          },
+          encoded_root_token: {
+            type: 'string',
+          },
+        },
+        required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete'],
+      },
+    },
+  },
   unseal: {
     method: 'PUT',
     path: '/sys/unseal',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          sealed: {
+            type: 'boolean',
+          },
+          t: {
+            type: 'integer',
+          },
+          n: {
+            type: 'integer',
+          },
+          progress: {
+            type: 'integer',
+          },
+        },
+        required: ['sealed', 't', 'n', 'progress'],
+      },
+    },
   },
   seal: {
     method: 'PUT',
@@ -157,5 +303,397 @@ module.exports = {
   userpassLogin: {
     method: 'POST',
     path: '/auth/userpass/login/{{username}}',
+  },
+  tokenLookup: {
+    method: 'GET',
+    path: '/auth/token/lookup/{{token}}',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+              },
+              policies: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              path: {
+                type: 'string',
+              },
+              meta: {
+                type: 'object',
+              },
+              display_name: {
+                type: 'string',
+              },
+              num_uses: {
+                type: 'integer',
+              },
+            },
+          },
+        },
+        required: ['data'],
+      },
+    },
+  },
+  tokenLookupAccesspr: {
+    method: 'GET',
+    path: '/auth/token/lookup-accessor/{{accessor}}',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+              },
+              policies: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              path: {
+                type: 'string',
+              },
+              meta: {
+                type: 'object',
+              },
+              display_name: {
+                type: 'string',
+              },
+              num_uses: {
+                type: 'integer',
+              },
+            },
+          },
+        },
+        required: ['data'],
+      },
+    },
+  },
+  tokenLookupSelf: {
+    method: 'GET',
+    path: '/auth/token/lookup-self',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+              },
+              policies: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              path: {
+                type: 'string',
+              },
+              meta: {
+                type: 'object',
+              },
+              display_name: {
+                type: 'string',
+              },
+              num_uses: {
+                type: 'integer',
+              },
+            },
+          },
+        },
+        required: ['data'],
+      },
+    },
+  },
+  tokenRenew: {
+    method: 'POST',
+    path: '/auth/token/renew',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string',
+          },
+          increment: {
+            type: 'integer',
+          },
+        },
+        required: ['token'],
+      },
+      res: {
+        type: 'object',
+        properties: {
+          auth: {
+            type: 'object',
+            properties: {
+              client_token: {
+                type: 'string',
+              },
+              policies: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              metadata: {
+                type: 'object',
+              },
+              lease_duration: {
+                type: 'integer',
+              },
+              renewable: {
+                type: 'boolean',
+              },
+            },
+          },
+        },
+        required: ['auth'],
+      },
+    },
+  },
+  tokenRenewSelf: {
+    method: 'POST',
+    path: '/auth/token/renew-self',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          increment: {
+            type: 'integer',
+          },
+        },
+      },
+      res: {
+        type: 'object',
+        properties: {
+          auth: {
+            type: 'object',
+            properties: {
+              client_token: {
+                type: 'string',
+              },
+              policies: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              metadata: {
+                type: 'object',
+              },
+              lease_duration: {
+                type: 'integer',
+              },
+              renewable: {
+                type: 'boolean',
+              },
+            },
+          },
+        },
+        required: ['auth'],
+      },
+    },
+  },
+  tokenRevoke: {
+    method: 'POST',
+    path: '/auth/token/revoke',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string',
+          },
+        },
+        required: ['token'],
+      },
+    },
+  },
+  tokenRevokeAccessor: {
+    method: 'POST',
+    path: '/auth/token/revoke-accessor',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          accessor: {
+            type: 'string',
+          },
+        },
+        required: ['accessor'],
+      },
+    },
+  },
+  tokenRevokeOrphan: {
+    method: 'POST',
+    path: '/auth/token/revoke-orphan',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string',
+          },
+        },
+        required: ['token'],
+      },
+    },
+  },
+  tokenRevokeSelf: {
+    method: 'POST',
+    path: '/auth/token/revoke-self',
+  },
+  tokenRoles: {
+    method: 'GET',
+    path: '/auth/token/roles?list=true',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: {
+              keys: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+            },
+          },
+        },
+        required: ['data'],
+      },
+    },
+  },
+  addTokenRole: {
+    method: 'POST',
+    path: '/auth/token/roles/{{role_name}}',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          allowed_policies: {
+            type: 'string',
+          },
+          disallowed_policies: {
+            type: 'string',
+          },
+          orphan: {
+            type: 'boolean',
+          },
+          period: {
+            type: 'integer',
+          },
+          renewable: {
+            type: 'boolean',
+          },
+          path_suffix: {
+            type: 'string',
+          },
+          explicit_max_ttl: {
+            type: 'integer',
+          },
+        },
+      },
+    },
+  },
+  getTokenRole: {
+    method: 'GET',
+    path: '/auth/token/roles/{{role_name}}',
+  },
+  removeTokenRole: {
+    method: 'DELETE',
+    path: '/auth/token/roles/{{role_name}}',
+  },
+  health: {
+    method: 'GET',
+    path: '/sys/health',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          standbyok: {
+            type: 'boolean',
+          },
+          activecode: {
+            type: 'integer',
+          },
+          standbycode: {
+            type: 'integer',
+          },
+          sealedcode: {
+            type: 'integer',
+          },
+          uninitcode: {
+            type: 'integer',
+          },
+        },
+      },
+      res: {
+        type: 'object',
+        properties: {
+          cluster_id: {
+            type: 'string',
+          },
+          cluster_name: {
+            type: 'string',
+          },
+          version: {
+            type: 'string',
+          },
+          server_time_utc: {
+            type: 'integer',
+          },
+          standby: {
+            type: 'boolean',
+          },
+          sealed: {
+            type: 'boolean',
+          },
+          initialized: {
+            type: 'boolean',
+          },
+        },
+      },
+    },
+  },
+  leader: {
+    method: 'GET',
+    path: '/sys/leader',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          ha_enabled: {
+            type: 'boolean',
+          },
+          is_self: {
+            type: 'boolean',
+          },
+          leader_address: {
+            type: 'string',
+          },
+        },
+      },
+    },
+  },
+  stepDown: {
+    method: 'PUT',
+    path: '/sys/step-down',
   },
 };

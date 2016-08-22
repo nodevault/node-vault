@@ -12,13 +12,13 @@ module.exports = {
             type: 'boolean'
           },
           t: {
-            type: 'number'
+            type: 'integer'
           },
           n: {
-            type: 'number'
+            type: 'integer'
           },
           progress: {
-            type: 'number'
+            type: 'integer'
           }
         },
         required: ['sealed', 't', 'n', 'progress']
@@ -86,11 +86,11 @@ module.exports = {
             type: 'string'
           },
           progress: {
-            type: 'number',
+            type: 'integer',
             minimum: 0
           },
           required: {
-            type: 'number',
+            type: 'integer',
             minimum: 1
           },
           pgp_fingerprint: {
@@ -129,11 +129,11 @@ module.exports = {
             type: 'string'
           },
           progress: {
-            type: 'number',
+            type: 'integer',
             minimum: 0
           },
           required: {
-            type: 'number',
+            type: 'integer',
             minimum: 1
           },
           pgp_fingerprint: {
@@ -177,11 +177,11 @@ module.exports = {
             type: 'string'
           },
           progress: {
-            type: 'number',
+            type: 'integer',
             minimum: 0
           },
           required: {
-            type: 'number',
+            type: 'integer',
             minimum: 1
           },
           pgp_fingerprint: {
@@ -200,7 +200,27 @@ module.exports = {
   },
   unseal: {
     method: 'PUT',
-    path: '/sys/unseal'
+    path: '/sys/unseal',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          sealed: {
+            type: 'boolean'
+          },
+          t: {
+            type: 'integer'
+          },
+          n: {
+            type: 'integer'
+          },
+          progress: {
+            type: 'integer'
+          }
+        },
+        required: ['sealed', 't', 'n', 'progress']
+      }
+    }
   },
   seal: {
     method: 'PUT',
@@ -286,6 +306,322 @@ module.exports = {
     method: 'POST',
     path: '/auth/userpass/login/{{username}}'
   },
+  tokenLookup: {
+    method: 'GET',
+    path: '/auth/token/lookup/{{token}}',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string'
+              },
+              policies: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                }
+              },
+              path: {
+                type: 'string'
+              },
+              meta: {
+                type: 'object'
+              },
+              display_name: {
+                type: 'string'
+              },
+              num_uses: {
+                type: 'integer'
+              }
+            }
+          }
+        },
+        required: ['data']
+      }
+    }
+  },
+  tokenLookupAccesspr: {
+    method: 'GET',
+    path: '/auth/token/lookup-accessor/{{accessor}}',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string'
+              },
+              policies: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                }
+              },
+              path: {
+                type: 'string'
+              },
+              meta: {
+                type: 'object'
+              },
+              display_name: {
+                type: 'string'
+              },
+              num_uses: {
+                type: 'integer'
+              }
+            }
+          }
+        },
+        required: ['data']
+      }
+    }
+  },
+  tokenLookupSelf: {
+    method: 'GET',
+    path: '/auth/token/lookup-self',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string'
+              },
+              policies: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                }
+              },
+              path: {
+                type: 'string'
+              },
+              meta: {
+                type: 'object'
+              },
+              display_name: {
+                type: 'string'
+              },
+              num_uses: {
+                type: 'integer'
+              }
+            }
+          }
+        },
+        required: ['data']
+      }
+    }
+  },
+  tokenRenew: {
+    method: 'POST',
+    path: '/auth/token/renew',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string'
+          },
+          increment: {
+            type: 'integer'
+          }
+        },
+        required: ['token']
+      },
+      res: {
+        type: 'object',
+        properties: {
+          auth: {
+            type: 'object',
+            properties: {
+              client_token: {
+                type: 'string'
+              },
+              policies: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                }
+              },
+              metadata: {
+                type: 'object'
+              },
+              lease_duration: {
+                type: 'integer'
+              },
+              renewable: {
+                type: 'boolean'
+              }
+            }
+          }
+        },
+        required: ['auth']
+      }
+    }
+  },
+  tokenRenewSelf: {
+    method: 'POST',
+    path: '/auth/token/renew-self',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          increment: {
+            type: 'integer'
+          }
+        }
+      },
+      res: {
+        type: 'object',
+        properties: {
+          auth: {
+            type: 'object',
+            properties: {
+              client_token: {
+                type: 'string'
+              },
+              policies: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                }
+              },
+              metadata: {
+                type: 'object'
+              },
+              lease_duration: {
+                type: 'integer'
+              },
+              renewable: {
+                type: 'boolean'
+              }
+            }
+          }
+        },
+        required: ['auth']
+      }
+    }
+  },
+  tokenRevoke: {
+    method: 'POST',
+    path: '/auth/token/revoke',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string'
+          }
+        },
+        required: ['token']
+      }
+    }
+  },
+  tokenRevokeAccessor: {
+    method: 'POST',
+    path: '/auth/token/revoke-accessor',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          accessor: {
+            type: 'string'
+          }
+        },
+        required: ['accessor']
+      }
+    }
+  },
+  tokenRevokeOrphan: {
+    method: 'POST',
+    path: '/auth/token/revoke-orphan',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string'
+          }
+        },
+        required: ['token']
+      }
+    }
+  },
+  tokenRevokeSelf: {
+    method: 'POST',
+    path: '/auth/token/revoke-self'
+  },
+  tokenRoles: {
+    method: 'GET',
+    path: '/auth/token/roles?list=true',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: {
+              keys: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                }
+              }
+            }
+          }
+        },
+        required: ['data']
+      }
+    }
+  },
+  addTokenRole: {
+    method: 'POST',
+    path: '/auth/token/roles/{{role_name}}',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          allowed_policies: {
+            type: 'string'
+          },
+          disallowed_policies: {
+            type: 'string'
+          },
+          orphan: {
+            type: 'boolean'
+          },
+          period: {
+            type: 'integer'
+          },
+          renewable: {
+            type: 'boolean'
+          },
+          path_suffix: {
+            type: 'string'
+          },
+          explicit_max_ttl: {
+            type: 'integer'
+          }
+        }
+      }
+    }
+  },
+  getTokenRole: {
+    method: 'GET',
+    path: '/auth/token/roles/{{role_name}}'
+  },
+  removeTokenRole: {
+    method: 'DELETE',
+    path: '/auth/token/roles/{{role_name}}'
+  },
   health: {
     method: 'GET',
     path: '/sys/health',
@@ -297,16 +633,16 @@ module.exports = {
             type: 'boolean'
           },
           activecode: {
-            type: 'number'
+            type: 'integer'
           },
           standbycode: {
-            type: 'number'
+            type: 'integer'
           },
           sealedcode: {
-            type: 'number'
+            type: 'integer'
           },
           uninitcode: {
-            type: 'number'
+            type: 'integer'
           }
         }
       },
@@ -323,7 +659,7 @@ module.exports = {
             type: 'string'
           },
           server_time_utc: {
-            type: 'number'
+            type: 'integer'
           },
           standby: {
             type: 'boolean'
