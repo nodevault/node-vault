@@ -7,7 +7,6 @@ const mocha = require('gulp-mocha');
 const istanbul = require('gulp-istanbul');
 const nsp = require('gulp-nsp');
 const plumber = require('gulp-plumber');
-const concat = require('gulp-concat');
 const babel = require('gulp-babel');
 const eslint = require('gulp-eslint');
 const coveralls = require('gulp-coveralls');
@@ -44,7 +43,6 @@ gulp.task('transpile', () => gulp.src('src/**/*.js')
     .pipe(babel({
       presets: ['es2015'],
     }))
-    .pipe(concat('index.js'))
     .pipe(gulp.dest('dist'))
 );
 
