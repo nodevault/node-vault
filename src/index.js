@@ -21,7 +21,13 @@ module.exports = (config = {}) => {
   function handleVaultResponse(response) {
     // debug(response.statusCode);
     if (response.statusCode !== 200 && response.statusCode !== 204) {
-      return Promise.reject(new Error(response.body.errors[0]));
+      let message;
+      if (response.body.errors && response.body.errors.length > 0) {
+        message = response.body.errors[0];
+      } else {
+        message = `Status ${response.statusCode}`;
+      }
+      return Promise.reject(new Error(message));
     }
     return Promise.resolve(response.body);
   }
