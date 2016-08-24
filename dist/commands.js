@@ -626,7 +626,7 @@ module.exports = {
     method: 'GET',
     path: '/sys/health',
     schema: {
-      req: {
+      query: {
         type: 'object',
         properties: {
           standbyok: {

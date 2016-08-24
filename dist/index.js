@@ -124,8 +124,47 @@ module.exports = function () {
       options.json = args;
 
       // Validate via json schema.
-      if (conf.schema !== undefined && conf.schema.req !== undefined) {
-        var valid = tv4.validate(options.json, conf.schema.req);
+      if (conf.schema !== undefined) {
+        var valid = true;
+        if (conf.schema.query !== undefined) {
+          valid = tv4.validate(options.json, conf.schema.query);
+          if (valid) {
+            var params = [];
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+              for (var _iterator = Object.keys(conf.schema.query.properties)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var key = _step.value;
+
+                if (key in options.json) {
+                  params.push(key + '=' + encodeURIComponent(options.json[key]));
+                }
+              }
+            } catch (err) {
+              _didIteratorError = true;
+              _iteratorError = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                  _iterator.return();
+                }
+              } finally {
+                if (_didIteratorError) {
+                  throw _iteratorError;
+                }
+              }
+            }
+
+            if (params.length > 0) {
+              options.path += '?' + params.join('&');
+            }
+          }
+        }
+        if (valid && conf.schema.req !== undefined) {
+          valid = tv4.validate(options.json, conf.schema.req);
+        }
         if (!valid) {
           debug(tv4.error.dataPath);
           debug(tv4.error.message);
