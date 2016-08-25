@@ -105,7 +105,7 @@ module.exports = (config = {}) => {
 
   function generateFunction(name, conf) {
     client[name] = (args = {}) => {
-      const options = args.requestOptions || {};
+      const options = Object.assign({}, config.requestOptions, args.requestOptions);
       options.method = conf.method;
       options.path = conf.path;
       options.json = args;

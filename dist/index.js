@@ -281,7 +281,7 @@ module.exports = function () {
     client[name] = function () {
       var args = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-      var options = args.requestOptions || {};
+      var options = Object.assign({}, config.requestOptions, args.requestOptions);
       options.method = conf.method;
       options.path = conf.path;
       options.json = args;
