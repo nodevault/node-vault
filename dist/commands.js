@@ -1,28 +1,60 @@
 'use strict';
 
+var sealStatusResponse = {
+  type: 'object',
+  properties: {
+    sealed: {
+      type: 'boolean'
+    },
+    t: {
+      type: 'integer'
+    },
+    n: {
+      type: 'integer'
+    },
+    progress: {
+      type: 'integer'
+    }
+  },
+  required: ['sealed', 't', 'n', 'progress']
+};
+
+var tokenResponse = {
+  type: 'object',
+  properties: {
+    auth: {
+      type: 'object',
+      properties: {
+        client_token: {
+          type: 'string'
+        },
+        policies: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        },
+        metadata: {
+          type: 'object'
+        },
+        lease_duration: {
+          type: 'integer'
+        },
+        renewable: {
+          type: 'boolean'
+        }
+      }
+    }
+  },
+  required: ['auth']
+};
+
 module.exports = {
   status: {
     method: 'GET',
     path: '/sys/seal-status',
     schema: {
-      res: {
-        type: 'object',
-        properties: {
-          sealed: {
-            type: 'boolean'
-          },
-          t: {
-            type: 'integer'
-          },
-          n: {
-            type: 'integer'
-          },
-          progress: {
-            type: 'integer'
-          }
-        },
-        required: ['sealed', 't', 'n', 'progress']
-      }
+      res: sealStatusResponse
     }
   },
   initialized: {
@@ -71,6 +103,17 @@ module.exports = {
         required: ['keys', 'root_token']
       }
     }
+  },
+  unseal: {
+    method: 'PUT',
+    path: '/sys/unseal',
+    schema: {
+      res: sealStatusResponse
+    }
+  },
+  seal: {
+    method: 'PUT',
+    path: '/sys/seal'
   },
   generateRootStatus: {
     method: 'GET',
@@ -198,34 +241,6 @@ module.exports = {
       }
     }
   },
-  unseal: {
-    method: 'PUT',
-    path: '/sys/unseal',
-    schema: {
-      res: {
-        type: 'object',
-        properties: {
-          sealed: {
-            type: 'boolean'
-          },
-          t: {
-            type: 'integer'
-          },
-          n: {
-            type: 'integer'
-          },
-          progress: {
-            type: 'integer'
-          }
-        },
-        required: ['sealed', 't', 'n', 'progress']
-      }
-    }
-  },
-  seal: {
-    method: 'PUT',
-    path: '/sys/seal'
-  },
   mounts: {
     method: 'GET',
     path: '/sys/mounts'
@@ -305,6 +320,164 @@ module.exports = {
   userpassLogin: {
     method: 'POST',
     path: '/auth/userpass/login/{{username}}'
+  },
+  tokenAccessors: {
+    method: 'LIST',
+    path: '/auth/token/accessors',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: {
+              keys: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                }
+              }
+            }
+          }
+        },
+        required: ['data']
+      }
+    }
+  },
+  tokenCreate: {
+    method: 'POST',
+    path: '/auth/token/create',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string'
+          },
+          policies: {
+            type: 'array',
+            items: {
+              type: 'string'
+            }
+          },
+          meta: {
+            type: 'object'
+          },
+          no_parent: {
+            type: 'boolean'
+          },
+          no_default_policy: {
+            type: 'boolean'
+          },
+          renewable: {
+            type: 'boolean'
+          },
+          ttl: {
+            type: 'string'
+          },
+          explicit_max_ttl: {
+            type: 'string'
+          },
+          display_name: {
+            type: 'string'
+          },
+          num_uses: {
+            type: 'integer'
+          }
+        }
+      },
+      res: tokenResponse
+    }
+  },
+  tokenCreateOrphan: {
+    method: 'POST',
+    path: '/auth/token/create-orphan',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string'
+          },
+          policies: {
+            type: 'array',
+            items: {
+              type: 'string'
+            }
+          },
+          meta: {
+            type: 'object'
+          },
+          no_parent: {
+            type: 'boolean'
+          },
+          no_default_policy: {
+            type: 'boolean'
+          },
+          renewable: {
+            type: 'boolean'
+          },
+          ttl: {
+            type: 'string'
+          },
+          explicit_max_ttl: {
+            type: 'string'
+          },
+          display_name: {
+            type: 'string'
+          },
+          num_uses: {
+            type: 'integer'
+          }
+        }
+      },
+      res: tokenResponse
+    }
+  },
+  tokenCreateRole: {
+    method: 'POST',
+    path: '/auth/token/create/{{role_name}}',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string'
+          },
+          policies: {
+            type: 'array',
+            items: {
+              type: 'string'
+            }
+          },
+          meta: {
+            type: 'object'
+          },
+          no_parent: {
+            type: 'boolean'
+          },
+          no_default_policy: {
+            type: 'boolean'
+          },
+          renewable: {
+            type: 'boolean'
+          },
+          ttl: {
+            type: 'string'
+          },
+          explicit_max_ttl: {
+            type: 'string'
+          },
+          display_name: {
+            type: 'string'
+          },
+          num_uses: {
+            type: 'integer'
+          }
+        }
+      },
+      res: tokenResponse
+    }
   },
   tokenLookup: {
     method: 'GET',
@@ -436,35 +609,7 @@ module.exports = {
         },
         required: ['token']
       },
-      res: {
-        type: 'object',
-        properties: {
-          auth: {
-            type: 'object',
-            properties: {
-              client_token: {
-                type: 'string'
-              },
-              policies: {
-                type: 'array',
-                items: {
-                  type: 'string'
-                }
-              },
-              metadata: {
-                type: 'object'
-              },
-              lease_duration: {
-                type: 'integer'
-              },
-              renewable: {
-                type: 'boolean'
-              }
-            }
-          }
-        },
-        required: ['auth']
-      }
+      res: tokenResponse
     }
   },
   tokenRenewSelf: {
@@ -479,35 +624,7 @@ module.exports = {
           }
         }
       },
-      res: {
-        type: 'object',
-        properties: {
-          auth: {
-            type: 'object',
-            properties: {
-              client_token: {
-                type: 'string'
-              },
-              policies: {
-                type: 'array',
-                items: {
-                  type: 'string'
-                }
-              },
-              metadata: {
-                type: 'object'
-              },
-              lease_duration: {
-                type: 'integer'
-              },
-              renewable: {
-                type: 'boolean'
-              }
-            }
-          }
-        },
-        required: ['auth']
-      }
+      res: tokenResponse
     }
   },
   tokenRevoke: {
