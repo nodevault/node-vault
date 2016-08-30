@@ -602,7 +602,7 @@ module.exports = {
             type: 'string',
           },
           increment: {
-            type: 'integer',
+            type: ['integer', 'string'],
           },
         },
         required: ['token'],
@@ -618,7 +618,7 @@ module.exports = {
         type: 'object',
         properties: {
           increment: {
-            type: 'integer',
+            type: ['integer', 'string'],
           },
         },
       },
