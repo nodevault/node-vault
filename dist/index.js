@@ -238,40 +238,34 @@ module.exports = function () {
     return rp(options);
   };
 
-  client.help = function (path) {
-    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
+  client.help = function (path, requestOptions) {
     debug('help for ' + path);
+    var options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = '/' + path + '?help=1';
     options.method = 'GET';
     return client.request(options).then(handleVaultResponse);
   };
 
-  client.write = function (path, data) {
-    var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-
+  client.write = function (path, data, requestOptions) {
     debug('write %o to %s', data, path);
+    var options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = '/' + path;
     options.json = data;
     options.method = 'PUT';
     return client.request(options).then(handleVaultResponse);
   };
 
-  client.read = function (path) {
-    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
+  client.read = function (path, requestOptions) {
     debug('read ' + path);
+    var options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = '/' + path;
-
-    // options.json = null;
     options.method = 'GET';
     return client.request(options).then(handleVaultResponse);
   };
 
-  client.delete = function (path) {
-    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
+  client.delete = function (path, requestOptions) {
     debug('delete ' + path);
+    var options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = '/' + path;
     options.method = 'DELETE';
     return client.request(options).then(handleVaultResponse);
