@@ -72,32 +72,34 @@ module.exports = (config = {}) => {
     return rp(options);
   };
 
-  client.help = (path, options = {}) => {
+  client.help = (path, requestOptions) => {
     debug(`help for ${path}`);
+    const options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = `/${path}?help=1`;
     options.method = 'GET';
     return client.request(options).then(handleVaultResponse);
   };
 
-  client.write = (path, data, options = {}) => {
+  client.write = (path, data, requestOptions) => {
     debug('write %o to %s', data, path);
+    const options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = `/${path}`;
     options.json = data;
     options.method = 'PUT';
     return client.request(options).then(handleVaultResponse);
   };
 
-  client.read = (path, options = {}) => {
+  client.read = (path, requestOptions) => {
     debug(`read ${path}`);
+    const options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = `/${path}`;
-
-    // options.json = null;
     options.method = 'GET';
     return client.request(options).then(handleVaultResponse);
   };
 
-  client.delete = (path, options = {}) => {
+  client.delete = (path, requestOptions) => {
     debug(`delete ${path}`);
+    const options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = `/${path}`;
     options.method = 'DELETE';
     return client.request(options).then(handleVaultResponse);
@@ -105,7 +107,7 @@ module.exports = (config = {}) => {
 
   function generateFunction(name, conf) {
     client[name] = (args = {}) => {
-      const options = args.requestOptions || {};
+      const options = Object.assign({}, config.requestOptions, args.requestOptions);
       options.method = conf.method;
       options.path = conf.path;
       options.json = args;
