@@ -113,8 +113,25 @@ module.exports = (config = {}) => {
       options.json = args;
 
       // Validate via json schema.
-      if (conf.schema !== undefined && conf.schema.req !== undefined) {
-        const valid = tv4.validate(options.json, conf.schema.req);
+      if (conf.schema !== undefined) {
+        let valid = true;
+        if (conf.schema.query !== undefined) {
+          valid = tv4.validate(options.json, conf.schema.query);
+          if (valid) {
+            const params = [];
+            for (const key of Object.keys(conf.schema.query.properties)) {
+              if (key in options.json) {
+                params.push(`${key}=${encodeURIComponent(options.json[key])}`);
+              }
+            }
+            if (params.length > 0) {
+              options.path += `?${params.join('&')}`;
+            }
+          }
+        }
+        if (valid && conf.schema.req !== undefined) {
+          valid = tv4.validate(options.json, conf.schema.req);
+        }
         if (!valid) {
           debug(tv4.error.dataPath);
           debug(tv4.error.message);
