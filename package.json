@@ -1,6 +1,6 @@
 {
   "name": "node-vault",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./dist/index.js",
   "scripts": {
@@ -16,7 +16,9 @@
     "dist": "./dist",
     "doc": "./docs"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "bluebird": "3.3.4",
     "debug": "^2.1.3",
