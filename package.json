@@ -8,10 +8,12 @@
     "test-watch": "gulp watch",
     "coveralls": "gulp coveralls",
     "docs": "gulp docs",
-    "build": "gulp build"
+    "build": "gulp build",
+    "prepublish": "gulp build"
   },
   "directories": {
-    "example": "example"
+    "example": "example",
+    "dist": "dist"
   },
   "dependencies": {
     "bluebird": "3.3.4",
