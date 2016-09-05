@@ -9,7 +9,8 @@
     "coveralls": "gulp coveralls",
     "docs": "gulp docs",
     "build": "gulp build",
-    "prepublish": "gulp build"
+    "nsp": "gulp nsp",
+    "prepublish": "gulp prepublish"
   },
   "directories": {
     "example": "./example",

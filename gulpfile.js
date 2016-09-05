@@ -89,7 +89,7 @@ gulp.task('watch', () => {
   gulp.watch(['service/**/*.js', 'test/**'], ['test']);
 });
 
-gulp.task('build', ['test', 'transpile']);
+gulp.task('build', ['transpile']);
 
-gulp.task('prepublish', ['nsp']);
+gulp.task('prepublish', ['nsp', 'build']);
 gulp.task('default', ['test']);
