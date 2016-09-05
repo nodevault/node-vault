@@ -66,13 +66,13 @@ gulp.task('coveralls', ['test'], () => gulp.src('coverage/lcov.info')
 );
 
 gulp.task('features', ['docco'], () => {
-  let result = '# Supported Vault Features\n';
+  let result = '# Supported node-vault features\n';
   result += '\n This is a generated list of Vault features supported by node-vault.';
 
   const renderCommand = (name) => {
     const command = commands[name];
     result += `\n\n## vault.${name}`;
-    result += `\n\n '${command.method} ${command.path}'`;
+    result += `\n\n\`${command.method} ${command.path}\`\n`;
   };
   Object.keys(commands).forEach(renderCommand);
   fs.writeFileSync('./features.md', result);

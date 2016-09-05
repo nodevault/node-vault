@@ -12,9 +12,11 @@
     "prepublish": "gulp build"
   },
   "directories": {
-    "example": "example",
-    "dist": "dist"
+    "example": "./example",
+    "dist": "./dist",
+    "doc": "./docs"
   },
+  "files": ["dist"],
   "dependencies": {
     "bluebird": "3.3.4",
     "debug": "^2.1.3",
@@ -56,7 +58,14 @@
     "manage",
     "client"
   ],
-  "author": "kr1sp1n",
+  "author": "kr1sp1n <krispin@posteo.de> (https://github.com/kr1sp1n)",
+  "contributors": [
+    "Julian Amelung (https://github.com/julianbei)",
+    "Trevor Robinson (https://github.com/trevorr)",
+    "Tim Robinson (https://github.com/timjrobinson)",
+    "Adam Kelsall (https://github.com/adamkelsall)",
+    "Charles Phillips (https://github.com/doublerebel)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kr1sp1n/node-vault/issues"
