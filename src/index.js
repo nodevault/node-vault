@@ -105,6 +105,14 @@ module.exports = (config = {}) => {
     return client.request(options).then(handleVaultResponse);
   };
 
+  client.list = (path, requestOptions) => {
+    debug(`list ${path}`);
+    const options = Object.assign({}, config.requestOptions, requestOptions);
+    options.path = `/${path}`;
+    options.method = 'LIST';
+    return client.request(options).then(handleVaultResponse);
+  };
+
   client.delete = (path, requestOptions) => {
     debug(`delete ${path}`);
     const options = Object.assign({}, config.requestOptions, requestOptions);
