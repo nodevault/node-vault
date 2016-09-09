@@ -478,9 +478,18 @@ module.exports = {
     },
   },
   tokenLookup: {
-    method: 'GET',
-    path: '/auth/token/lookup/{{token}}',
+    method: 'POST',
+    path: '/auth/token/lookup',
     schema: {
+      req: {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string',
+          },
+        },
+        required: ['token'],
+      },
       res: {
         type: 'object',
         properties: {
@@ -516,9 +525,18 @@ module.exports = {
     },
   },
   tokenLookupAccesspr: {
-    method: 'GET',
-    path: '/auth/token/lookup-accessor/{{accessor}}',
+    method: 'POST',
+    path: '/auth/token/lookup-accessor',
     schema: {
+      req: {
+        type: 'object',
+        properties: {
+          accessor: {
+            type: 'string',
+          },
+        },
+        required: ['accessor'],
+      },
       res: {
         type: 'object',
         properties: {
