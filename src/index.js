@@ -21,6 +21,10 @@ module.exports = (config = {}) => {
   function handleVaultResponse(response) {
     // debug(response.statusCode);
     if (response.statusCode !== 200 && response.statusCode !== 204) {
+      // handle health response not as error
+      if (response.request.path.match(/health/) !== null) {
+        return Promise.resolve(response.body);
+      }
       let message;
       if (response.body.errors && response.body.errors.length > 0) {
         message = response.body.errors[0];
