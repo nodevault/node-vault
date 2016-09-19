@@ -7,7 +7,7 @@
     "test": "gulp test",
     "test-watch": "gulp watch",
     "coveralls": "gulp coveralls",
-    "codecov": "istanbul cover _mocha --report lcovonly -- -R spec && codecov",
+    "coverage": "istanbul cover _mocha --report lcovonly -- -R spec",
     "docs": "gulp docs",
     "build": "gulp build",
     "nsp": "gulp nsp",

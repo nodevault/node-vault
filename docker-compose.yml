@@ -38,11 +38,12 @@ services:
     depends_on:
       - vault
 
-  codecov:
+  coverage:
     build: .
-    command: npm run codecov
+    command: npm run coverage
     environment:
       - VAULT_ADDR=http://vault:8200
-      - CODECOV_TOKEN=${CODECOV_TOKEN}
+    volumes:
+      - $PWD/coverage:/app/coverage
     depends_on:
       - vault
