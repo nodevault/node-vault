@@ -3,12 +3,12 @@ sudo: required
 services:
   - docker
 
-# skip install
-install: true
+install:
+  - npm install -g codecov
 
 script:
   - docker-compose up --force-recreate test
 
 after_success:
   # - docker-compose up --force-recreate coveralls
-  - bash <(curl -s https://codecov.io/bash)
+  - codecov
