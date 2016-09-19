@@ -5,6 +5,8 @@ services:
     command: npm test
     environment:
       - VAULT_ADDR=http://vault:8200
+    volumes:
+      - $PWD/coverage:/app/coverage
     depends_on:
       - vault
 
@@ -28,12 +30,3 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: test
-
-  coveralls:
-    build: .
-    command: npm run coveralls
-    environment:
-      - VAULT_ADDR=http://vault:8200
-      - COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN}
-    depends_on:
-      - vault

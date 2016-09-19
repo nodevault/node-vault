@@ -188,9 +188,32 @@ describe('node-vault', () => {
         response.body = {
           errors: ['Something went wrong.'],
         };
+        response.request = {
+          path: 'test',
+        };
         const promise = vault.handleVaultResponse(response);
         promise.catch(err => {
           err.message.should.equal(response.body.errors[0]);
+          return done();
+        });
+      });
+
+      it('should not handle response from health route as error', done => {
+        const data = {
+          initialized: true,
+          sealed: true,
+          standby: true,
+          server_time_utc: 1474301338,
+          version: 'Vault v0.6.1',
+        };
+        response.statusCode = 503;
+        response.body = data;
+        response.request = {
+          path: '/v1/sys/health',
+        };
+        const promise = vault.handleVaultResponse(response);
+        promise.then(body => {
+          body.should.equal(data);
           return done();
         });
       });
