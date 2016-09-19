@@ -9,7 +9,7 @@ services:
       - vault
 
   vault:
-    image: kr1sp1n/vault
+    image: vault
     volumes:
       - $PWD/example:/tmp/example
       - $PWD/logs/:/tmp/logs
