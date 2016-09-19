@@ -9,7 +9,6 @@ const nsp = require('gulp-nsp');
 const plumber = require('gulp-plumber');
 const babel = require('gulp-babel');
 const eslint = require('gulp-eslint');
-const coveralls = require('gulp-coveralls');
 
 // feature docs script dependencies
 const docco = require('gulp-docco');
@@ -60,10 +59,6 @@ gulp.task('test', ['lint', 'pre-test'], (cb) => {
       cb(mochaErr);
     });
 });
-
-gulp.task('coveralls', ['test'], () => gulp.src('coverage/lcov.info')
-    .pipe(coveralls())
-);
 
 gulp.task('features', ['docco'], () => {
   let result = '# Supported node-vault features\n';

@@ -7,8 +7,7 @@ install:
   - npm install -g codecov
 
 script:
-  - docker-compose up --force-recreate coverage
+  - docker-compose up --force-recreate test
 
 after_success:
-  # - docker-compose up --force-recreate coveralls
   - codecov
