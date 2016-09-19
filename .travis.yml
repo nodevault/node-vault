@@ -10,5 +10,5 @@ script:
   - docker-compose up --force-recreate test
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
   - docker-compose up --force-recreate coveralls
+  - docker-compose up --force-recreate codecov

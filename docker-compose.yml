@@ -37,3 +37,12 @@ services:
       - COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN}
     depends_on:
       - vault
+
+  codecov:
+    build: .
+    command: npm run codecov
+    environment:
+      - VAULT_ADDR=http://vault:8200
+      - CODECOV_TOKEN=${CODECOV_TOKEN}
+    depends_on:
+      - vault
