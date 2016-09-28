@@ -12,4 +12,4 @@ const options = {
 
 vault.auths(options)
 .then(console.log)
-.catch(console.error);
+.catch((err) => console.error(err.message));

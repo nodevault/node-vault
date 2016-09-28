@@ -6,4 +6,4 @@ const vault = require('./../src/index')();
 
 vault.status()
 .then(console.log)
-.catch(console.error);
+.catch((err) => console.error(err.message));

@@ -11,4 +11,4 @@ vault.mounts()
 .then(() => vault.read('test2/hello'))
 .then(console.log)
 .then(() => vault.unmount({ mount_point: 'test2' }))
-.catch(console.error);
+.catch((err) => console.error(err.message));

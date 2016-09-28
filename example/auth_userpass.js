@@ -19,4 +19,4 @@ vault.auths()
 .then(() => vault.write(`auth/userpass/users/${username}`, { password, policies: 'root' }))
 .then(() => vault.userpassLogin({ username, password }))
 .then(console.log)
-.catch((err) => console.error(err));
+.catch((err) => console.error(err.message));
