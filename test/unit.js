@@ -4,7 +4,6 @@ const chai = require('chai');
 const dirtyChai = require('dirty-chai');
 const should = chai.Should;
 
-
 should();
 chai.use(dirtyChai);
 chai.use(sinonChai);
@@ -50,7 +49,6 @@ describe('node-vault', () => {
         then(fn) {
           return fn(response);
         },
-
         catch(fn) {
           return fn();
         },
@@ -84,6 +82,19 @@ describe('node-vault', () => {
           uri: `${getURI(path)}?help=1`,
         };
         vault.help(path)
+        .then(assertRequest(request, params, done))
+        .catch(done);
+      });
+    });
+
+    describe('list(path, requestOptions)', () => {
+      it('should list entries at the specific path', done => {
+        const path = 'secret/hello';
+        const params = {
+          method: 'LIST',
+          uri: getURI(path),
+        };
+        vault.list(path)
         .then(assertRequest(request, params, done))
         .catch(done);
       });
@@ -198,6 +209,18 @@ describe('node-vault', () => {
         });
       });
 
+      it('should return the status code if no error in the response', done => {
+        response.statusCode = 500;
+        response.request = {
+          path: 'test',
+        };
+        const promise = vault.handleVaultResponse(response);
+        promise.catch(err => {
+          err.message.should.equal(`Status ${response.statusCode}`);
+          return done();
+        });
+      });
+
       it('should not handle response from health route as error', done => {
         const data = {
           initialized: true,
@@ -214,6 +237,14 @@ describe('node-vault', () => {
         const promise = vault.handleVaultResponse(response);
         promise.then(body => {
           body.should.equal(data);
+          return done();
+        });
+      });
+
+      it('should return a Promise with the error if no response is passed', done => {
+        const promise = vault.handleVaultResponse();
+        promise.catch((err) => {
+          err.message.should.equal('No response passed');
           return done();
         });
       });
@@ -238,6 +269,26 @@ describe('node-vault', () => {
               },
             },
             required: ['testProperty'],
+          },
+        },
+      };
+
+      const configWithQuerySchema = {
+        method: 'GET',
+        path: '/myroute',
+        schema: {
+          query: {
+            type: 'object',
+            properties: {
+              testParam1: {
+                type: 'integer',
+                minimum: 1,
+              },
+              testParam2: {
+                type: 'string',
+              },
+            },
+            required: ['testParam1', 'testParam2'],
           },
         },
       };
@@ -268,8 +319,7 @@ describe('node-vault', () => {
           vault.generateFunction(name, configWithSchema);
           const fn = vault[name];
           const promise = fn({ testProperty: 3 });
-          promise.then(done)
-          .catch(done);
+          promise.then(done).catch(done);
         });
 
         it('should handle invalid arguments via schema property', done => {
@@ -281,6 +331,22 @@ describe('node-vault', () => {
             err.message.should.equal('Invalid type: string (expected integer)');
             return done();
           });
+        });
+
+        it('should handle schema with query property', done => {
+          const name = 'myGeneratedFunction';
+          vault.generateFunction(name, configWithQuerySchema);
+          const fn = vault[name];
+          const promise = fn({ testParam1: 3, testParam2: 'hello' });
+          const options = {
+            path: '/myroute?testParam1=3&testParam2=hello',
+          };
+          promise
+          .then(() => {
+            request.calledWithMatch(options).should.be.ok();
+            done();
+          })
+          .catch(done);
         });
       });
     });

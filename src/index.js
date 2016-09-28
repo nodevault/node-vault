@@ -17,16 +17,16 @@ module.exports = (config = {}) => {
   Promise = config.Promise || Promise;
   const client = {};
 
-
   function handleVaultResponse(response) {
-    // debug(response.statusCode);
+    if (!response) return Promise.reject(new Error('No response passed'));
+    debug(response.statusCode);
     if (response.statusCode !== 200 && response.statusCode !== 204) {
       // handle health response not as error
       if (response.request.path.match(/health/) !== null) {
         return Promise.resolve(response.body);
       }
       let message;
-      if (response.body.errors && response.body.errors.length > 0) {
+      if (response.body && response.body.errors && response.body.errors.length > 0) {
         message = response.body.errors[0];
       } else {
         message = `Status ${response.statusCode}`;
@@ -62,26 +62,20 @@ module.exports = (config = {}) => {
   client.request = (options = {}) => {
     const valid = tv4.validate(options, requestSchema);
     if (!valid) return Promise.reject(tv4.error);
-
     let uri = `${client.endpoint}/${client.apiVersion}${options.path}`;
-
     // Replace variables in uri.
     uri = mustache.render(uri, options.json);
-
     // Replace unicode encodings.
     uri = uri.replace(/&#x2F;/g, '/');
-    debug(options.method, uri);
-
     options.headers = options.headers || {};
     options.headers['X-Vault-Token'] = client.token;
     options.uri = uri;
     options.json = options.json || true;
     options.simple = options.simple || false;
     options.resolveWithFullResponse = options.resolveWithFullResponse || true;
-
+    debug(options.method, uri);
     // debug(options.json);
-
-    return rp(options);
+    return rp(options).then(handleVaultResponse);
   };
 
   client.help = (path, requestOptions) => {
@@ -89,7 +83,7 @@ module.exports = (config = {}) => {
     const options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = `/${path}?help=1`;
     options.method = 'GET';
-    return client.request(options).then(handleVaultResponse);
+    return client.request(options);
   };
 
   client.write = (path, data, requestOptions) => {
@@ -98,7 +92,7 @@ module.exports = (config = {}) => {
     options.path = `/${path}`;
     options.json = data;
     options.method = 'PUT';
-    return client.request(options).then(handleVaultResponse);
+    return client.request(options);
   };
 
   client.read = (path, requestOptions) => {
@@ -106,7 +100,7 @@ module.exports = (config = {}) => {
     const options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = `/${path}`;
     options.method = 'GET';
-    return client.request(options).then(handleVaultResponse);
+    return client.request(options);
   };
 
   client.list = (path, requestOptions) => {
@@ -114,7 +108,7 @@ module.exports = (config = {}) => {
     const options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = `/${path}`;
     options.method = 'LIST';
-    return client.request(options).then(handleVaultResponse);
+    return client.request(options);
   };
 
   client.delete = (path, requestOptions) => {
@@ -122,8 +116,36 @@ module.exports = (config = {}) => {
     const options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = `/${path}`;
     options.method = 'DELETE';
-    return client.request(options).then(handleVaultResponse);
+    return client.request(options);
   };
+
+  function validate(json, schema) {
+    // ignore validation if no schema
+    if (schema === undefined) return Promise.resolve();
+    const valid = tv4.validate(json, schema);
+    if (!valid) {
+      debug(tv4.error.dataPath);
+      debug(tv4.error.message);
+      return Promise.reject(tv4.error);
+    }
+    return Promise.resolve();
+  }
+
+  function extendOptions(conf, options) {
+    const schema = conf.schema.query;
+    // no schema for the query -> no need to extend
+    if (!schema) return Promise.resolve(options);
+    const params = [];
+    for (const key of Object.keys(schema.properties)) {
+      if (key in options.json) {
+        params.push(`${key}=${encodeURIComponent(options.json[key])}`);
+      }
+    }
+    if (params.length > 0) {
+      options.path += `?${params.join('&')}`;
+    }
+    return Promise.resolve(options);
+  }
 
   function generateFunction(name, conf) {
     client[name] = (args = {}) => {
@@ -131,35 +153,13 @@ module.exports = (config = {}) => {
       options.method = conf.method;
       options.path = conf.path;
       options.json = args;
-
-      // Validate via json schema.
-      if (conf.schema !== undefined) {
-        let valid = true;
-        if (conf.schema.query !== undefined) {
-          valid = tv4.validate(options.json, conf.schema.query);
-          if (valid) {
-            const params = [];
-            for (const key of Object.keys(conf.schema.query.properties)) {
-              if (key in options.json) {
-                params.push(`${key}=${encodeURIComponent(options.json[key])}`);
-              }
-            }
-            if (params.length > 0) {
-              options.path += `?${params.join('&')}`;
-            }
-          }
-        }
-        if (valid && conf.schema.req !== undefined) {
-          valid = tv4.validate(options.json, conf.schema.req);
-        }
-        if (!valid) {
-          debug(tv4.error.dataPath);
-          debug(tv4.error.message);
-          return Promise.reject(tv4.error);
-        }
-      }
-
-      return client.request(options).then(handleVaultResponse);
+      // no schema object -> no validation
+      if (!conf.schema) return client.request(options);
+      // else do validation of request URL and body
+      return validate(options.json, conf.schema.req)
+      .then(validate(options.json, conf.schema.query))
+      .then(() => extendOptions(conf, options))
+      .then((extendedOptions) => client.request(extendedOptions));
     };
   }
 
