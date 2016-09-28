@@ -18,4 +18,4 @@ const options = {
 
 vault.help('sys/policy', options)
 .then(() => vault.help('sys/mounts'))
-.catch(console.error);
+.catch((err) => console.error(err.message));

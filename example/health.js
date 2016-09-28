@@ -6,4 +6,4 @@ const vault = require('./../src/index.js')();
 
 vault.health()
 .then(console.log)
-.catch(console.error);
+.catch((err) => console.error(err.message));

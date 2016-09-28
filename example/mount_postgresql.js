@@ -29,4 +29,4 @@ vault.mounts()
     description: 'postgresql mount test',
   }).then(run);
 })
-.catch(console.error);
+.catch((err) => console.error(err.message));

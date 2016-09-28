@@ -18,4 +18,4 @@ vault.policies()
   console.log(result);
   return vault.removePolicy({ name: 'mypolicy' });
 })
-.catch(console.error);
+.catch((err) => console.error(err.message));

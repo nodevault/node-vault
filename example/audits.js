@@ -13,4 +13,4 @@ vault.audits()
 .then(() => vault.read('secret/hello'))
 .then(() => vault.delete('secret/hello'))
 .then(() => vault.disableAudit({ name: 'testlog' }))
-.catch((err) => console.error(err));
+.catch((err) => console.error(err.message));

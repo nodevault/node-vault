@@ -16,4 +16,4 @@ vault.initialized()
   return vault.unseal({ secret_shares: 1, key });
 })
 .then(console.log)
-.catch(console.error);
+.catch((err) => console.error(err.message));
