@@ -22,7 +22,7 @@ module.exports = (config = {}) => {
     debug(response.statusCode);
     if (response.statusCode !== 200 && response.statusCode !== 204) {
       // handle health response not as error
-      if (response.request.path.match(/health/) !== null) {
+      if (response.request.path.match(/sys\/health/) !== null) {
         return Promise.resolve(response.body);
       }
       let message;
