@@ -241,6 +241,22 @@ describe('node-vault', () => {
         });
       });
 
+      it('should return error if error on request path with health and not sys/health', done => {
+        response.statusCode = 404;
+        response.body = {
+          errors: [],
+        };
+        response.request = {
+          path: '/v1/sys/policies/applications/im-not-sys-health/app',
+        };
+        vault.handleVaultResponse(response)
+        .then(() => done(error))
+        .catch(err => {
+          err.message.should.equal(`Status ${response.statusCode}`);
+          return done();
+        });
+      });
+
       it('should return a Promise with the error if no response is passed', done => {
         const promise = vault.handleVaultResponse();
         promise.catch((err) => {
