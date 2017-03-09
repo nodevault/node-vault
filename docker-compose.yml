@@ -2,7 +2,7 @@ version: '2'
 services:
   test:
     build: .
-    command: npm test
+    command: npm run coverage
     environment:
       - VAULT_ADDR=http://vault:8200
     volumes:
