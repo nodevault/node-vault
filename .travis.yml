@@ -4,10 +4,10 @@ services:
   - docker
 
 install:
-  - npm install -g codecov
+  - npm install -g coveralls
 
 script:
   - docker-compose up --force-recreate test
 
 after_success:
-  - codecov
+  - cat ./coverage/lcov.info | $(npm bin)/coveralls
