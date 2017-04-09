@@ -13,7 +13,12 @@ module.exports = (config = {}) => {
   tv4 = config.tv4 || tv4;
   commands = config.commands || commands;
   mustache = config.mustache || mustache;
-  rp = config['request-promise'] || rp;
+  rp = (config['request-promise'] || rp).defaults({
+    json: true,
+    resolveWithFullResponse: true,
+    simple: false,
+    strictSSL: !process.env.VAULT_SKIP_VERIFY,
+  });
   Promise = config.Promise || Promise;
   const client = {};
 
@@ -72,9 +77,6 @@ module.exports = (config = {}) => {
       options.headers['X-Vault-Token'] = client.token;
     }
     options.uri = uri;
-    options.json = options.json || true;
-    options.simple = options.simple || false;
-    options.resolveWithFullResponse = options.resolveWithFullResponse || true;
     debug(options.method, uri);
     // debug(options.json);
     return rp(options).then(handleVaultResponse);

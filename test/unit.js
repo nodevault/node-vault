@@ -14,12 +14,56 @@ const error = new Error('should not be called');
 
 describe('node-vault', () => {
   describe('module', () => {
+    after(() => {
+      process.env.VAULT_SKIP_VERIFY = '';
+    });
+
     it('should export a function that returns a new client', () => {
       const v = index();
       index.should.be.a('function');
       v.should.be.an('object');
     });
+
+    it('should set default vaules for request library', () => {
+      const defaultsStub = sinon.stub();
+
+      index({
+        'request-promise': {
+          defaults: defaultsStub,
+        },
+      });
+
+      defaultsStub.should.be.calledOnce();
+      defaultsStub.should.be.calledWithExactly({
+        json: true,
+        simple: false,
+        resolveWithFullResponse: true,
+        strictSSL: true,
+      });
+    });
+
+    it('should disable ssl security based on vault environment variable', () => {
+      const defaultsStub = sinon.stub();
+
+      // see https://www.vaultproject.io/docs/commands/environment.html for details
+      process.env.VAULT_SKIP_VERIFY = 'catpants';
+
+      index({
+        'request-promise': {
+          defaults: defaultsStub,
+        },
+      });
+
+      defaultsStub.should.be.calledOnce();
+      defaultsStub.should.be.calledWithExactly({
+        json: true,
+        simple: false,
+        resolveWithFullResponse: true,
+        strictSSL: false,
+      });
+    });
   });
+
 
   describe('client', () => {
     let request = null;
@@ -58,7 +102,9 @@ describe('node-vault', () => {
         {
           endpoint: 'http://localhost:8200',
           token: '123',
-          'request-promise': request, // dependency injection of stub
+          'request-promise': {
+            defaults: () => request, // dependency injection of stub
+          },
         }
       );
     });
