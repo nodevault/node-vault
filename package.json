@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "precoverage": "npm run lint",
-    "coverage": "istanbul cover --report text-summary --include-all-sources node_modules/.bin/_mocha",
+    "coverage": "istanbul cover --report text-summary node_modules/.bin/_mocha",
     "lint": "eslint .",
     "test": "mocha",
     "test-watch": "mocha --watch",
