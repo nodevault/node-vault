@@ -1,11 +1,10 @@
-// file: example/auth_github.js
+// file: example/enableAuth_github.js
 
 process.env.DEBUG = 'node-vault'; // switch on debug mode
 const vault = require('./../src/index')();
 
 const org = process.env.GITHUB_ORG;
-const team = process.env.GITHUB_TEAM || 'owners';
-const token = process.env.GITHUB_TOKEN;
+const team = process.env.GITHUB_TEAM;
 const mountPoint = 'github';
 
 vault.auths()
@@ -18,7 +17,5 @@ vault.auths()
   });
 })
 .then(() => vault.write('auth/github/config', { organization: org }))
-.then(() => vault.write(`auth/github/map/teams/${team}`, { value: 'root' }))
-.then(() => vault.githubLogin({ token }))
-.then(console.log)
+.then(() => vault.write(`auth/github/map/teams/${team}`, { value: 'mypolicy' }))
 .catch((err) => console.error(err.message));

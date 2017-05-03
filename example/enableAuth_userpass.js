@@ -1,4 +1,4 @@
-// file: example/auth_userpass.js
+// file: example/enableAuth_userpass.js
 
 process.env.DEBUG = 'node-vault'; // switch on debug mode
 const vault = require('./../src/index')();
@@ -16,7 +16,5 @@ vault.auths()
     description: 'userpass auth',
   });
 })
-.then(() => vault.write(`auth/userpass/users/${username}`, { password, policies: 'root' }))
-.then(() => vault.userpassLogin({ username, password }))
-.then(console.log)
+.then(() => vault.write(`auth/userpass/users/${username}`, { password, policies: 'mypolicy' }))
 .catch((err) => console.error(err.message));

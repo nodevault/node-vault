@@ -11,7 +11,7 @@ services:
       - vault
 
   vault:
-    image: vault
+    image: vault:0.7.0
     volumes:
       - $PWD/example:/tmp/example
       - $PWD/logs/:/tmp/logs
