@@ -37,7 +37,6 @@ module.exports = (config = {}) => {
         message = `Status ${response.statusCode}`;
       }
       const error = new Error(message);
-      error.response = response;
       return Promise.reject(error);
     }
     return Promise.resolve(response.body);
