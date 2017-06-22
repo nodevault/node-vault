@@ -4,19 +4,14 @@ process.env.DEBUG = 'node-vault'; // switch on debug mode
 
 const vault = require('./../src/index')();
 
-let new_token
-
 vault.tokenCreate()
 .then((result) => {
-	console.log(result)
-	new_token = result.auth
-	return vault.tokenLookup({token: new_token.client_token})
+  console.log(result);
+  const newToken = result.auth;
+  return vault.tokenLookup({ token: newToken.client_token })
+  .then(() => vault.tokenLookupAccessor({ accessor: newToken.accessor }));
 })
 .then((result) => {
-	console.log(result)
-	return vault.tokenLookupAccessor({accessor: new_token.accessor})
+  console.log(result);
 })
-.then((result) => {
-	console.log(result)
-})
-.catch((err) => console.error(err.message))
+.catch((err) => console.error(err.message));
