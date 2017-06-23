@@ -37,14 +37,14 @@ const auth = {
     },
     renewable: {
       type: 'boolean',
-    }
-  }
-}
+    },
+  },
+};
 
 const tokenResponse = {
   type: 'object',
   properties: {
-    auth
+    auth,
   },
   required: ['auth'],
 };
@@ -54,25 +54,25 @@ const approleResponse = {
   properties: {
     auth,
     warnings: {
-      type: 'string'
+      type: 'string',
     },
     wrap_info: {
-      type: 'string'
+      type: 'string',
     },
     data: {
-      type: 'object'
+      type: 'object',
     },
     lease_duration: {
-      type: 'integer'
+      type: 'integer',
     },
     renewable: {
-      type: 'boolean'
+      type: 'boolean',
     },
     lease_id: {
-      type: 'string'
-    }
-  }
-}
+      type: 'string',
+    },
+  },
+};
 
 module.exports = {
   status: {
@@ -786,8 +786,8 @@ module.exports = {
     method: 'LIST',
     path: '/auth/approle/role',
     schema: {
-      res: approleResponse
-    }
+      res: approleResponse,
+    },
   },
   addApproleRole: {
     method: 'POST',
@@ -795,52 +795,52 @@ module.exports = {
     schema: {
       req: {
         bind_secret_id: {
-          type: 'boolean'
+          type: 'boolean',
         },
         bound_cidr_list: {
-          type: 'string'
+          type: 'string',
         },
         policies: {
-          type: 'string'
+          type: 'string',
         },
         secret_id_num_uses: {
-          type: 'integer'
+          type: 'integer',
         },
         secret_id_ttl: {
-          type: 'integer'
+          type: 'integer',
         },
         token_num_uses: {
-          type: 'integer'
+          type: 'integer',
         },
         token_ttl: {
-          type: 'integer'
+          type: 'integer',
         },
         token_max_ttl: {
-          type: 'integer'
+          type: 'integer',
         },
         period: {
-          type: 'integer'
-        }
-      }
-    }
+          type: 'integer',
+        },
+      },
+    },
   },
   getApproleRole: {
     method: 'GET',
     path: '/auth/approle/role/{{role_name}}',
     schema: {
-      res: approleResponse
-    }
+      res: approleResponse,
+    },
   },
   deleteApproleRole: {
     method: 'DELETE',
-    path: '/auth/approle/role/{{role_name}}'
+    path: '/auth/approle/role/{{role_name}}',
   },
   getApproleRoleId: {
     method: 'GET',
     path: '/auth/approle/role/{{role_name}}/role-id',
     schema: {
-      res: approleResponse
-    }
+      res: approleResponse,
+    },
   },
   updateApproleRoleId: {
     method: 'POST',
@@ -850,12 +850,12 @@ module.exports = {
         type: 'object',
         properties: {
           role_id: {
-            type: 'string'
-          }
+            type: 'string',
+          },
         },
-        required: ['role_id']
-      }
-    }
+        required: ['role_id'],
+      },
+    },
   },
   getApproleRoleSecret: {
     method: 'POST',
@@ -865,25 +865,25 @@ module.exports = {
         type: 'object',
         properties: {
           metadata: {
-            type: 'string'
+            type: 'string',
           },
           cidr_list: {
             type: 'array',
             items: {
-              type: 'string'
-            }
-          }
-        }
+              type: 'string',
+            },
+          },
+        },
       },
-      res: approleResponse
-    }
+      res: approleResponse,
+    },
   },
   approleSecretAccessors: {
     method: 'LIST',
     path: '/auth/approle/role/{{role_name}}/secret-id',
     schema: {
-      res: approleResponse
-    }
+      res: approleResponse,
+    },
   },
   approleSecretLookup: {
     method: 'POST',
@@ -893,13 +893,13 @@ module.exports = {
         type: 'object',
         properties: {
           secret_id: {
-            type: 'string'
-          }
+            type: 'string',
+          },
         },
-        required: ['secret_id']
+        required: ['secret_id'],
       },
-      res: approleResponse
-    }
+      res: approleResponse,
+    },
   },
   approleSecretDestroy: {
     method: 'POST',
@@ -909,12 +909,12 @@ module.exports = {
         type: 'object',
         properties: {
           secret_id: {
-            type: 'string'
-          }
+            type: 'string',
+          },
         },
-        required: ['secret_id']      
-      }
-    }
+        required: ['secret_id'],
+      },
+    },
   },
   approleSecretAccessorLookup: {
     method: 'POST',
@@ -924,16 +924,16 @@ module.exports = {
         type: 'object',
         properties: {
           secret_id: {
-            type: 'string'
-          }
+            type: 'string',
+          },
         },
-        required: ['secret_id']
-      }
-    }
+        required: ['secret_id'],
+      },
+    },
   },
   approleSecretAccessorDestroy: {
     method: 'POST',
-    path: '/auth/approle/role/{{role_name}}/secret-id-accessor/destroy'
+    path: '/auth/approle/role/{{role_name}}/secret-id-accessor/destroy',
   },
   approleLogin: {
     method: 'POST',
@@ -943,16 +943,16 @@ module.exports = {
         type: 'object',
         properties: {
           role_id: {
-            type: 'string'
+            type: 'string',
           },
           secret_id: {
-            type: 'string'
-          }
+            type: 'string',
+          },
         },
-        required: ['role_id', 'secret_id']
+        required: ['role_id', 'secret_id'],
       },
-      res: approleResponse
-    }
+      res: approleResponse,
+    },
   },
   health: {
     method: 'GET',
@@ -1029,5 +1029,5 @@ module.exports = {
   stepDown: {
     method: 'PUT',
     path: '/sys/step-down',
-  }
+  },
 };
