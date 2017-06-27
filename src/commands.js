@@ -524,7 +524,7 @@ module.exports = {
       },
     },
   },
-  tokenLookupAccesspr: {
+  tokenLookupAccessor: {
     method: 'POST',
     path: '/auth/token/lookup-accessor',
     schema: {
