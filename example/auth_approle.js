@@ -1,4 +1,4 @@
-// file: example/approle.js
+// file: example/auth_approle.js
 
 process.env.DEBUG = 'node-vault'; // switch on debug mode
 
