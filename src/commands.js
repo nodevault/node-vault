@@ -338,6 +338,20 @@ module.exports = {
     method: 'PUT',
     path: '/sys/rotate',
   },
+  unwrap: {
+    method: 'POST',
+    path: '/sys/wrapping/unwrap',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string',
+          },
+        },
+      },
+    },
+  },
   githubLogin: {
     method: 'POST',
     path: '/auth/github/login',
