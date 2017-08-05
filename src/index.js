@@ -160,7 +160,7 @@ module.exports = (config = {}) => {
       if (!conf.schema) return client.request(options);
       // else do validation of request URL and body
       return validate(options.json, conf.schema.req)
-      .then(validate(options.json, conf.schema.query))
+      .then(() => validate(options.json, conf.schema.query))
       .then(() => extendOptions(conf, options))
       .then((extendedOptions) => client.request(extendedOptions));
     };
