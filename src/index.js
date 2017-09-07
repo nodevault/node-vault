@@ -13,7 +13,12 @@ module.exports = (config = {}) => {
   tv4 = config.tv4 || tv4;
   commands = config.commands || commands;
   mustache = config.mustache || mustache;
-  rp = config['request-promise'] || rp;
+  rp = (config['request-promise'] || rp).defaults({
+    json: true,
+    resolveWithFullResponse: true,
+    simple: false,
+    strictSSL: !process.env.VAULT_SKIP_VERIFY,
+  });
   Promise = config.Promise || Promise;
   const client = {};
 
@@ -32,7 +37,6 @@ module.exports = (config = {}) => {
         message = `Status ${response.statusCode}`;
       }
       const error = new Error(message);
-      error.response = response;
       return Promise.reject(error);
     }
     return Promise.resolve(response.body);
@@ -72,9 +76,6 @@ module.exports = (config = {}) => {
       options.headers['X-Vault-Token'] = client.token;
     }
     options.uri = uri;
-    options.json = options.json || true;
-    options.simple = options.simple || false;
-    options.resolveWithFullResponse = options.resolveWithFullResponse || true;
     debug(options.method, uri);
     // debug(options.json);
     return rp(options).then(handleVaultResponse);
@@ -159,7 +160,7 @@ module.exports = (config = {}) => {
       if (!conf.schema) return client.request(options);
       // else do validation of request URL and body
       return validate(options.json, conf.schema.req)
-      .then(validate(options.json, conf.schema.query))
+      .then(() => validate(options.json, conf.schema.query))
       .then(() => extendOptions(conf, options))
       .then((extendedOptions) => client.request(extendedOptions));
     };
