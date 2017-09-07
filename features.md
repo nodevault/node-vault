@@ -137,6 +137,11 @@
 `PUT /sys/rotate`
 
 
+## vault.unwrap
+
+`POST /sys/wrapping/unwrap`
+
+
 ## vault.githubLogin
 
 `POST /auth/github/login`
