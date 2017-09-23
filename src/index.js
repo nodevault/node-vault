@@ -5,7 +5,6 @@ let tv4 = require('tv4');
 let commands = require('./commands.js');
 let mustache = require('mustache');
 let rp = require('request-promise');
-let Promise = require('bluebird');
 
 module.exports = (config = {}) => {
   // load conditional dependencies
@@ -19,7 +18,7 @@ module.exports = (config = {}) => {
     simple: false,
     strictSSL: !process.env.VAULT_SKIP_VERIFY,
   });
-  Promise = config.Promise || Promise;
+  // Promise = config.Promise || Promise;
   const client = {};
 
   function handleVaultResponse(response) {
@@ -139,7 +138,7 @@ module.exports = (config = {}) => {
     // no schema for the query -> no need to extend
     if (!schema) return Promise.resolve(options);
     const params = [];
-    for (const key of Object.keys(schema.properties)) {
+    for (const key of Object.keys(schema.properties)) { // eslint-disable-line no-restricted-syntax
       if (key in options.json) {
         params.push(`${key}=${encodeURIComponent(options.json[key])}`);
       }
@@ -160,9 +159,9 @@ module.exports = (config = {}) => {
       if (!conf.schema) return client.request(options);
       // else do validation of request URL and body
       return validate(options.json, conf.schema.req)
-      .then(() => validate(options.json, conf.schema.query))
-      .then(() => extendOptions(conf, options))
-      .then((extendedOptions) => client.request(extendedOptions));
+        .then(() => validate(options.json, conf.schema.query))
+        .then(() => extendOptions(conf, options))
+        .then(extendedOptions => client.request(extendedOptions));
     };
   }
 
