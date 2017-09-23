@@ -23,7 +23,6 @@ gulp.task('lint', () => gulp.src([
   '!node_modules/**',
   '!coverage/**',
   '!logs/**',
-  '!dist/**',
 ]).pipe(eslint())
   .pipe(eslint.format())
   .pipe(eslint.failAfterError()),
@@ -36,13 +35,6 @@ gulp.task('pre-test', () => gulp.src('src/**/*.js')
   }))
   .pipe(istanbul.hookRequire()),
 );
-
-// gulp.task('transpile', () => gulp.src('src/**/*.js')
-//     .pipe(babel({
-//       presets: ['es2015'],
-//     }))
-//     .pipe(gulp.dest('dist'))
-// );
 
 gulp.task('test', ['lint', 'pre-test'], (cb) => {
   let mochaErr;

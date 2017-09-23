@@ -2,7 +2,7 @@
   "name": "node-vault",
   "version": "0.5.10",
   "description": "Javascript client for HashiCorp's Vault",
-  "main": "./dist/index.js",
+  "main": "./src/index.js",
   "scripts": {
     "test": "gulp test",
     "test-watch": "gulp watch",
@@ -13,11 +13,10 @@
   },
   "directories": {
     "example": "./example",
-    "dist": "./dist",
     "doc": "./docs"
   },
   "files": [
-    "dist"
+    "src"
   ],
   "dependencies": {
     "debug": "^3.0.1",
