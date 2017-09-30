@@ -15,11 +15,11 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 install:
-  - npm install -g codecov
+  - npm install -g coveralls
 
 script:
   - docker-compose build
   - docker-compose run --rm test
 
 after_success:
-  - codecov
+  - cat ./coverage/lcov.info | $(npm bin)/coveralls
