@@ -24,7 +24,7 @@ describe('node-vault', () => {
       v.should.be.an('object');
     });
 
-    it('should set default vaules for request library', () => {
+    it('should set default values for request library', () => {
       const defaultsStub = sinon.stub();
 
       index({
@@ -219,6 +219,19 @@ describe('node-vault', () => {
           uri: getURI(path),
         };
         vault.delete(path)
+        .then(assertRequest(request, params, done))
+        .catch(done);
+      });
+    });
+
+    describe('unwrap(options)', () => {
+      it('should return original response', done => {
+        const path = 'sys/wrapping/unwrap';
+        const params = {
+          method: 'POST',
+          uri: getURI(path),
+        };
+        vault.unwrap({ token: 'token' })
         .then(assertRequest(request, params, done))
         .catch(done);
       });

@@ -17,34 +17,61 @@ const sealStatusResponse = {
   required: ['sealed', 't', 'n', 'progress'],
 };
 
+const auth = {
+  type: 'object',
+  properties: {
+    client_token: {
+      type: 'string',
+    },
+    policies: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
+    },
+    metadata: {
+      type: 'object',
+    },
+    lease_duration: {
+      type: 'integer',
+    },
+    renewable: {
+      type: 'boolean',
+    },
+  },
+};
+
 const tokenResponse = {
   type: 'object',
   properties: {
-    auth: {
-      type: 'object',
-      properties: {
-        client_token: {
-          type: 'string',
-        },
-        policies: {
-          type: 'array',
-          items: {
-            type: 'string',
-          },
-        },
-        metadata: {
-          type: 'object',
-        },
-        lease_duration: {
-          type: 'integer',
-        },
-        renewable: {
-          type: 'boolean',
-        },
-      },
-    },
+    auth,
   },
   required: ['auth'],
+};
+
+const approleResponse = {
+  type: 'object',
+  properties: {
+    auth,
+    warnings: {
+      type: 'string',
+    },
+    wrap_info: {
+      type: 'string',
+    },
+    data: {
+      type: 'object',
+    },
+    lease_duration: {
+      type: 'integer',
+    },
+    renewable: {
+      type: 'boolean',
+    },
+    lease_id: {
+      type: 'string',
+    },
+  },
 };
 
 module.exports = {
@@ -311,6 +338,20 @@ module.exports = {
     method: 'PUT',
     path: '/sys/rotate',
   },
+  unwrap: {
+    method: 'POST',
+    path: '/sys/wrapping/unwrap',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string',
+          },
+        },
+      },
+    },
+  },
   githubLogin: {
     method: 'POST',
     path: '/auth/github/login',
@@ -524,7 +565,7 @@ module.exports = {
       },
     },
   },
-  tokenLookupAccesspr: {
+  tokenLookupAccessor: {
     method: 'POST',
     path: '/auth/token/lookup-accessor',
     schema: {
@@ -754,6 +795,178 @@ module.exports = {
   removeTokenRole: {
     method: 'DELETE',
     path: '/auth/token/roles/{{role_name}}',
+  },
+  approleRoles: {
+    method: 'LIST',
+    path: '/auth/approle/role',
+    schema: {
+      res: approleResponse,
+    },
+  },
+  addApproleRole: {
+    method: 'POST',
+    path: '/auth/approle/role/{{role_name}}',
+    schema: {
+      req: {
+        bind_secret_id: {
+          type: 'boolean',
+        },
+        bound_cidr_list: {
+          type: 'string',
+        },
+        policies: {
+          type: 'string',
+        },
+        secret_id_num_uses: {
+          type: 'integer',
+        },
+        secret_id_ttl: {
+          type: 'integer',
+        },
+        token_num_uses: {
+          type: 'integer',
+        },
+        token_ttl: {
+          type: 'integer',
+        },
+        token_max_ttl: {
+          type: 'integer',
+        },
+        period: {
+          type: 'integer',
+        },
+      },
+    },
+  },
+  getApproleRole: {
+    method: 'GET',
+    path: '/auth/approle/role/{{role_name}}',
+    schema: {
+      res: approleResponse,
+    },
+  },
+  deleteApproleRole: {
+    method: 'DELETE',
+    path: '/auth/approle/role/{{role_name}}',
+  },
+  getApproleRoleId: {
+    method: 'GET',
+    path: '/auth/approle/role/{{role_name}}/role-id',
+    schema: {
+      res: approleResponse,
+    },
+  },
+  updateApproleRoleId: {
+    method: 'POST',
+    path: '/auth/approle/role/{{role_name}}/role-id',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          role_id: {
+            type: 'string',
+          },
+        },
+        required: ['role_id'],
+      },
+    },
+  },
+  getApproleRoleSecret: {
+    method: 'POST',
+    path: '/auth/approle/role/{{role_name}}/secret-id',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          metadata: {
+            type: 'string',
+          },
+          cidr_list: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+        },
+      },
+      res: approleResponse,
+    },
+  },
+  approleSecretAccessors: {
+    method: 'LIST',
+    path: '/auth/approle/role/{{role_name}}/secret-id',
+    schema: {
+      res: approleResponse,
+    },
+  },
+  approleSecretLookup: {
+    method: 'POST',
+    path: '/auth/approle/role/{{role_name}}/secret-id/lookup',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          secret_id: {
+            type: 'string',
+          },
+        },
+        required: ['secret_id'],
+      },
+      res: approleResponse,
+    },
+  },
+  approleSecretDestroy: {
+    method: 'POST',
+    path: '/auth/approle/role/{{role_name}}/secret-id/destroy',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          secret_id: {
+            type: 'string',
+          },
+        },
+        required: ['secret_id'],
+      },
+    },
+  },
+  approleSecretAccessorLookup: {
+    method: 'POST',
+    path: '/auth/approle/role/{{role_name}}/secret-id-accessor/lookup',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          secret_id: {
+            type: 'string',
+          },
+        },
+        required: ['secret_id'],
+      },
+    },
+  },
+  approleSecretAccessorDestroy: {
+    method: 'POST',
+    path: '/auth/approle/role/{{role_name}}/secret-id-accessor/destroy',
+  },
+  approleLogin: {
+    method: 'POST',
+    path: '/auth/approle/login',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          role_id: {
+            type: 'string',
+          },
+          secret_id: {
+            type: 'string',
+          },
+        },
+        required: ['role_id', 'secret_id'],
+      },
+      res: approleResponse,
+    },
   },
   health: {
     method: 'GET',
