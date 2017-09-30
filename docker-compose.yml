@@ -9,6 +9,8 @@ services:
       - $PWD/coverage:/app/coverage
     depends_on:
       - vault
+    links:
+      - vault
 
   vault:
     image: vault

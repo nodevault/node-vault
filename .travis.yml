@@ -18,7 +18,8 @@ install:
   - npm install -g codecov
 
 script:
-  - docker-compose up --force-recreate --build test
+  - docker-compose build
+  - docker-compose run --rm test
 
 after_success:
   - codecov
