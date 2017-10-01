@@ -4,12 +4,15 @@
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "scripts": {
-    "test": "gulp test",
-    "test-watch": "gulp watch",
-    "docs": "gulp docs",
-    "build": "gulp build",
-    "nsp": "gulp nsp",
-    "prepublish": "gulp prepublish"
+    "precoverage": "npm run lint",
+    "coverage": "istanbul cover --report text-summary node_modules/.bin/_mocha",
+    "lint": "eslint .",
+    "test": "mocha",
+    "test-watch": "mocha --watch",
+    "predocs": "node scripts/write-features.js",
+    "docs": "docco --output docs src/*.js",
+    "nsp": "nsp check",
+    "prepublish": "npm run nsp"
   },
   "directories": {
     "example": "./example",
@@ -19,9 +22,9 @@
     "src"
   ],
   "dependencies": {
-    "debug": "^3.0.1",
+    "debug": "^3.1.0",
     "mustache": "^2.2.1",
-    "request": "^2.82.0",
+    "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
     "tv4": "^1.2.7"
   },
@@ -32,7 +35,7 @@
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "6.0.2",
-    "eslint-plugin-react": "^7.3.0",
+    "eslint-plugin-react": "^7.4.0",
     "gulp": "^3.9.1",
     "gulp-docco": "0.0.4",
     "gulp-eslint": "^4.0.0",
@@ -42,8 +45,9 @@
     "gulp-nsp": "^2.4.2",
     "gulp-plumber": "^1.1.0",
     "mocha": "3.5.3",
+    "nsp": "^2.6.3",
     "sinon": "3.3.0",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.14.0"
   },
   "repository": {
     "type": "git",
