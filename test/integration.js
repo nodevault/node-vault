@@ -1,6 +1,5 @@
 const chai = require('chai');
 const dirtyChai = require('dirty-chai');
-
 const should = chai.Should;
 
 should();
@@ -21,20 +20,25 @@ describe('integration', () => {
   describe('node-vault', () => {
     it('should initialize a vault server', (done) => {
       vault.init({ secret_shares: 1, secret_threshold: 1 })
-        .then((result) => {
-          vault.token = result.root_token;
-          assert(validResult('init', result));
+      .then((result) => {
+        vault.token = result.root_token;
+        assert(validResult('init', result));
+        return done();
+      })
+      .catch((err) => {
+        if (err.message === 'Vault is already initialized') {
           return done();
-        })
-        .catch(done);
+        }
+        return done(err);
+      });
     });
     it('should show the current status of the vault server', (done) => {
       vault.status()
-        .then((result) => {
-          assert(validResult('status', result));
-          return done();
-        })
-        .catch(done);
+      .then((result) => {
+        assert(validResult('status', result));
+        return done();
+      })
+      .catch(done);
     });
   });
 });
