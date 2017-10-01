@@ -25,7 +25,12 @@ describe('integration', () => {
         assert(validResult('init', result));
         return done();
       })
-      .catch(done);
+      .catch((err) => {
+        if (err.message === 'Vault is already initialized') {
+          return done();
+        }
+        return done(err);
+      });
     });
     it('should show the current status of the vault server', (done) => {
       vault.status()
