@@ -21,12 +21,12 @@ const run = () => configure()
   .then(console.log);
 
 vault.mounts()
-.then((result) => {
-  if (result.hasOwnProperty('postgresql/')) return run();
-  return vault.mount({
-    mount_point: 'postgresql',
-    type: 'postgresql',
-    description: 'postgresql mount test',
-  }).then(run);
-})
-.catch((err) => console.error(err.message));
+  .then((result) => {
+    if (Object.prototype.hasOwnProperty.call(result, 'postgresql/')) return run();
+    return vault.mount({
+      mount_point: 'postgresql',
+      type: 'postgresql',
+      description: 'postgresql mount test',
+    }).then(run);
+  })
+  .catch(err => console.error(err.message));

@@ -1,15 +1,18 @@
 {
   "extends": "airbnb",
   "parserOptions": {
-        "sourceType": "script",
+    "sourceType": "script"
   },
   "rules": {
     "strict": 0,
-    no-param-reassign: [
+    "no-param-reassign": [
       "error",
-      { "props": false }
+      {
+        "props": false
+      }
     ],
-    "no-console": 0
+    "no-console": 0,
+    "jsx-a11y/href-no-hash": "off"
   },
   "globals": {
     "describe": true,
@@ -18,7 +21,9 @@
     "afterEach": true,
     "before": true,
     "beforeEach": true,
-    "should": true
+    "should": true,
+    "require": true,
+    "process": true
   },
   "env": {
     "node": true,

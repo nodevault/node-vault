@@ -174,12 +174,12 @@
 
 ## vault.tokenLookup
 
-`GET /auth/token/lookup/{{token}}`
+`POST /auth/token/lookup`
 
 
-## vault.tokenLookupAccesspr
+## vault.tokenLookupAccessor
 
-`GET /auth/token/lookup-accessor/{{accessor}}`
+`POST /auth/token/lookup-accessor`
 
 
 ## vault.tokenLookupSelf
@@ -235,6 +235,71 @@
 ## vault.removeTokenRole
 
 `DELETE /auth/token/roles/{{role_name}}`
+
+
+## vault.approleRoles
+
+`LIST /auth/approle/role`
+
+
+## vault.addApproleRole
+
+`POST /auth/approle/role/{{role_name}}`
+
+
+## vault.getApproleRole
+
+`GET /auth/approle/role/{{role_name}}`
+
+
+## vault.deleteApproleRole
+
+`DELETE /auth/approle/role/{{role_name}}`
+
+
+## vault.getApproleRoleId
+
+`GET /auth/approle/role/{{role_name}}/role-id`
+
+
+## vault.updateApproleRoleId
+
+`POST /auth/approle/role/{{role_name}}/role-id`
+
+
+## vault.getApproleRoleSecret
+
+`POST /auth/approle/role/{{role_name}}/secret-id`
+
+
+## vault.approleSecretAccessors
+
+`LIST /auth/approle/role/{{role_name}}/secret-id`
+
+
+## vault.approleSecretLookup
+
+`POST /auth/approle/role/{{role_name}}/secret-id/lookup`
+
+
+## vault.approleSecretDestroy
+
+`POST /auth/approle/role/{{role_name}}/secret-id/destroy`
+
+
+## vault.approleSecretAccessorLookup
+
+`POST /auth/approle/role/{{role_name}}/secret-id-accessor/lookup`
+
+
+## vault.approleSecretAccessorDestroy
+
+`POST /auth/approle/role/{{role_name}}/secret-id-accessor/destroy`
+
+
+## vault.approleLogin
+
+`POST /auth/approle/login`
 
 
 ## vault.health
