@@ -4,8 +4,7 @@ let debug = require('debug')('node-vault');
 let tv4 = require('tv4');
 let commands = require('./commands.js');
 let mustache = require('mustache');
-let rp = require('request-promise');
-let Promise = require('bluebird');
+let rp = require('request-promise-native');
 
 module.exports = (config = {}) => {
   // load conditional dependencies
@@ -19,7 +18,6 @@ module.exports = (config = {}) => {
     simple: false,
     strictSSL: !process.env.VAULT_SKIP_VERIFY,
   });
-  Promise = config.Promise || Promise;
   const client = {};
 
   function handleVaultResponse(response) {
