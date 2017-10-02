@@ -13,7 +13,8 @@
     "predocs": "node scripts/write-features.js",
     "docs": "docco --output docs src/*.js",
     "nsp": "nsp check",
-    "prepublish": "npm run nsp"
+    "prepublish": "npm run nsp",
+    "precommit": "node scripts/write-features.js && git add features.md"
   },
   "directories": {
     "example": "./example",
@@ -38,6 +39,7 @@
     "eslint-plugin-import": "^1.11.1",
     "eslint-plugin-jsx-a11y": "1.2.0",
     "eslint-plugin-react": "^5.2.2",
+    "husky": "^0.14.3",
     "istanbul": "^0.4.5",
     "mocha": "2.4.5",
     "nsp": "^2.6.3",
