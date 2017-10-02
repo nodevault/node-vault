@@ -14,7 +14,9 @@ install:
   - npm install
 
 script:
+  - docker version
   - docker run -d -p "8200:8200" vault
+  - docker ps
   - npm run coverage
 
 after_success:
