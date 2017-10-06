@@ -360,6 +360,10 @@ module.exports = {
     method: 'POST',
     path: '/auth/userpass/login/{{username}}',
   },
+  ldapLogin: {
+      method: 'POST',
+      path: '/auth/ldap/login/{{username}}',
+  },
   tokenAccessors: {
     method: 'LIST',
     path: '/auth/token/accessors',
