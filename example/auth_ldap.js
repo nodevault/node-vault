@@ -1,4 +1,4 @@
-// file: example/auth_userpass.js
+// file: example/auth_ldap.js
 
 process.env.DEBUG = 'node-vault'; // switch on debug mode
 const vault = require('./../src/index')();
