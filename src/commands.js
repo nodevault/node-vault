@@ -354,15 +354,83 @@ module.exports = {
   },
   githubLogin: {
     method: 'POST',
-    path: '/auth/github/login',
+    path: '/auth/{{mount_point}}{{^mount_point}}github{{/mount_point}}/login',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string',
+          },
+        },
+        required: ['token'],
+      },
+      res: tokenResponse,
+    },
   },
   userpassLogin: {
     method: 'POST',
-    path: '/auth/userpass/login/{{username}}',
+    path: '/auth/{{mount_point}}{{^mount_point}}userpass{{/mount_point}}/login/{{username}}',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          password: {
+            type: 'string',
+          },
+        },
+        required: ['password'],
+      },
+      res: tokenResponse,
+    },
   },
   ldapLogin: {
     method: 'POST',
-    path: '/auth/ldap/login/{{username}}',
+    path: '/auth/{{mount_point}}{{^mount_point}}ldap{{/mount_point}}/login/{{username}}',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          password: {
+            type: 'string',
+          },
+        },
+        required: ['password'],
+      },
+      res: tokenResponse,
+    },
+  },
+  oktaLogin: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}okta{{/mount_point}}/login/{{username}}',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          password: {
+            type: 'string',
+          },
+        },
+        required: ['password'],
+      },
+      res: tokenResponse,
+    },
+  },
+  radiusLogin: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}radius{{/mount_point}}/login/{{username}}',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          password: {
+            type: 'string',
+          },
+        },
+        required: ['password'],
+      },
+      res: tokenResponse,
+    },
   },
   tokenAccessors: {
     method: 'LIST',
@@ -802,14 +870,14 @@ module.exports = {
   },
   approleRoles: {
     method: 'LIST',
-    path: '/auth/approle/role',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role',
     schema: {
       res: approleResponse,
     },
   },
   addApproleRole: {
     method: 'POST',
-    path: '/auth/approle/role/{{role_name}}',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}',
     schema: {
       req: {
         bind_secret_id: {
@@ -844,25 +912,25 @@ module.exports = {
   },
   getApproleRole: {
     method: 'GET',
-    path: '/auth/approle/role/{{role_name}}',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}',
     schema: {
       res: approleResponse,
     },
   },
   deleteApproleRole: {
     method: 'DELETE',
-    path: '/auth/approle/role/{{role_name}}',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}',
   },
   getApproleRoleId: {
     method: 'GET',
-    path: '/auth/approle/role/{{role_name}}/role-id',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id',
     schema: {
       res: approleResponse,
     },
   },
   updateApproleRoleId: {
     method: 'POST',
-    path: '/auth/approle/role/{{role_name}}/role-id',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id',
     schema: {
       req: {
         type: 'object',
@@ -877,7 +945,8 @@ module.exports = {
   },
   getApproleRoleSecret: {
     method: 'POST',
-    path: '/auth/approle/role/{{role_name}}/secret-id',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
+      '/role/{{role_name}}/secret-id',
     schema: {
       req: {
         type: 'object',
@@ -898,14 +967,16 @@ module.exports = {
   },
   approleSecretAccessors: {
     method: 'LIST',
-    path: '/auth/approle/role/{{role_name}}/secret-id',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
+      '/role/{{role_name}}/secret-id',
     schema: {
       res: approleResponse,
     },
   },
   approleSecretLookup: {
     method: 'POST',
-    path: '/auth/approle/role/{{role_name}}/secret-id/lookup',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
+      '/role/{{role_name}}/secret-id/lookup',
     schema: {
       req: {
         type: 'object',
@@ -921,7 +992,8 @@ module.exports = {
   },
   approleSecretDestroy: {
     method: 'POST',
-    path: '/auth/approle/role/{{role_name}}/secret-id/destroy',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
+      '/role/{{role_name}}/secret-id/destroy',
     schema: {
       req: {
         type: 'object',
@@ -936,7 +1008,8 @@ module.exports = {
   },
   approleSecretAccessorLookup: {
     method: 'POST',
-    path: '/auth/approle/role/{{role_name}}/secret-id-accessor/lookup',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
+      '/role/{{role_name}}/secret-id-accessor/lookup',
     schema: {
       req: {
         type: 'object',
@@ -951,11 +1024,12 @@ module.exports = {
   },
   approleSecretAccessorDestroy: {
     method: 'POST',
-    path: '/auth/approle/role/{{role_name}}/secret-id-accessor/destroy',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
+      '/role/{{role_name}}/secret-id-accessor/destroy',
   },
   approleLogin: {
     method: 'POST',
-    path: '/auth/approle/login',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/login',
     schema: {
       req: {
         type: 'object',
