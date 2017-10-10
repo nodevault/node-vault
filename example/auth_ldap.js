@@ -13,7 +13,7 @@ vault.auths()
   return vault.enableAuth({
     mount_point: mountPoint,
     type: 'ldap',
-    description: 'ldap auth'
+    description: 'ldap auth',
   });
 })
 .then(() => vault.write(`auth/ldap/users/${username}`, { password, policies: 'root' }))

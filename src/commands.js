@@ -361,8 +361,8 @@ module.exports = {
     path: '/auth/userpass/login/{{username}}',
   },
   ldapLogin: {
-      method: 'POST',
-      path: '/auth/ldap/login/{{username}}',
+    method: 'POST',
+    path: '/auth/ldap/login/{{username}}',
   },
   tokenAccessors: {
     method: 'LIST',
