@@ -15,8 +15,10 @@ install:
 
 script:
   - docker version
-  - docker run -d -p "8200:8200" vault
+  - docker run --name vault -d -p "8200:8200" vault
+  - sleep 10
   - docker ps
+  - docker logs vault
   - npm run coverage
 
 after_success:
