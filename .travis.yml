@@ -15,8 +15,9 @@ install:
 
 script:
   - docker version
-  - docker run -d -p "8200:8200" vault
+  - docker run --name vault -e 'SKIP_SETCAP=true' -d -p "8200:8200" vault
   - docker ps
+  - docker logs vault
   - npm run coverage
 
 after_success:
