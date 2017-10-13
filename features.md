@@ -152,6 +152,11 @@
 `POST /auth/userpass/login/{{username}}`
 
 
+## vault.ldapLogin
+
+`POST /auth/ldap/login/{{username}}`
+
+
 ## vault.tokenAccessors
 
 `LIST /auth/token/accessors`
