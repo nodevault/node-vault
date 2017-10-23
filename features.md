@@ -144,17 +144,27 @@
 
 ## vault.githubLogin
 
-`POST /auth/github/login`
+`POST /auth/{{mount_point}}{{^mount_point}}github{{/mount_point}}/login`
 
 
 ## vault.userpassLogin
 
-`POST /auth/userpass/login/{{username}}`
+`POST /auth/{{mount_point}}{{^mount_point}}userpass{{/mount_point}}/login/{{username}}`
 
 
 ## vault.ldapLogin
 
-`POST /auth/ldap/login/{{username}}`
+`POST /auth/{{mount_point}}{{^mount_point}}ldap{{/mount_point}}/login/{{username}}`
+
+
+## vault.oktaLogin
+
+`POST /auth/{{mount_point}}{{^mount_point}}okta{{/mount_point}}/login/{{username}}`
+
+
+## vault.radiusLogin
+
+`POST /auth/{{mount_point}}{{^mount_point}}radius{{/mount_point}}/login/{{username}}`
 
 
 ## vault.tokenAccessors
@@ -244,67 +254,67 @@
 
 ## vault.approleRoles
 
-`LIST /auth/approle/role`
+`LIST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role`
 
 
 ## vault.addApproleRole
 
-`POST /auth/approle/role/{{role_name}}`
+`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
 
 
 ## vault.getApproleRole
 
-`GET /auth/approle/role/{{role_name}}`
+`GET /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
 
 
 ## vault.deleteApproleRole
 
-`DELETE /auth/approle/role/{{role_name}}`
+`DELETE /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
 
 
 ## vault.getApproleRoleId
 
-`GET /auth/approle/role/{{role_name}}/role-id`
+`GET /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id`
 
 
 ## vault.updateApproleRoleId
 
-`POST /auth/approle/role/{{role_name}}/role-id`
+`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id`
 
 
 ## vault.getApproleRoleSecret
 
-`POST /auth/approle/role/{{role_name}}/secret-id`
+`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id`
 
 
 ## vault.approleSecretAccessors
 
-`LIST /auth/approle/role/{{role_name}}/secret-id`
+`LIST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id`
 
 
 ## vault.approleSecretLookup
 
-`POST /auth/approle/role/{{role_name}}/secret-id/lookup`
+`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id/lookup`
 
 
 ## vault.approleSecretDestroy
 
-`POST /auth/approle/role/{{role_name}}/secret-id/destroy`
+`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id/destroy`
 
 
 ## vault.approleSecretAccessorLookup
 
-`POST /auth/approle/role/{{role_name}}/secret-id-accessor/lookup`
+`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id-accessor/lookup`
 
 
 ## vault.approleSecretAccessorDestroy
 
-`POST /auth/approle/role/{{role_name}}/secret-id-accessor/destroy`
+`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id-accessor/destroy`
 
 
 ## vault.approleLogin
 
-`POST /auth/approle/login`
+`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/login`
 
 
 ## vault.health
