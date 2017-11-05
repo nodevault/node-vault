@@ -324,11 +324,50 @@ module.exports = {
   },
   renew: {
     method: 'PUT',
-    path: '/sys/renew/{{lease_id}}',
+    path: '/sys/leases/renew',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          lease_id: {
+            type: 'string',
+          },
+          increment: {
+            type: 'integer'
+          }
+        },
+        required: ['lease_id'],
+      },
+      res: {
+        type: 'object',
+        properties: {
+          lease_id: {
+            type: 'string',
+          },
+          renewable: {
+            type: 'boolean',
+          },
+          lease_duration: {
+            type: 'integer',
+          },
+        },
+      }
+    },
   },
   revoke: {
     method: 'PUT',
-    path: '/sys/revoke/{{lease_id}}',
+    path: '/sys/leases/revoke',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          lease_id: {
+            type: 'string',
+          },
+        },
+        required: ['lease_id'],
+      },
+    },
   },
   revokePrefix: {
     method: 'PUT',
