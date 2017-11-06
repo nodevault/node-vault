@@ -333,8 +333,8 @@ module.exports = {
             type: 'string',
           },
           increment: {
-            type: 'integer'
-          }
+            type: 'integer',
+          },
         },
         required: ['lease_id'],
       },
@@ -351,7 +351,7 @@ module.exports = {
             type: 'integer',
           },
         },
-      }
+      },
     },
   },
   revoke: {
