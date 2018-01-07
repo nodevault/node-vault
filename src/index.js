@@ -1,139 +1,89 @@
-let debug = require('debug')('node-vault')
-let tv4 = require('tv4')
-let commands = require('./commands.js')
-let mustache = require('mustache')
-let rp = require('request-promise-native')
+const debug = require('debug')('node-vault')
+const tv4 = require('tv4')
+const mustache = require('mustache')
+const rp = require('request-promise-native').defaults({
+  json: true,
+  resolveWithFullResponse: true,
+  simple: false,
+  strictSSL: !process.env.VAULT_SKIP_VERIFY
+})
 
-module.exports = (config = {}) => {
-  // load conditional dependencies
-  debug = config.debug || debug
-  tv4 = config.tv4 || tv4
-  commands = config.commands || commands
-  mustache = config.mustache || mustache
-  rp = (config['request-promise'] || rp).defaults({
-    json: true,
-    resolveWithFullResponse: true,
-    simple: false,
-    strictSSL: !process.env.VAULT_SKIP_VERIFY
-  })
-  const client = {}
+// ----------------
+// import features and methods definitions
 
-  function handleVaultResponse (response) {
-    if (!response) return Promise.reject(new Error('No response passed'))
-    debug(response.statusCode)
-    if (response.statusCode !== 200 && response.statusCode !== 204) {
-      // handle health response not as error
-      if (response.request.path.match(/sys\/health/) !== null) {
-        return Promise.resolve(response.body)
-      }
-      let message
-      if (response.body && response.body.errors && response.body.errors.length > 0) {
-        message = response.body.errors[0]
-      } else {
-        message = `Status ${response.statusCode}`
-      }
-      const error = new Error(message)
-      return Promise.reject(error)
-    }
-    return Promise.resolve(response.body)
-  }
+const FEATURES = require('./features.js')
+const RESOURCE_METHODS = require('./resource-methods.js')
 
-  client.handleVaultResponse = handleVaultResponse
+// ----------------
+// validation schemas
 
-  // defaults
-  client.apiVersion = config.apiVersion || 'v1'
-  client.endpoint = config.endpoint || process.env.VAULT_ADDR || 'http://127.0.0.1:8200'
-  client.token = config.token || process.env.VAULT_TOKEN
-
-  const requestSchema = {
-    type: 'object',
-    properties: {
-      path: {
-        type: 'string'
-      },
-      method: {
-        type: 'string'
-      }
+const REQUEST_SCHEMA = {
+  type: 'object',
+  properties: {
+    path: {
+      type: 'string'
     },
-    required: ['path', 'method']
-  }
-
-  // Handle any HTTP requests
-  client.request = (options = {}) => {
-    const valid = tv4.validate(options, requestSchema)
-    if (!valid) return Promise.reject(tv4.error)
-    let uri = `${client.endpoint}/${client.apiVersion}${options.path}`
-    // Replace variables in uri.
-    uri = mustache.render(uri, options.json)
-    // Replace unicode encodings.
-    uri = uri.replace(/&#x2F;/g, '/')
-    options.headers = options.headers || {}
-    if (client.token !== undefined || client.token !== null || client.token !== '') {
-      options.headers['X-Vault-Token'] = client.token
+    method: {
+      type: 'string'
     }
-    options.uri = uri
-    debug(options.method, uri)
-    // debug(options.json);
-    return rp(options).then(handleVaultResponse)
+  },
+  required: ['path', 'method']
+}
+
+/**
+ * Vault client class
+ *
+ * @param {object} [options={}] Options for the vault client
+ * @param {string} [options.apiVersion='v1'] Vault's API version
+ * @param {string} [options.endpoint='http://127.0.0.1:8200'] Vault endpoint address
+ * @param {token} [options.token='<process.env.VAULT_TOKEN>'] Vault authentication token
+ * @param {object} [options.features='<default features>'] JSON definition of the features
+ * @param {object} [options.resourceMethods='<default resource methods>'] JSON definition of the resource methods
+ * @param {object} [options.requestOptions={}] Request options
+ */
+class VaultClient {
+  constructor (options) {
+    // optionally overwrite features
+    this._features = options.features || FEATURES
+    this._resourceMethods = options.resourceMethods || RESOURCE_METHODS
+
+    // save client options
+    this._options = {
+      apiVersion: options.apiVersion || 'v1',
+      endpoint: options.endpoint || process.env.VAULT_ADDR || 'http://127.0.0.1:8200',
+      token: options.token || process.env.VAULT_TOKEN,
+      requestOptions: {}
+    }
+
+    // create client and save it
+    this.client = this._createClient()
   }
 
-  client.help = (path, requestOptions) => {
-    debug(`help for ${path}`)
-    const options = Object.assign({}, config.requestOptions, requestOptions)
-    options.path = `/${path}?help=1`
-    options.method = 'GET'
-    return client.request(options)
+  // ----------------
+  // data
+
+  _getOption (option) {
+    return this._options[option]
   }
 
-  client.write = (path, data, requestOptions) => {
-    debug('write %o to %s', data, path)
-    const options = Object.assign({}, config.requestOptions, requestOptions)
-    options.path = `/${path}`
-    options.json = data
-    options.method = 'PUT'
-    return client.request(options)
-  }
-
-  client.read = (path, requestOptions) => {
-    debug(`read ${path}`)
-    const options = Object.assign({}, config.requestOptions, requestOptions)
-    options.path = `/${path}`
-    options.method = 'GET'
-    return client.request(options)
-  }
-
-  client.list = (path, requestOptions) => {
-    debug(`list ${path}`)
-    const options = Object.assign({}, config.requestOptions, requestOptions)
-    options.path = `/${path}`
-    options.method = 'LIST'
-    return client.request(options)
-  }
-
-  client.delete = (path, requestOptions) => {
-    debug(`delete ${path}`)
-    const options = Object.assign({}, config.requestOptions, requestOptions)
-    options.path = `/${path}`
-    options.method = 'DELETE'
-    return client.request(options)
-  }
-
-  function validate (json, schema) {
+  _validate (json, schema) {
     // ignore validation if no schema
-    if (schema === undefined) return Promise.resolve()
+    if (!schema) return
     const valid = tv4.validate(json, schema)
     if (!valid) {
       debug(tv4.error.dataPath)
       debug(tv4.error.message)
-      return Promise.reject(tv4.error)
+      throw tv4.error
     }
-    return Promise.resolve()
   }
 
-  function extendOptions (conf, options) {
-    const schema = conf.schema.query
+  // ----------------
+  // helpers
+
+  _extendRequestOptions (original, options) {
+    const schema = original.schema.query
     // no schema for the query -> no need to extend
-    if (!schema) return Promise.resolve(options)
+    if (!schema) return options
     const params = []
     for (const key of Object.keys(schema.properties)) {
       if (key in options.json) {
@@ -143,32 +93,106 @@ module.exports = (config = {}) => {
     if (params.length > 0) {
       options.path += `?${params.join('&')}`
     }
-    return Promise.resolve(options)
+    return options
   }
 
-  function generateFunction (name, conf) {
-    client[name] = (args = {}) => {
-      const options = Object.assign({}, config.requestOptions, args.requestOptions)
-      options.method = conf.method
-      options.path = conf.path
-      options.json = args
+  _generateMethod (data) {
+    return async (args = {}) => {
+      const requestOptions = Object.assign({},
+        this._getOption('requestOptions'),
+        args.requestOptions)
+      requestOptions.method = data.method
+      requestOptions.path = data.path
+      delete args.requestOptions
+      requestOptions.json = args
       // no schema object -> no validation
-      if (!conf.schema) return client.request(options)
+      if (!data.schema) return this._request(requestOptions)
       // else do validation of request URL and body
-      return validate(options.json, conf.schema.req)
-      .then(() => validate(options.json, conf.schema.query))
-      .then(() => extendOptions(conf, options))
-      .then((extendedOptions) => client.request(extendedOptions))
+      this._validate(requestOptions.json, data.schema.req)
+      this._validate(requestOptions.json, data.schema.query)
+      const extendedOptions = this._extendRequestOptions(data, requestOptions)
+      return this._request(extendedOptions)
     }
   }
 
-  client.generateFunction = generateFunction
+  _generateResourceMethod (operation, query = '') {
+    return (...args) => {
+      const path = args[0]
 
-  // protecting global object properties from being added
-  // enforcing the immutable rule: https://github.com/airbnb/javascript#iterators-and-generators
-  // going the functional way first defining a wrapper function
-  const assignFunctions = commandName => generateFunction(commandName, commands[commandName])
-  Object.keys(commands).forEach(assignFunctions)
+      const requestOptions = Object.assign({},
+        this._getOption('requestOptions'),
+        operation === 'PUT' ? args[2] : args[1])
 
-  return client
+      requestOptions.path = `${path}${query}`
+      requestOptions.method = operation
+      if (operation === 'PUT') requestOptions.json = args[1]
+
+      return this._request(requestOptions)
+    }
+  }
+
+  async _request (options = {}) {
+    const valid = tv4.validate(options, REQUEST_SCHEMA)
+    if (!valid) return Promise.reject(tv4.error)
+    let uri = `${this._getOption('endpoint')}/${this._getOption('apiVersion')}${options.path}`
+      // Replace variables in uri.
+    uri = mustache.render(uri, options.json)
+      // Replace unicode encodings.
+    uri = uri.replace(/&#x2F;/g, '/')
+    options.headers = options.headers || {}
+    if (this._getOption('token') !== undefined || this._getOption('token') !== null || this._getOption('token') !== '') {
+      options.headers['X-Vault-Token'] = this._getOption('token')
+    }
+    options.uri = uri
+    debug(options.method, uri)
+    // debug(options.json);
+    const response = await rp(options)
+    return this._handleVaultResponse(response)
+  }
+
+  async _handleVaultResponse (response) {
+    if (!response) throw new Error('[node-vault:handleVaultResponse] No response passed')
+    debug(response.statusCode)
+    if (response.statusCode !== 200 && response.statusCode !== 204) {
+      // healthcheck response is never handled as an error
+      if (response.request.path.match(/sys\/health/) !== null) return response.body
+
+      let message
+      if (response.body && response.body.errors && response.body.errors.length) {
+        message = response.body.errors[0]
+      } else {
+        message = `Status ${response.statusCode}`
+      }
+      throw new Error(message)
+    }
+    return response.body
+  }
+
+  // ----------------
+  // client creation
+
+  _createClient () {
+    const client = {}
+
+    const addMethod = name =>
+      (client[name] = this._generateMethod(this._features[name]))
+
+    const addResourceMethod = (method) => (client[method.name] =
+      this._generateResourceMethod(method.operation, method.query))
+
+    this._resourceMethods.forEach(addResourceMethod)
+    Object.keys(this._features).forEach(addMethod)
+
+    return client
+  }
 }
+
+// for security and compatibility, instead of the class,
+// a function that encapsulates the client will be exported,
+// blocking access to any of the instance methods or properties
+
+// this also means that the interface will be defined
+// exclusively and explicitly in the src/features.js and
+// src/resource-methods.js files
+
+module.exports = options => new VaultClient(options).client

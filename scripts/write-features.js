@@ -1,13 +1,13 @@
 const fs = require('fs')
-const commands = require('../src/commands')
+const features = require('../src/features')
 
-const result = Object.keys(commands).map(name => {
-  const command = commands[name]
+const result = Object.keys(features).map(name => {
+  const feature = features[name]
 
   return `
 ## vault.${name}
 
-\`${command.method} ${command.path}\`
+\`${feature.method} ${feature.path}\`
 `
 })
 
