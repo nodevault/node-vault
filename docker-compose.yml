@@ -2,7 +2,7 @@ version: '2'
 services:
   test:
     build: .
-    command: npm run coverage
+    command: yarn complete-test
     environment:
       - VAULT_ADDR=http://vault:8200
     volumes:
