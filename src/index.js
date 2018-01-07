@@ -42,7 +42,7 @@ const REQUEST_SCHEMA = {
  * @param {object} [options.requestOptions={}] Request options
  */
 class VaultClient {
-  constructor (options) {
+  constructor (options = {}) {
     // optionally overwrite features
     this._features = options.features || FEATURES
     this._resourceMethods = options.resourceMethods || RESOURCE_METHODS
