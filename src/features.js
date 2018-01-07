@@ -212,17 +212,21 @@ module.exports = {
   status: {
     method: 'GET',
     path: '/sys/seal-status',
+    description: 'Returns the seal status of the Vault. This is an unauthenticated endpoint.',
     schema: {
       res: SEAL_STATUS_RESPONSE
     }
   },
   initialized: {
     method: 'GET',
-    path: '/sys/init'
+    path: '/sys/init',
+    description: 'Returns the initialization status of the Vault.'
   },
   init: {
     method: 'PUT',
     path: '/sys/init',
+    description: 'Initializes a new vault.',
+    todo: 'path-help: POST',
     schema: {
       req: {
         type: 'object',
@@ -267,18 +271,21 @@ module.exports = {
   unseal: {
     method: 'PUT',
     path: '/sys/unseal',
+    description: 'Unseals the Vault.',
     schema: {
       res: SEAL_STATUS_RESPONSE
     }
   },
   seal: {
     method: 'PUT',
-    path: '/sys/seal'
+    path: '/sys/seal',
+    description: 'Seals the Vault.'
   },
   // root access
   generateRootStatus: {
     method: 'GET',
     path: '/sys/generate-root/attempt',
+    description: 'Reads the configuration and progress of the current root generation attempt.',
     schema: {
       res: ROOT_RESPONSE_SCHEME
     }
@@ -286,6 +293,8 @@ module.exports = {
   generateRootInit: {
     method: 'PUT',
     path: '/sys/generate-root/attempt',
+    todo: 'path-help: POST',
+    description: 'Initializes a new root generation attempt. Only a single root generation attempt can take place at a time. One (and only one) of otp or pgp_key are required.',
     schema: {
       req: {
         type: 'object',
@@ -303,11 +312,13 @@ module.exports = {
   },
   generateRootCancel: {
     method: 'DELETE',
-    path: '/sys/generate-root/attempt'
+    path: '/sys/generate-root/attempt',
+    description: 'Cancels any in-progress root generation attempt. This clears any progress made. This must be called to change the OTP or PGP key being used.'
   },
   generateRootUpdate: {
     method: 'PUT',
     path: '/sys/generate-root/update',
+    todo: 'find / add documentation',
     schema: {
       req: {
         type: 'object',
@@ -327,67 +338,116 @@ module.exports = {
   // mounts
   mounts: {
     method: 'GET',
-    path: '/sys/mounts'
+    path: '/sys/mounts',
+    description: 'Lists all the mounted secret backends.'
   },
   mount: {
     method: 'POST',
-    path: '/sys/mounts/{{mount_point}}'
+    path: '/sys/mounts/{{mount_point}}',
+    description: 'Mount a new secret backend to the mount point in the URL.'
   },
   unmount: {
     method: 'DELETE',
-    path: '/sys/mounts/{{mount_point}}'
+    path: '/sys/mounts/{{mount_point}}',
+    description: 'Unmount the specified mount point.'
   },
   remount: {
     method: 'POST',
-    path: '/sys/remount'
+    path: '/sys/remount',
+    description: `
+
+Changes the mount point of an already-mounted backend.
+
+### PARAMETERS
+
+    from (string)
+        The previous mount point.
+
+    to (string)
+        The new mount point.
+
+      `.trim()
   },
   // policies
   policies: {
     method: 'GET',
-    path: '/sys/policy'
-  },
-  addPolicy: {
-    method: 'PUT',
-    path: '/sys/policy/{{name}}'
+    path: '/sys/policy',
+    description: 'List the names of the configured access control policies.'
   },
   getPolicy: {
     method: 'GET',
-    path: '/sys/policy/{{name}}'
+    path: '/sys/policy/{{name}}',
+    description: 'Retrieve the rules for the named policy.'
+  },
+  addPolicy: {
+    method: 'PUT',
+    path: '/sys/policy/{{name}}',
+    description: 'Add or update a policy.'
   },
   removePolicy: {
     method: 'DELETE',
-    path: '/sys/policy/{{name}}'
+    path: '/sys/policy/{{name}}',
+    description: 'Delete the policy with the given name.'
   },
   // auths
   auths: {
     method: 'GET',
-    path: '/sys/auth'
+    path: '/sys/auth',
+    description: 'List the currently enabled credential backends: the name, the type of the backend, and a user friendly description of the purpose for the credential backend.'
   },
   enableAuth: {
     method: 'POST',
-    path: '/sys/auth/{{mount_point}}'
+    path: '/sys/auth/{{mount_point}}',
+    description: 'Enable a new auth backend.'
   },
   disableAuth: {
     method: 'DELETE',
-    path: '/sys/auth/{{mount_point}}'
+    path: '/sys/auth/{{mount_point}}',
+    description: 'Disable the auth backend at the given mount point.'
   },
   // audits
   audits: {
     method: 'GET',
-    path: '/sys/audit'
+    path: '/sys/audit',
+    description: 'List the currently enabled audit backends.'
   },
   enableAudit: {
     method: 'PUT',
-    path: '/sys/audit/{{name}}'
+    path: '/sys/audit/{{name}}',
+    description: 'Enable an audit backend at the given path.'
   },
   disableAudit: {
     method: 'DELETE',
-    path: '/sys/audit/{{name}}'
+    path: '/sys/audit/{{name}}',
+    description: 'Disable the given audit backend.'
   },
   // secret handling
   renew: {
     method: 'PUT',
     path: '/sys/leases/renew',
+    description: `
+
+Renew a lease on a secret.
+
+### PARAMETERS
+
+    increment (duration (sec))
+        The desired increment in seconds to the lease.
+
+    lease_id (string)
+        The lease identifier to renew. This is included with a lease.
+
+    url_lease_id (string)
+        The lease identifier to renew. This is included with a lease.
+
+### DESCRIPTION
+
+When a secret is read, it may optionally include a lease interval
+and a boolean indicating if renew is possible. For secrets that support
+lease renewal, this endpoint is used to extend the validity of the
+lease and to prevent an automatic revocation.
+
+      `.trim(),
     schema: {
       req: {
         type: 'object',
@@ -420,6 +480,26 @@ module.exports = {
   revoke: {
     method: 'PUT',
     path: '/sys/leases/revoke',
+    description: `
+
+Revoke a leased secret immediately
+
+### PARAMETERS
+
+    lease_id (string)
+        The lease identifier to renew. This is included with a lease.
+
+    url_lease_id (string)
+        The lease identifier to renew. This is included with a lease.
+
+### DESCRIPTION
+
+When a secret is generated with a lease, it is automatically revoked
+at the end of the lease period if not renewed. However, in some cases
+you may want to force an immediate revocation. This endpoint can be
+used to revoke the secret with the given Lease ID.
+
+      `.trim(),
     schema: {
       req: {
         type: 'object',
@@ -434,15 +514,44 @@ module.exports = {
   },
   revokePrefix: {
     method: 'PUT',
-    path: '/sys/revoke-prefix/{{path_prefix}}'
+    path: '/sys/revoke-prefix/{{path_prefix}}',
+    todo: 'find / create documentation'
   },
   rotate: {
     method: 'PUT',
-    path: '/sys/rotate'
+    path: '/sys/rotate',
+    description: `
+
+Rotates the backend encryption key used to persist data.
+
+
+### DESCRIPTION
+
+Rotate generates a new encryption key which is used to encrypt all
+data going to the storage backend. The old encryption keys are kept so
+that data encrypted using those keys can still be decrypted.
+
+      `.trim()
   },
   unwrap: {
     method: 'POST',
     path: '/sys/wrapping/unwrap',
+    description: `
+
+Unwraps a response-wrapped token.
+
+### PARAMETERS
+
+    token (string)
+        The unwrap token.
+
+### DESCRIPTION
+
+Unwraps a response-wrapped token. Unlike simply reading from cubbyhole/response,
+this provides additional validation on the token, and rather than a JSON-escaped
+string, the returned response is the exact same as the contained wrapped response.
+
+      `.trim(),
     schema: {
       req: {
         type: 'object',

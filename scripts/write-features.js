@@ -1,17 +1,23 @@
-const fs = require('fs')
+const fs = require('fs-extra')
 const features = require('../src/features')
 
-const result = Object.keys(features).map(name => {
-  const feature = features[name]
+const refreshFeatures = () => {
+  const result = Object.keys(features).map(name => {
+    const feature = features[name]
 
-  return `
+    return `
 ## vault.${name}
 
 \`${feature.method} ${feature.path}\`
+
+${feature.description || 'TODO: add description :S'}
 `
-})
+  })
 
-result.unshift(`# Supported node-vault features
+  result.unshift(`# Supported Vault features
 
- This is a generated list of Vault features supported by node-vault.`)
-fs.writeFileSync('./features.md', result.join('\n'))
+ This is a generated list of Vault operations supported by node-vault.`)
+  return fs.writeFile('./features.md', result.join('\n'))
+}
+
+refreshFeatures()
