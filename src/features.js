@@ -1,3 +1,4 @@
+// token and approle response auth validation
 const AUTH_SCHEME = {
   type: 'object',
   properties: {
@@ -22,6 +23,7 @@ const AUTH_SCHEME = {
   }
 }
 
+// token operation response validation
 const TOKEN_RESPONSE_SCHEME = {
   type: 'object',
   properties: {
@@ -30,6 +32,7 @@ const TOKEN_RESPONSE_SCHEME = {
   required: ['auth']
 }
 
+// approle response validation
 const APPROLE_RESPONSE_SCHEME = {
   type: 'object',
   properties: {
@@ -55,6 +58,7 @@ const APPROLE_RESPONSE_SCHEME = {
   }
 }
 
+// status response validation, also used in unseal
 const SEAL_STATUS_RESPONSE = {
   type: 'object',
   properties: {
@@ -74,6 +78,7 @@ const SEAL_STATUS_RESPONSE = {
   required: ['sealed', 't', 'n', 'progress']
 }
 
+// token creation validation
 const TOKEN_CREATE_SCHEME = {
   req: {
     type: 'object',
@@ -116,6 +121,7 @@ const TOKEN_CREATE_SCHEME = {
   res: TOKEN_RESPONSE_SCHEME
 }
 
+// token lookup response validation
 const TOKEN_LOOKUP_RESPONSE_SCHEME = {
   type: 'object',
   properties: {
@@ -149,6 +155,7 @@ const TOKEN_LOOKUP_RESPONSE_SCHEME = {
   required: ['data']
 }
 
+// token accessors and roles validation
 const TOKEN_ACCESSORS_AND_ROLES_SCHEME = {
   res: {
     type: 'object',
@@ -169,6 +176,7 @@ const TOKEN_ACCESSORS_AND_ROLES_SCHEME = {
   }
 }
 
+// root operation response validation
 const ROOT_RESPONSE_SCHEME = {
   type: 'object',
   properties: {
@@ -200,6 +208,7 @@ const ROOT_RESPONSE_SCHEME = {
 }
 
 module.exports = {
+  // lifecycle and status
   status: {
     method: 'GET',
     path: '/sys/seal-status',
@@ -254,6 +263,7 @@ module.exports = {
       }
     }
   },
+  // seal / unseal vault
   unseal: {
     method: 'PUT',
     path: '/sys/unseal',
@@ -265,6 +275,7 @@ module.exports = {
     method: 'PUT',
     path: '/sys/seal'
   },
+  // root access
   generateRootStatus: {
     method: 'GET',
     path: '/sys/generate-root/attempt',
@@ -313,6 +324,7 @@ module.exports = {
       res: ROOT_RESPONSE_SCHEME
     }
   },
+  // mounts
   mounts: {
     method: 'GET',
     path: '/sys/mounts'
@@ -329,6 +341,7 @@ module.exports = {
     method: 'POST',
     path: '/sys/remount'
   },
+  // policies
   policies: {
     method: 'GET',
     path: '/sys/policy'
@@ -345,6 +358,7 @@ module.exports = {
     method: 'DELETE',
     path: '/sys/policy/{{name}}'
   },
+  // auths
   auths: {
     method: 'GET',
     path: '/sys/auth'
@@ -357,6 +371,7 @@ module.exports = {
     method: 'DELETE',
     path: '/sys/auth/{{mount_point}}'
   },
+  // audits
   audits: {
     method: 'GET',
     path: '/sys/audit'
@@ -369,6 +384,7 @@ module.exports = {
     method: 'DELETE',
     path: '/sys/audit/{{name}}'
   },
+  // secret handling
   renew: {
     method: 'PUT',
     path: '/sys/leases/renew',
@@ -438,6 +454,7 @@ module.exports = {
       }
     }
   },
+  // third party tokens
   githubLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}github{{/mount_point}}/login',
@@ -518,11 +535,14 @@ module.exports = {
       res: TOKEN_RESPONSE_SCHEME
     }
   },
+  // token management
+  // - ancestors
   tokenAccessors: {
     method: 'LIST',
     path: '/auth/token/accessors',
     schema: TOKEN_ACCESSORS_AND_ROLES_SCHEME
   },
+  // - creation
   tokenCreate: {
     method: 'POST',
     path: '/auth/token/create',
@@ -538,6 +558,7 @@ module.exports = {
     path: '/auth/token/create/{{role_name}}',
     schema: TOKEN_CREATE_SCHEME
   },
+  // - lookup
   tokenLookup: {
     method: 'POST',
     path: '/auth/token/lookup',
@@ -575,6 +596,7 @@ module.exports = {
     path: '/auth/token/lookup-self',
     schema: { res: TOKEN_LOOKUP_RESPONSE_SCHEME }
   },
+  // - renewal
   tokenRenew: {
     method: 'POST',
     path: '/auth/token/renew',
@@ -609,6 +631,7 @@ module.exports = {
       res: TOKEN_RESPONSE_SCHEME
     }
   },
+  // - revocation
   tokenRevoke: {
     method: 'POST',
     path: '/auth/token/revoke',
@@ -658,6 +681,7 @@ module.exports = {
     method: 'POST',
     path: '/auth/token/revoke-self'
   },
+  // - roles
   tokenRoles: {
     method: 'GET',
     path: '/auth/token/roles?list=true',
@@ -710,6 +734,7 @@ module.exports = {
       res: APPROLE_RESPONSE_SCHEME
     }
   },
+  // - approle
   addApproleRole: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}',
@@ -881,6 +906,7 @@ module.exports = {
       res: APPROLE_RESPONSE_SCHEME
     }
   },
+  // utils
   health: {
     method: 'GET',
     path: '/sys/health',
