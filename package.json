@@ -5,7 +5,7 @@
   "main": "./src/index.js",
   "scripts": {
     "precoverage": "npm run lint",
-    "coverage": "istanbul cover --report text-summary node_modules/.bin/_mocha",
+    "coverage": "nyc --reporter text-summary mocha",
     "lint": "standard",
     "test": "mocha",
     "test-unit": "mocha test/unit.js",
@@ -13,7 +13,7 @@
     "predocs": "node scripts/write-features.js",
     "docs": "docco --output docs src/*.js",
     "nsp": "nsp check",
-    "prepublish": "npm run nsp",
+    "prepublishOnly": "npm run nsp",
     "precommit": "node scripts/write-features.js && git add features.md"
   },
   "directories": {
@@ -34,9 +34,9 @@
     "chai": "^4.1.2",
     "dirty-chai": "^2.0.1",
     "docco": "^0.8.0",
-    "istanbul": "^0.4.5",
     "mocha": "^4.1.0",
     "nsp": "^3.1.0",
+    "nyc": "^11.4.1",
     "sinon": "^4.1.3",
     "sinon-chai": "^2.8.0",
     "standard": "^10.0.3"

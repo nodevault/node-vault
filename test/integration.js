@@ -7,13 +7,13 @@ should()
 chai.use(dirtyChai)
 
 const vault = require('./../src/index.js')()
-// use json schema in commands.js validate response
-const commands = require('./../src/commands.js')
+// use json schema in features.js validate response
+const features = require('./../src/features.js')
 const tv4 = require('tv4')
 const assert = require('assert')
 
-const validResult = (commandName, result) => {
-  const schema = commands[commandName].schema.res
+const validResult = (featureName, result) => {
+  const schema = features[featureName].schema.res
   return tv4.validate(result, schema)
 }
 

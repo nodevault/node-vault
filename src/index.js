@@ -1,12 +1,7 @@
 const debug = require('debug')('node-vault')
 const tv4 = require('tv4')
 const mustache = require('mustache')
-const rp = require('request-promise-native').defaults({
-  json: true,
-  resolveWithFullResponse: true,
-  simple: false,
-  strictSSL: !process.env.VAULT_SKIP_VERIFY
-})
+const rp = require('request-promise-native')
 
 // ----------------
 // import features and methods definitions
@@ -52,8 +47,17 @@ class VaultClient {
       apiVersion: options.apiVersion || 'v1',
       endpoint: options.endpoint || process.env.VAULT_ADDR || 'http://127.0.0.1:8200',
       token: options.token || process.env.VAULT_TOKEN,
-      requestOptions: {}
+      requestOptions: {},
+      insecure: (options._test && options._test.insecure) || false
     }
+
+    // testing stubs
+    this.rp = ((options._test && options._test['request-promise']) || rp).defaults({
+      json: true,
+      resolveWithFullResponse: true,
+      simple: false,
+      strictSSL: !process.env.VAULT_SKIP_VERIFY
+    })
 
     // create client and save it
     this.client = this._createClient()
@@ -96,7 +100,7 @@ class VaultClient {
     return options
   }
 
-  _generateMethod (data) {
+  _generateFeature (data) {
     return async (args = {}) => {
       const requestOptions = Object.assign({},
         this._getOption('requestOptions'),
@@ -123,7 +127,7 @@ class VaultClient {
         this._getOption('requestOptions'),
         operation === 'PUT' ? args[2] : args[1])
 
-      requestOptions.path = `${path}${query}`
+      requestOptions.path = `/${path}${query}`
       requestOptions.method = operation
       if (operation === 'PUT') requestOptions.json = args[1]
 
@@ -146,7 +150,7 @@ class VaultClient {
     options.uri = uri
     debug(options.method, uri)
     // debug(options.json);
-    const response = await rp(options)
+    const response = await this.rp(options)
     return this._handleVaultResponse(response)
   }
 
@@ -175,13 +179,26 @@ class VaultClient {
     const client = {}
 
     const addMethod = name =>
-      (client[name] = this._generateMethod(this._features[name]))
+      (client[name] = (...args) =>
+        this._generateFeature(this._features[name])(...args))
 
-    const addResourceMethod = (method) => (client[method.name] =
-      this._generateResourceMethod(method.operation, method.query))
+    const addResourceMethod = (method) =>
+      (client[method.name] = (...args) =>
+        this._generateResourceMethod(method.operation, method.query)(...args))
 
     this._resourceMethods.forEach(addResourceMethod)
     Object.keys(this._features).forEach(addMethod)
+
+    if (this._options.insecure) {
+      client.endpoint = this._options.endpoint
+      client.apiVersion = this._options.apiVersion
+      client.handleVaultResponse =
+        (...args) => this._handleVaultResponse(...args)
+      client.generateFeature =
+        (...args) => this._generateFeature(...args)
+      client.request =
+        (...args) => this._request(...args)
+    }
 
     return client
   }

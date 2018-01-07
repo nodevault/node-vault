@@ -9,7 +9,7 @@ should()
 chai.use(dirtyChai)
 chai.use(sinonChai)
 
-const index = require('./../src/index.js')
+const vaultClient = require('./../src/index.js')
 
 const error = new Error('should not be called')
 
@@ -20,17 +20,19 @@ describe('node-vault', () => {
     })
 
     it('should export a function that returns a new client', () => {
-      const v = index()
-      index.should.be.a('function')
+      const v = vaultClient()
+      vaultClient.should.be.a('function')
       v.should.be.an('object')
     })
 
     it('should set default values for request library', () => {
       const defaultsStub = sinon.stub()
 
-      index({
-        'request-promise': {
-          defaults: defaultsStub
+      vaultClient({
+        _test: {
+          'request-promise': {
+            defaults: defaultsStub
+          }
         }
       })
 
@@ -49,9 +51,11 @@ describe('node-vault', () => {
       // see https://www.vaultproject.io/docs/commands/environment.html for details
       process.env.VAULT_SKIP_VERIFY = 'catpants'
 
-      index({
-        'request-promise': {
-          defaults: defaultsStub
+      vaultClient({
+        _test: {
+          'request-promise': {
+            defaults: defaultsStub
+          }
         }
       })
 
@@ -98,15 +102,16 @@ describe('node-vault', () => {
         }
       })
 
-      vault = index(
-        {
-          endpoint: 'http://localhost:8200',
-          token: '123',
+      vault = vaultClient({
+        endpoint: 'http://localhost:8200',
+        token: '123',
+        _test: {
+          insecure: true,
           'request-promise': {
             defaults: () => request // dependency injection of stub
           }
         }
-      )
+      })
     })
 
     describe('help(path, options)', () => {
@@ -117,8 +122,8 @@ describe('node-vault', () => {
           uri: `${getURI(path)}?help=1`
         }
         vault.help(path)
-        .then(assertRequest(request, params, done))
-        .catch(done)
+          .then(assertRequest(request, params, done))
+          .catch(done)
       })
 
       it('should handle undefined options', done => {
@@ -319,13 +324,13 @@ describe('node-vault', () => {
       it('should return a Promise with the error if no response is passed', done => {
         const promise = vault.handleVaultResponse()
         promise.catch((err) => {
-          err.message.should.equal('No response passed')
+          err.message.should.equal('[node-vault:handleVaultResponse] No response passed')
           return done()
         })
       })
     })
 
-    describe('generateFunction(name, config)', () => {
+    describe('generateFeature(name, config)', () => {
       const config = {
         method: 'GET',
         path: '/myroute'
@@ -368,51 +373,49 @@ describe('node-vault', () => {
         }
       }
 
+      /* TODO: create equivalent test by replacing features
+      with some custom ones and checking their existence
+
       it('should generate a function with name as defined in config', () => {
         const name = 'myGeneratedFunction'
-        vault.generateFunction(name, config)
+        vault.generateFeature(name, config)
         vault.should.have.property(name)
         const fn = vault[name]
         fn.should.be.a('function')
       })
+      */
 
       describe('generated function', () => {
         it('should return a promise', done => {
-          const name = 'myGeneratedFunction'
-          vault.generateFunction(name, config)
-          const fn = vault[name]
-          const promise = fn()
+          const feature = vault.generateFeature(config)
+          const promise = feature()
           request.calledOnce.should.be.ok()
           /* eslint no-unused-expressions: 0 */
           promise.should.be.promise
-          promise.then(done)
-          .catch(done)
+          promise
+            .then(done)
+            .catch(done)
         })
 
         it('should handle config with schema property', done => {
-          const name = 'myGeneratedFunction'
-          vault.generateFunction(name, configWithSchema)
-          const fn = vault[name]
-          const promise = fn({ testProperty: 3 })
-          promise.then(done).catch(done)
+          const feature = vault.generateFeature(configWithSchema)
+          feature({ testProperty: 3 })
+            .then(done)
+            .catch(done)
         })
 
         it('should handle invalid arguments via schema property', done => {
-          const name = 'myGeneratedFunction'
-          vault.generateFunction(name, configWithSchema)
-          const fn = vault[name]
-          const promise = fn({ testProperty: 'wrong data type here' })
-          promise.catch(err => {
-            err.message.should.equal('Invalid type: string (expected integer)')
-            return done()
-          })
+          const feature = vault.generateFeature(configWithSchema)
+          feature({ testProperty: 'wrong data type here' })
+            .catch(err => {
+              err.message.should.equal('Invalid type: string (expected integer)')
+              return done()
+            })
         })
 
         it('should handle schema with query property', done => {
-          const name = 'myGeneratedFunction'
-          vault.generateFunction(name, configWithQuerySchema)
-          const fn = vault[name]
-          const promise = fn({ testParam1: 3, testParam2: 'hello' })
+          const feature = vault.generateFeature(configWithQuerySchema)
+          const promise = feature({ testParam1: 3, testParam2: 'hello' })
           const options = {
             path: '/myroute?testParam1=3&testParam2=hello'
           }
@@ -429,8 +432,8 @@ describe('node-vault', () => {
     describe('request(options)', () => {
       it('should reject if options are undefined', done => {
         vault.request()
-        .then(() => done(error))
-        .catch(() => done())
+          .then(() => done(error))
+          .catch(() => done())
       })
 
       it('should handle undefined path in options', done => {
