@@ -119,12 +119,12 @@
 
 ## vault.renew
 
-`PUT /sys/renew/{{lease_id}}`
+`PUT /sys/leases/renew`
 
 
 ## vault.revoke
 
-`PUT /sys/revoke/{{lease_id}}`
+`PUT /sys/leases/revoke`
 
 
 ## vault.revokePrefix
