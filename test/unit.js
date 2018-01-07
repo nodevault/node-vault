@@ -1,284 +1,284 @@
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const chai = require('chai');
-const dirtyChai = require('dirty-chai');
-const should = chai.Should;
+/* eslint-env mocha */
+const sinon = require('sinon')
+const sinonChai = require('sinon-chai')
+const chai = require('chai')
+const dirtyChai = require('dirty-chai')
+const should = chai.Should
 
-should();
-chai.use(dirtyChai);
-chai.use(sinonChai);
+should()
+chai.use(dirtyChai)
+chai.use(sinonChai)
 
-const index = require('./../src/index.js');
+const index = require('./../src/index.js')
 
-const error = new Error('should not be called');
+const error = new Error('should not be called')
 
 describe('node-vault', () => {
   describe('module', () => {
     after(() => {
-      process.env.VAULT_SKIP_VERIFY = '';
-    });
+      process.env.VAULT_SKIP_VERIFY = ''
+    })
 
     it('should export a function that returns a new client', () => {
-      const v = index();
-      index.should.be.a('function');
-      v.should.be.an('object');
-    });
+      const v = index()
+      index.should.be.a('function')
+      v.should.be.an('object')
+    })
 
     it('should set default values for request library', () => {
-      const defaultsStub = sinon.stub();
+      const defaultsStub = sinon.stub()
 
       index({
         'request-promise': {
-          defaults: defaultsStub,
-        },
-      });
+          defaults: defaultsStub
+        }
+      })
 
-      defaultsStub.should.be.calledOnce();
+      defaultsStub.should.be.calledOnce()
       defaultsStub.should.be.calledWithExactly({
         json: true,
         simple: false,
         resolveWithFullResponse: true,
-        strictSSL: true,
-      });
-    });
+        strictSSL: true
+      })
+    })
 
     it('should disable ssl security based on vault environment variable', () => {
-      const defaultsStub = sinon.stub();
+      const defaultsStub = sinon.stub()
 
       // see https://www.vaultproject.io/docs/commands/environment.html for details
-      process.env.VAULT_SKIP_VERIFY = 'catpants';
+      process.env.VAULT_SKIP_VERIFY = 'catpants'
 
       index({
         'request-promise': {
-          defaults: defaultsStub,
-        },
-      });
+          defaults: defaultsStub
+        }
+      })
 
-      defaultsStub.should.be.calledOnce();
+      defaultsStub.should.be.calledOnce()
       defaultsStub.should.be.calledWithExactly({
         json: true,
         simple: false,
         resolveWithFullResponse: true,
-        strictSSL: false,
-      });
-    });
-  });
-
+        strictSSL: false
+      })
+    })
+  })
 
   describe('client', () => {
-    let request = null;
-    let response = null;
-    let vault = null;
+    let request = null
+    let response = null
+    let vault = null
 
     // helper
-    function getURI(path) {
-      return [vault.endpoint, vault.apiVersion, path].join('/');
+    function getURI (path) {
+      return [vault.endpoint, vault.apiVersion, path].join('/')
     }
 
-    function assertRequest(thisRequest, params, done) {
+    function assertRequest (thisRequest, params, done) {
       return () => {
-        thisRequest.should.have.calledOnce();
-        thisRequest.calledWithMatch(params).should.be.ok();
-        return done();
-      };
+        thisRequest.should.have.calledOnce()
+        thisRequest.calledWithMatch(params).should.be.ok()
+        return done()
+      }
     }
 
     beforeEach(() => {
       // stub requests
-      request = sinon.stub();
-      response = sinon.stub();
-      response.statusCode = 200;
+      request = sinon.stub()
+      response = sinon.stub()
+      response.statusCode = 200
 
       request.returns({
-        then(fn) {
-          return fn(response);
+        then (fn) {
+          return fn(response)
         },
-        catch(fn) {
-          return fn();
-        },
-      });
+        catch (fn) {
+          return fn()
+        }
+      })
 
       vault = index(
         {
           endpoint: 'http://localhost:8200',
           token: '123',
           'request-promise': {
-            defaults: () => request, // dependency injection of stub
-          },
+            defaults: () => request // dependency injection of stub
+          }
         }
-      );
-    });
+      )
+    })
 
     describe('help(path, options)', () => {
       it('should response help text for any path', done => {
-        const path = 'sys/policy';
+        const path = 'sys/policy'
         const params = {
           method: 'GET',
-          uri: `${getURI(path)}?help=1`,
-        };
+          uri: `${getURI(path)}?help=1`
+        }
         vault.help(path)
         .then(assertRequest(request, params, done))
-        .catch(done);
-      });
+        .catch(done)
+      })
 
       it('should handle undefined options', done => {
-        const path = 'sys/policy';
+        const path = 'sys/policy'
         const params = {
           method: 'GET',
-          uri: `${getURI(path)}?help=1`,
-        };
+          uri: `${getURI(path)}?help=1`
+        }
         vault.help(path)
         .then(assertRequest(request, params, done))
-        .catch(done);
-      });
-    });
+        .catch(done)
+      })
+    })
 
     describe('list(path, requestOptions)', () => {
       it('should list entries at the specific path', done => {
-        const path = 'secret/hello';
+        const path = 'secret/hello'
         const params = {
           method: 'LIST',
-          uri: getURI(path),
-        };
+          uri: getURI(path)
+        }
         vault.list(path)
         .then(assertRequest(request, params, done))
-        .catch(done);
-      });
-    });
+        .catch(done)
+      })
+    })
 
     describe('write(path, data, options)', () => {
       it('should write data to path', done => {
-        const path = 'secret/hello';
+        const path = 'secret/hello'
         const data = {
-          value: 'world',
-        };
+          value: 'world'
+        }
         const params = {
           method: 'PUT',
-          uri: getURI(path),
-        };
+          uri: getURI(path)
+        }
         vault.write(path, data)
         .then(assertRequest(request, params, done))
-        .catch(done);
-      });
+        .catch(done)
+      })
 
       it('should handle undefined options', done => {
-        const path = 'secret/hello';
+        const path = 'secret/hello'
         const data = {
-          value: 'world',
-        };
+          value: 'world'
+        }
         const params = {
           method: 'PUT',
-          uri: getURI(path),
-        };
+          uri: getURI(path)
+        }
         vault.write(path, data)
         .then(assertRequest(request, params, done))
-        .catch(done);
-      });
-    });
+        .catch(done)
+      })
+    })
 
     describe('read(path, options)', () => {
       it('should read data from path', done => {
-        const path = 'secret/hello';
+        const path = 'secret/hello'
         const params = {
           method: 'GET',
-          uri: getURI(path),
-        };
+          uri: getURI(path)
+        }
         vault.read(path)
         .then(assertRequest(request, params, done))
-        .catch(done);
-      });
+        .catch(done)
+      })
 
       it('should handle undefined options', done => {
-        const path = 'secret/hello';
+        const path = 'secret/hello'
         const params = {
           method: 'GET',
-          uri: getURI(path),
-        };
+          uri: getURI(path)
+        }
         vault.read(path)
         .then(assertRequest(request, params, done))
-        .catch(done);
-      });
-    });
+        .catch(done)
+      })
+    })
 
     describe('delete(path, options)', () => {
       it('should delete data from path', done => {
-        const path = 'secret/hello';
+        const path = 'secret/hello'
         const params = {
           method: 'DELETE',
-          uri: getURI(path),
-        };
+          uri: getURI(path)
+        }
         vault.delete(path)
         .then(assertRequest(request, params, done))
-        .catch(done);
-      });
+        .catch(done)
+      })
 
       it('should handle undefined options', done => {
-        const path = 'secret/hello';
+        const path = 'secret/hello'
         const params = {
           method: 'DELETE',
-          uri: getURI(path),
-        };
+          uri: getURI(path)
+        }
         vault.delete(path)
         .then(assertRequest(request, params, done))
-        .catch(done);
-      });
-    });
+        .catch(done)
+      })
+    })
 
     describe('unwrap(options)', () => {
       it('should return original response', done => {
-        const path = 'sys/wrapping/unwrap';
+        const path = 'sys/wrapping/unwrap'
         const params = {
           method: 'POST',
-          uri: getURI(path),
-        };
+          uri: getURI(path)
+        }
         vault.unwrap({ token: 'token' })
         .then(assertRequest(request, params, done))
-        .catch(done);
-      });
-    });
+        .catch(done)
+      })
+    })
 
     describe('handleVaultResponse(response)', () => {
       it('should return a function that handles errors from vault server', () => {
-        const fn = vault.handleVaultResponse;
-        fn.should.be.a('function');
-      });
+        const fn = vault.handleVaultResponse
+        fn.should.be.a('function')
+      })
 
       it('should return a Promise with the body if successful', done => {
-        const data = { hello: 1 };
-        response.body = data;
-        const promise = vault.handleVaultResponse(response);
+        const data = { hello: 1 }
+        response.body = data
+        const promise = vault.handleVaultResponse(response)
         promise.then(body => {
-          body.should.equal(data);
-          return done();
-        });
-      });
+          body.should.equal(data)
+          return done()
+        })
+      })
 
       it('should return a Promise with the error if failed', done => {
-        response.statusCode = 500;
+        response.statusCode = 500
         response.body = {
-          errors: ['Something went wrong.'],
-        };
+          errors: ['Something went wrong.']
+        }
         response.request = {
-          path: 'test',
-        };
-        const promise = vault.handleVaultResponse(response);
+          path: 'test'
+        }
+        const promise = vault.handleVaultResponse(response)
         promise.catch(err => {
-          err.message.should.equal(response.body.errors[0]);
-          return done();
-        });
-      });
+          err.message.should.equal(response.body.errors[0])
+          return done()
+        })
+      })
 
       it('should return the status code if no error in the response', done => {
-        response.statusCode = 500;
+        response.statusCode = 500
         response.request = {
-          path: 'test',
-        };
-        const promise = vault.handleVaultResponse(response);
+          path: 'test'
+        }
+        const promise = vault.handleVaultResponse(response)
         promise.catch(err => {
-          err.message.should.equal(`Status ${response.statusCode}`);
-          return done();
-        });
-      });
+          err.message.should.equal(`Status ${response.statusCode}`)
+          return done()
+        })
+      })
 
       it('should not handle response from health route as error', done => {
         const data = {
@@ -286,50 +286,50 @@ describe('node-vault', () => {
           sealed: true,
           standby: true,
           server_time_utc: 1474301338,
-          version: 'Vault v0.6.1',
-        };
-        response.statusCode = 503;
-        response.body = data;
+          version: 'Vault v0.6.1'
+        }
+        response.statusCode = 503
+        response.body = data
         response.request = {
-          path: '/v1/sys/health',
-        };
-        const promise = vault.handleVaultResponse(response);
+          path: '/v1/sys/health'
+        }
+        const promise = vault.handleVaultResponse(response)
         promise.then(body => {
-          body.should.equal(data);
-          return done();
-        });
-      });
+          body.should.equal(data)
+          return done()
+        })
+      })
 
       it('should return error if error on request path with health and not sys/health', done => {
-        response.statusCode = 404;
+        response.statusCode = 404
         response.body = {
-          errors: [],
-        };
+          errors: []
+        }
         response.request = {
-          path: '/v1/sys/policies/applications/im-not-sys-health/app',
-        };
+          path: '/v1/sys/policies/applications/im-not-sys-health/app'
+        }
         vault.handleVaultResponse(response)
         .then(() => done(error))
         .catch(err => {
-          err.message.should.equal(`Status ${response.statusCode}`);
-          return done();
-        });
-      });
+          err.message.should.equal(`Status ${response.statusCode}`)
+          return done()
+        })
+      })
 
       it('should return a Promise with the error if no response is passed', done => {
-        const promise = vault.handleVaultResponse();
+        const promise = vault.handleVaultResponse()
         promise.catch((err) => {
-          err.message.should.equal('No response passed');
-          return done();
-        });
-      });
-    });
+          err.message.should.equal('No response passed')
+          return done()
+        })
+      })
+    })
 
     describe('generateFunction(name, config)', () => {
       const config = {
         method: 'GET',
-        path: '/myroute',
-      };
+        path: '/myroute'
+      }
 
       const configWithSchema = {
         method: 'GET',
@@ -340,13 +340,13 @@ describe('node-vault', () => {
             properties: {
               testProperty: {
                 type: 'integer',
-                minimum: 1,
-              },
+                minimum: 1
+              }
             },
-            required: ['testProperty'],
-          },
-        },
-      };
+            required: ['testProperty']
+          }
+        }
+      }
 
       const configWithQuerySchema = {
         method: 'GET',
@@ -357,101 +357,101 @@ describe('node-vault', () => {
             properties: {
               testParam1: {
                 type: 'integer',
-                minimum: 1,
+                minimum: 1
               },
               testParam2: {
-                type: 'string',
-              },
+                type: 'string'
+              }
             },
-            required: ['testParam1', 'testParam2'],
-          },
-        },
-      };
+            required: ['testParam1', 'testParam2']
+          }
+        }
+      }
 
       it('should generate a function with name as defined in config', () => {
-        const name = 'myGeneratedFunction';
-        vault.generateFunction(name, config);
-        vault.should.have.property(name);
-        const fn = vault[name];
-        fn.should.be.a('function');
-      });
+        const name = 'myGeneratedFunction'
+        vault.generateFunction(name, config)
+        vault.should.have.property(name)
+        const fn = vault[name]
+        fn.should.be.a('function')
+      })
 
       describe('generated function', () => {
         it('should return a promise', done => {
-          const name = 'myGeneratedFunction';
-          vault.generateFunction(name, config);
-          const fn = vault[name];
-          const promise = fn();
-          request.calledOnce.should.be.ok();
-          /* eslint no-unused-expressions: 0*/
-          promise.should.be.promise;
+          const name = 'myGeneratedFunction'
+          vault.generateFunction(name, config)
+          const fn = vault[name]
+          const promise = fn()
+          request.calledOnce.should.be.ok()
+          /* eslint no-unused-expressions: 0 */
+          promise.should.be.promise
           promise.then(done)
-          .catch(done);
-        });
+          .catch(done)
+        })
 
         it('should handle config with schema property', done => {
-          const name = 'myGeneratedFunction';
-          vault.generateFunction(name, configWithSchema);
-          const fn = vault[name];
-          const promise = fn({ testProperty: 3 });
-          promise.then(done).catch(done);
-        });
+          const name = 'myGeneratedFunction'
+          vault.generateFunction(name, configWithSchema)
+          const fn = vault[name]
+          const promise = fn({ testProperty: 3 })
+          promise.then(done).catch(done)
+        })
 
         it('should handle invalid arguments via schema property', done => {
-          const name = 'myGeneratedFunction';
-          vault.generateFunction(name, configWithSchema);
-          const fn = vault[name];
-          const promise = fn({ testProperty: 'wrong data type here' });
+          const name = 'myGeneratedFunction'
+          vault.generateFunction(name, configWithSchema)
+          const fn = vault[name]
+          const promise = fn({ testProperty: 'wrong data type here' })
           promise.catch(err => {
-            err.message.should.equal('Invalid type: string (expected integer)');
-            return done();
-          });
-        });
+            err.message.should.equal('Invalid type: string (expected integer)')
+            return done()
+          })
+        })
 
         it('should handle schema with query property', done => {
-          const name = 'myGeneratedFunction';
-          vault.generateFunction(name, configWithQuerySchema);
-          const fn = vault[name];
-          const promise = fn({ testParam1: 3, testParam2: 'hello' });
+          const name = 'myGeneratedFunction'
+          vault.generateFunction(name, configWithQuerySchema)
+          const fn = vault[name]
+          const promise = fn({ testParam1: 3, testParam2: 'hello' })
           const options = {
-            path: '/myroute?testParam1=3&testParam2=hello',
-          };
+            path: '/myroute?testParam1=3&testParam2=hello'
+          }
           promise
           .then(() => {
-            request.calledWithMatch(options).should.be.ok();
-            done();
+            request.calledWithMatch(options).should.be.ok()
+            done()
           })
-          .catch(done);
-        });
-      });
-    });
+          .catch(done)
+        })
+      })
+    })
 
     describe('request(options)', () => {
       it('should reject if options are undefined', done => {
         vault.request()
         .then(() => done(error))
-        .catch(() => done());
-      });
+        .catch(() => done())
+      })
 
       it('should handle undefined path in options', done => {
         const promise = vault.request({
-          method: 'GET',
-        });
+          method: 'GET'
+        })
         promise.catch(err => {
-          err.message.should.equal('Missing required property: path');
-          return done();
-        });
-      });
+          err.message.should.equal('Missing required property: path')
+          return done()
+        })
+      })
 
       it('should handle undefined method in options', done => {
         const promise = vault.request({
-          path: '/',
-        });
+          path: '/'
+        })
         promise.catch(err => {
-          err.message.should.equal('Missing required property: method');
-          return done();
-        });
-      });
-    });
-  });
-});
+          err.message.should.equal('Missing required property: method')
+          return done()
+        })
+      })
+    })
+  })
+})

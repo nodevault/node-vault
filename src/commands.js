@@ -2,89 +2,89 @@ const sealStatusResponse = {
   type: 'object',
   properties: {
     sealed: {
-      type: 'boolean',
+      type: 'boolean'
     },
     t: {
-      type: 'integer',
+      type: 'integer'
     },
     n: {
-      type: 'integer',
+      type: 'integer'
     },
     progress: {
-      type: 'integer',
-    },
+      type: 'integer'
+    }
   },
-  required: ['sealed', 't', 'n', 'progress'],
-};
+  required: ['sealed', 't', 'n', 'progress']
+}
 
 const auth = {
   type: 'object',
   properties: {
     client_token: {
-      type: 'string',
+      type: 'string'
     },
     policies: {
       type: 'array',
       items: {
-        type: 'string',
-      },
+        type: 'string'
+      }
     },
     metadata: {
-      type: 'object',
+      type: 'object'
     },
     lease_duration: {
-      type: 'integer',
+      type: 'integer'
     },
     renewable: {
-      type: 'boolean',
-    },
-  },
-};
+      type: 'boolean'
+    }
+  }
+}
 
 const tokenResponse = {
   type: 'object',
   properties: {
-    auth,
+    auth
   },
-  required: ['auth'],
-};
+  required: ['auth']
+}
 
 const approleResponse = {
   type: 'object',
   properties: {
     auth,
     warnings: {
-      type: 'string',
+      type: 'string'
     },
     wrap_info: {
-      type: 'string',
+      type: 'string'
     },
     data: {
-      type: 'object',
+      type: 'object'
     },
     lease_duration: {
-      type: 'integer',
+      type: 'integer'
     },
     renewable: {
-      type: 'boolean',
+      type: 'boolean'
     },
     lease_id: {
-      type: 'string',
-    },
-  },
-};
+      type: 'string'
+    }
+  }
+}
 
 module.exports = {
   status: {
     method: 'GET',
     path: '/sys/seal-status',
     schema: {
-      res: sealStatusResponse,
-    },
+      res: sealStatusResponse
+    }
   },
   initialized: {
     method: 'GET',
-    path: '/sys/init',
+    path: '/sys/init'
   },
   init: {
     method: 'PUT',
@@ -95,21 +95,21 @@ module.exports = {
         properties: {
           secret_shares: {
             type: 'integer',
-            minimum: 1,
+            minimum: 1
           },
           secret_threshold: {
             type: 'integer',
-            minimum: 1,
+            minimum: 1
           },
           pgp_keys: {
             type: 'array',
             items: {
-              type: 'string',
+              type: 'string'
             },
-            uniqueItems: true,
-          },
+            uniqueItems: true
+          }
         },
-        required: ['secret_shares', 'secret_threshold'],
+        required: ['secret_shares', 'secret_threshold']
       },
       res: {
         type: 'object',
@@ -117,28 +117,28 @@ module.exports = {
           keys: {
             type: 'array',
             items: {
-              type: 'string',
+              type: 'string'
             },
-            uniqueItems: true,
+            uniqueItems: true
           },
           root_token: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['keys', 'root_token'],
-      },
-    },
+        required: ['keys', 'root_token']
+      }
+    }
   },
   unseal: {
     method: 'PUT',
     path: '/sys/unseal',
     schema: {
-      res: sealStatusResponse,
-    },
+      res: sealStatusResponse
+    }
   },
   seal: {
     method: 'PUT',
-    path: '/sys/seal',
+    path: '/sys/seal'
   },
   generateRootStatus: {
     method: 'GET',
@@ -148,29 +148,29 @@ module.exports = {
         type: 'object',
         properties: {
           started: {
-            type: 'boolean',
+            type: 'boolean'
           },
           nonce: {
-            type: 'string',
+            type: 'string'
           },
           progress: {
             type: 'integer',
-            minimum: 0,
+            minimum: 0
           },
           required: {
             type: 'integer',
-            minimum: 1,
+            minimum: 1
           },
           pgp_fingerprint: {
-            type: 'string',
+            type: 'string'
           },
           complete: {
-            type: 'boolean',
-          },
+            type: 'boolean'
+          }
         },
-        required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete'],
-      },
-    },
+        required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete']
+      }
+    }
   },
   generateRootInit: {
     method: 'PUT',
@@ -180,44 +180,44 @@ module.exports = {
         type: 'object',
         properties: {
           otp: {
-            type: 'string',
+            type: 'string'
           },
           pgp_key: {
-            type: 'string',
-          },
-        },
+            type: 'string'
+          }
+        }
       },
       res: {
         type: 'object',
         properties: {
           started: {
-            type: 'boolean',
+            type: 'boolean'
           },
           nonce: {
-            type: 'string',
+            type: 'string'
           },
           progress: {
             type: 'integer',
-            minimum: 0,
+            minimum: 0
           },
           required: {
             type: 'integer',
-            minimum: 1,
+            minimum: 1
           },
           pgp_fingerprint: {
-            type: 'string',
+            type: 'string'
           },
           complete: {
-            type: 'boolean',
-          },
+            type: 'boolean'
+          }
         },
-        required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete'],
-      },
-    },
+        required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete']
+      }
+    }
   },
   generateRootCancel: {
     method: 'DELETE',
-    path: '/sys/generate-root/attempt',
+    path: '/sys/generate-root/attempt'
   },
   generateRootUpdate: {
     method: 'PUT',
@@ -227,100 +227,100 @@ module.exports = {
         type: 'object',
         properties: {
           key: {
-            type: 'string',
+            type: 'string'
           },
           nonce: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['key', 'nonce'],
+        required: ['key', 'nonce']
       },
       res: {
         type: 'object',
         properties: {
           started: {
-            type: 'boolean',
+            type: 'boolean'
           },
           nonce: {
-            type: 'string',
+            type: 'string'
           },
           progress: {
             type: 'integer',
-            minimum: 0,
+            minimum: 0
           },
           required: {
             type: 'integer',
-            minimum: 1,
+            minimum: 1
           },
           pgp_fingerprint: {
-            type: 'string',
+            type: 'string'
           },
           complete: {
-            type: 'boolean',
+            type: 'boolean'
           },
           encoded_root_token: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete'],
-      },
-    },
+        required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete']
+      }
+    }
   },
   mounts: {
     method: 'GET',
-    path: '/sys/mounts',
+    path: '/sys/mounts'
   },
   mount: {
     method: 'POST',
-    path: '/sys/mounts/{{mount_point}}',
+    path: '/sys/mounts/{{mount_point}}'
   },
   unmount: {
     method: 'DELETE',
-    path: '/sys/mounts/{{mount_point}}',
+    path: '/sys/mounts/{{mount_point}}'
   },
   remount: {
     method: 'POST',
-    path: '/sys/remount',
+    path: '/sys/remount'
   },
   policies: {
     method: 'GET',
-    path: '/sys/policy',
+    path: '/sys/policy'
   },
   addPolicy: {
     method: 'PUT',
-    path: '/sys/policy/{{name}}',
+    path: '/sys/policy/{{name}}'
   },
   getPolicy: {
     method: 'GET',
-    path: '/sys/policy/{{name}}',
+    path: '/sys/policy/{{name}}'
   },
   removePolicy: {
     method: 'DELETE',
-    path: '/sys/policy/{{name}}',
+    path: '/sys/policy/{{name}}'
   },
   auths: {
     method: 'GET',
-    path: '/sys/auth',
+    path: '/sys/auth'
   },
   enableAuth: {
     method: 'POST',
-    path: '/sys/auth/{{mount_point}}',
+    path: '/sys/auth/{{mount_point}}'
   },
   disableAuth: {
     method: 'DELETE',
-    path: '/sys/auth/{{mount_point}}',
+    path: '/sys/auth/{{mount_point}}'
   },
   audits: {
     method: 'GET',
-    path: '/sys/audit',
+    path: '/sys/audit'
   },
   enableAudit: {
     method: 'PUT',
-    path: '/sys/audit/{{name}}',
+    path: '/sys/audit/{{name}}'
   },
   disableAudit: {
     method: 'DELETE',
-    path: '/sys/audit/{{name}}',
+    path: '/sys/audit/{{name}}'
   },
   renew: {
     method: 'PUT',
@@ -330,29 +330,29 @@ module.exports = {
         type: 'object',
         properties: {
           lease_id: {
-            type: 'string',
+            type: 'string'
           },
           increment: {
-            type: 'integer',
-          },
+            type: 'integer'
+          }
         },
-        required: ['lease_id'],
+        required: ['lease_id']
       },
       res: {
         type: 'object',
         properties: {
           lease_id: {
-            type: 'string',
+            type: 'string'
           },
           renewable: {
-            type: 'boolean',
+            type: 'boolean'
           },
           lease_duration: {
-            type: 'integer',
-          },
-        },
-      },
-    },
+            type: 'integer'
+          }
+        }
+      }
+    }
   },
   revoke: {
     method: 'PUT',
@@ -362,20 +362,20 @@ module.exports = {
         type: 'object',
         properties: {
           lease_id: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['lease_id'],
-      },
-    },
+        required: ['lease_id']
+      }
+    }
   },
   revokePrefix: {
     method: 'PUT',
-    path: '/sys/revoke-prefix/{{path_prefix}}',
+    path: '/sys/revoke-prefix/{{path_prefix}}'
   },
   rotate: {
     method: 'PUT',
-    path: '/sys/rotate',
+    path: '/sys/rotate'
   },
   unwrap: {
     method: 'POST',
@@ -385,11 +385,11 @@ module.exports = {
         type: 'object',
         properties: {
           token: {
-            type: 'string',
-          },
-        },
-      },
-    },
+            type: 'string'
+          }
+        }
+      }
+    }
   },
   githubLogin: {
     method: 'POST',
@@ -399,13 +399,13 @@ module.exports = {
         type: 'object',
         properties: {
           token: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['token'],
+        required: ['token']
       },
-      res: tokenResponse,
-    },
+      res: tokenResponse
+    }
   },
   userpassLogin: {
     method: 'POST',
@@ -415,13 +415,13 @@ module.exports = {
         type: 'object',
         properties: {
           password: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['password'],
+        required: ['password']
       },
-      res: tokenResponse,
-    },
+      res: tokenResponse
+    }
   },
   ldapLogin: {
     method: 'POST',
@@ -431,13 +431,13 @@ module.exports = {
         type: 'object',
         properties: {
           password: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['password'],
+        required: ['password']
       },
-      res: tokenResponse,
-    },
+      res: tokenResponse
+    }
   },
   oktaLogin: {
     method: 'POST',
@@ -447,13 +447,13 @@ module.exports = {
         type: 'object',
         properties: {
           password: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['password'],
+        required: ['password']
       },
-      res: tokenResponse,
-    },
+      res: tokenResponse
+    }
   },
   radiusLogin: {
     method: 'POST',
@@ -463,13 +463,13 @@ module.exports = {
         type: 'object',
         properties: {
           password: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['password'],
+        required: ['password']
       },
-      res: tokenResponse,
-    },
+      res: tokenResponse
+    }
   },
   tokenAccessors: {
     method: 'LIST',
@@ -484,15 +484,15 @@ module.exports = {
               keys: {
                 type: 'array',
                 items: {
-                  type: 'string',
-                },
-              },
-            },
-          },
+                  type: 'string'
+                }
+              }
+            }
+          }
         },
-        required: ['data'],
-      },
-    },
+        required: ['data']
+      }
+    }
   },
   tokenCreate: {
     method: 'POST',
@@ -502,42 +502,42 @@ module.exports = {
         type: 'object',
         properties: {
           id: {
-            type: 'string',
+            type: 'string'
           },
           policies: {
             type: 'array',
             items: {
-              type: 'string',
-            },
+              type: 'string'
+            }
           },
           meta: {
-            type: 'object',
+            type: 'object'
           },
           no_parent: {
-            type: 'boolean',
+            type: 'boolean'
           },
           no_default_policy: {
-            type: 'boolean',
+            type: 'boolean'
           },
           renewable: {
-            type: 'boolean',
+            type: 'boolean'
           },
           ttl: {
-            type: 'string',
+            type: 'string'
           },
           explicit_max_ttl: {
-            type: 'string',
+            type: 'string'
           },
           display_name: {
-            type: 'string',
+            type: 'string'
           },
           num_uses: {
-            type: 'integer',
-          },
-        },
+            type: 'integer'
+          }
+        }
       },
-      res: tokenResponse,
-    },
+      res: tokenResponse
+    }
   },
   tokenCreateOrphan: {
     method: 'POST',
@@ -547,42 +547,42 @@ module.exports = {
         type: 'object',
         properties: {
           id: {
-            type: 'string',
+            type: 'string'
           },
           policies: {
             type: 'array',
             items: {
-              type: 'string',
-            },
+              type: 'string'
+            }
           },
           meta: {
-            type: 'object',
+            type: 'object'
           },
           no_parent: {
-            type: 'boolean',
+            type: 'boolean'
           },
           no_default_policy: {
-            type: 'boolean',
+            type: 'boolean'
           },
           renewable: {
-            type: 'boolean',
+            type: 'boolean'
           },
           ttl: {
-            type: 'string',
+            type: 'string'
           },
           explicit_max_ttl: {
-            type: 'string',
+            type: 'string'
           },
           display_name: {
-            type: 'string',
+            type: 'string'
           },
           num_uses: {
-            type: 'integer',
-          },
-        },
+            type: 'integer'
+          }
+        }
       },
-      res: tokenResponse,
-    },
+      res: tokenResponse
+    }
   },
   tokenCreateRole: {
     method: 'POST',
@@ -592,42 +592,42 @@ module.exports = {
         type: 'object',
         properties: {
           id: {
-            type: 'string',
+            type: 'string'
           },
           policies: {
             type: 'array',
             items: {
-              type: 'string',
-            },
+              type: 'string'
+            }
           },
           meta: {
-            type: 'object',
+            type: 'object'
           },
           no_parent: {
-            type: 'boolean',
+            type: 'boolean'
           },
           no_default_policy: {
-            type: 'boolean',
+            type: 'boolean'
           },
           renewable: {
-            type: 'boolean',
+            type: 'boolean'
           },
           ttl: {
-            type: 'string',
+            type: 'string'
           },
           explicit_max_ttl: {
-            type: 'string',
+            type: 'string'
           },
           display_name: {
-            type: 'string',
+            type: 'string'
           },
           num_uses: {
-            type: 'integer',
-          },
-        },
+            type: 'integer'
+          }
+        }
       },
-      res: tokenResponse,
-    },
+      res: tokenResponse
+    }
   },
   tokenLookup: {
     method: 'POST',
@@ -637,10 +637,10 @@ module.exports = {
         type: 'object',
         properties: {
           token: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['token'],
+        required: ['token']
       },
       res: {
         type: 'object',
@@ -649,32 +649,32 @@ module.exports = {
             type: 'object',
             properties: {
               id: {
-                type: 'string',
+                type: 'string'
               },
               policies: {
                 type: 'array',
                 items: {
-                  type: 'string',
-                },
+                  type: 'string'
+                }
               },
               path: {
-                type: 'string',
+                type: 'string'
               },
               meta: {
-                type: 'object',
+                type: 'object'
               },
               display_name: {
-                type: 'string',
+                type: 'string'
               },
               num_uses: {
-                type: 'integer',
-              },
-            },
-          },
+                type: 'integer'
+              }
+            }
+          }
         },
-        required: ['data'],
-      },
-    },
+        required: ['data']
+      }
+    }
   },
   tokenLookupAccessor: {
     method: 'POST',
@@ -684,10 +684,10 @@ module.exports = {
         type: 'object',
         properties: {
           accessor: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['accessor'],
+        required: ['accessor']
       },
       res: {
         type: 'object',
@@ -696,32 +696,32 @@ module.exports = {
             type: 'object',
             properties: {
               id: {
-                type: 'string',
+                type: 'string'
               },
               policies: {
                 type: 'array',
                 items: {
-                  type: 'string',
-                },
+                  type: 'string'
+                }
               },
               path: {
-                type: 'string',
+                type: 'string'
               },
               meta: {
-                type: 'object',
+                type: 'object'
               },
               display_name: {
-                type: 'string',
+                type: 'string'
               },
               num_uses: {
-                type: 'integer',
-              },
-            },
-          },
+                type: 'integer'
+              }
+            }
+          }
         },
-        required: ['data'],
-      },
-    },
+        required: ['data']
+      }
+    }
   },
   tokenLookupSelf: {
     method: 'GET',
@@ -734,32 +734,32 @@ module.exports = {
             type: 'object',
             properties: {
               id: {
-                type: 'string',
+                type: 'string'
               },
               policies: {
                 type: 'array',
                 items: {
-                  type: 'string',
-                },
+                  type: 'string'
+                }
               },
               path: {
-                type: 'string',
+                type: 'string'
               },
               meta: {
-                type: 'object',
+                type: 'object'
               },
               display_name: {
-                type: 'string',
+                type: 'string'
               },
               num_uses: {
-                type: 'integer',
-              },
-            },
-          },
+                type: 'integer'
+              }
+            }
+          }
         },
-        required: ['data'],
-      },
-    },
+        required: ['data']
+      }
+    }
   },
   tokenRenew: {
     method: 'POST',
@@ -769,16 +769,16 @@ module.exports = {
         type: 'object',
         properties: {
           token: {
-            type: 'string',
+            type: 'string'
           },
           increment: {
-            type: ['integer', 'string'],
-          },
+            type: ['integer', 'string']
+          }
         },
-        required: ['token'],
+        required: ['token']
       },
-      res: tokenResponse,
-    },
+      res: tokenResponse
+    }
   },
   tokenRenewSelf: {
     method: 'POST',
@@ -788,12 +788,12 @@ module.exports = {
         type: 'object',
         properties: {
           increment: {
-            type: ['integer', 'string'],
-          },
-        },
+            type: ['integer', 'string']
+          }
+        }
       },
-      res: tokenResponse,
-    },
+      res: tokenResponse
+    }
   },
   tokenRevoke: {
     method: 'POST',
@@ -803,12 +803,12 @@ module.exports = {
         type: 'object',
         properties: {
           token: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['token'],
-      },
-    },
+        required: ['token']
+      }
+    }
   },
   tokenRevokeAccessor: {
     method: 'POST',
@@ -818,12 +818,12 @@ module.exports = {
         type: 'object',
         properties: {
           accessor: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['accessor'],
-      },
-    },
+        required: ['accessor']
+      }
+    }
   },
   tokenRevokeOrphan: {
     method: 'POST',
@@ -833,16 +833,16 @@ module.exports = {
         type: 'object',
         properties: {
           token: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['token'],
-      },
-    },
+        required: ['token']
+      }
+    }
   },
   tokenRevokeSelf: {
     method: 'POST',
-    path: '/auth/token/revoke-self',
+    path: '/auth/token/revoke-self'
   },
   tokenRoles: {
     method: 'GET',
@@ -857,15 +857,15 @@ module.exports = {
               keys: {
                 type: 'array',
                 items: {
-                  type: 'string',
-                },
-              },
-            },
-          },
+                  type: 'string'
+                }
+              }
+            }
+          }
         },
-        required: ['data'],
-      },
-    },
+        required: ['data']
+      }
+    }
   },
   addTokenRole: {
     method: 'POST',
@@ -875,44 +875,44 @@ module.exports = {
         type: 'object',
         properties: {
           allowed_policies: {
-            type: 'string',
+            type: 'string'
           },
           disallowed_policies: {
-            type: 'string',
+            type: 'string'
           },
           orphan: {
-            type: 'boolean',
+            type: 'boolean'
           },
           period: {
-            type: 'integer',
+            type: 'integer'
           },
           renewable: {
-            type: 'boolean',
+            type: 'boolean'
           },
           path_suffix: {
-            type: 'string',
+            type: 'string'
           },
           explicit_max_ttl: {
-            type: 'integer',
-          },
-        },
-      },
-    },
+            type: 'integer'
+          }
+        }
+      }
+    }
   },
   getTokenRole: {
     method: 'GET',
-    path: '/auth/token/roles/{{role_name}}',
+    path: '/auth/token/roles/{{role_name}}'
   },
   removeTokenRole: {
     method: 'DELETE',
-    path: '/auth/token/roles/{{role_name}}',
+    path: '/auth/token/roles/{{role_name}}'
   },
   approleRoles: {
     method: 'LIST',
     path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role',
     schema: {
-      res: approleResponse,
-    },
+      res: approleResponse
+    }
   },
   addApproleRole: {
     method: 'POST',
@@ -920,52 +920,52 @@ module.exports = {
     schema: {
       req: {
         bind_secret_id: {
-          type: 'boolean',
+          type: 'boolean'
         },
         bound_cidr_list: {
-          type: 'string',
+          type: 'string'
         },
         policies: {
-          type: 'string',
+          type: 'string'
         },
         secret_id_num_uses: {
-          type: 'integer',
+          type: 'integer'
         },
         secret_id_ttl: {
-          type: 'integer',
+          type: 'integer'
         },
         token_num_uses: {
-          type: 'integer',
+          type: 'integer'
         },
         token_ttl: {
-          type: 'integer',
+          type: 'integer'
         },
         token_max_ttl: {
-          type: 'integer',
+          type: 'integer'
         },
         period: {
-          type: 'integer',
-        },
-      },
-    },
+          type: 'integer'
+        }
+      }
+    }
   },
   getApproleRole: {
     method: 'GET',
     path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}',
     schema: {
-      res: approleResponse,
-    },
+      res: approleResponse
+    }
   },
   deleteApproleRole: {
     method: 'DELETE',
-    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}'
   },
   getApproleRoleId: {
     method: 'GET',
     path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id',
     schema: {
-      res: approleResponse,
-    },
+      res: approleResponse
+    }
   },
   updateApproleRoleId: {
     method: 'POST',
@@ -975,12 +975,12 @@ module.exports = {
         type: 'object',
         properties: {
           role_id: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['role_id'],
-      },
-    },
+        required: ['role_id']
+      }
+    }
   },
   getApproleRoleSecret: {
     method: 'POST',
@@ -991,26 +991,26 @@ module.exports = {
         type: 'object',
         properties: {
           metadata: {
-            type: 'string',
+            type: 'string'
           },
           cidr_list: {
             type: 'array',
             items: {
-              type: 'string',
-            },
-          },
-        },
+              type: 'string'
+            }
+          }
+        }
       },
-      res: approleResponse,
-    },
+      res: approleResponse
+    }
   },
   approleSecretAccessors: {
     method: 'LIST',
     path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
       '/role/{{role_name}}/secret-id',
     schema: {
-      res: approleResponse,
-    },
+      res: approleResponse
+    }
   },
   approleSecretLookup: {
     method: 'POST',
@@ -1021,13 +1021,13 @@ module.exports = {
         type: 'object',
         properties: {
           secret_id: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['secret_id'],
+        required: ['secret_id']
       },
-      res: approleResponse,
-    },
+      res: approleResponse
+    }
   },
   approleSecretDestroy: {
     method: 'POST',
@@ -1038,12 +1038,12 @@ module.exports = {
         type: 'object',
         properties: {
           secret_id: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['secret_id'],
-      },
-    },
+        required: ['secret_id']
+      }
+    }
   },
   approleSecretAccessorLookup: {
     method: 'POST',
@@ -1054,17 +1054,17 @@ module.exports = {
         type: 'object',
         properties: {
           secret_id: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['secret_id'],
-      },
-    },
+        required: ['secret_id']
+      }
+    }
   },
   approleSecretAccessorDestroy: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
-      '/role/{{role_name}}/secret-id-accessor/destroy',
+      '/role/{{role_name}}/secret-id-accessor/destroy'
   },
   approleLogin: {
     method: 'POST',
@@ -1074,16 +1074,16 @@ module.exports = {
         type: 'object',
         properties: {
           role_id: {
-            type: 'string',
+            type: 'string'
           },
           secret_id: {
-            type: 'string',
-          },
+            type: 'string'
+          }
         },
-        required: ['role_id', 'secret_id'],
+        required: ['role_id', 'secret_id']
       },
-      res: approleResponse,
-    },
+      res: approleResponse
+    }
   },
   health: {
     method: 'GET',
@@ -1093,49 +1093,49 @@ module.exports = {
         type: 'object',
         properties: {
           standbyok: {
-            type: 'boolean',
+            type: 'boolean'
           },
           activecode: {
-            type: 'integer',
+            type: 'integer'
           },
           standbycode: {
-            type: 'integer',
+            type: 'integer'
           },
           sealedcode: {
-            type: 'integer',
+            type: 'integer'
           },
           uninitcode: {
-            type: 'integer',
-          },
-        },
+            type: 'integer'
+          }
+        }
       },
       res: {
         type: 'object',
         properties: {
           cluster_id: {
-            type: 'string',
+            type: 'string'
           },
           cluster_name: {
-            type: 'string',
+            type: 'string'
           },
           version: {
-            type: 'string',
+            type: 'string'
           },
           server_time_utc: {
-            type: 'integer',
+            type: 'integer'
           },
           standby: {
-            type: 'boolean',
+            type: 'boolean'
           },
           sealed: {
-            type: 'boolean',
+            type: 'boolean'
           },
           initialized: {
-            type: 'boolean',
-          },
-        },
-      },
-    },
+            type: 'boolean'
+          }
+        }
+      }
+    }
   },
   leader: {
     method: 'GET',
@@ -1145,20 +1145,20 @@ module.exports = {
         type: 'object',
         properties: {
           ha_enabled: {
-            type: 'boolean',
+            type: 'boolean'
           },
           is_self: {
-            type: 'boolean',
+            type: 'boolean'
           },
           leader_address: {
-            type: 'string',
-          },
-        },
-      },
-    },
+            type: 'string'
+          }
+        }
+      }
+    }
   },
   stepDown: {
     method: 'PUT',
-    path: '/sys/step-down',
-  },
-};
+    path: '/sys/step-down'
+  }
+}

@@ -6,7 +6,7 @@
   "scripts": {
     "precoverage": "npm run lint",
     "coverage": "istanbul cover --report text-summary node_modules/.bin/_mocha",
-    "lint": "eslint .",
+    "lint": "standard",
     "test": "mocha",
     "test-unit": "mocha test/unit.js",
     "test-watch": "mocha --watch",
@@ -44,7 +44,8 @@
     "mocha": "2.4.5",
     "nsp": "^2.6.3",
     "sinon": "1.17.3",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "standard": "^10.0.3"
   },
   "repository": {
     "type": "git",
