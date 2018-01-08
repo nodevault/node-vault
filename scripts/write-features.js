@@ -1,8 +1,9 @@
 const fs = require('fs-extra')
 const features = require('../src/features')
+const resourceMethods = require('../src/resource-methods')
 
 const refreshFeatures = () => {
-  const result = Object.keys(features).map(name => {
+  const featuresDoc = Object.keys(features).map(name => {
     const feature = features[name]
 
     return `
@@ -13,6 +14,18 @@ const refreshFeatures = () => {
 ${feature.description || 'TODO: add description :S'}
 `
   })
+
+  const resourceMethodsDoc = resourceMethods.map(method => {
+    return `
+## vault.${method.name}
+
+\`${method.operation} <path>${method.query || ''}\`
+
+${method.description || 'TODO: add description :S'}
+`
+  })
+
+  const result = [...resourceMethodsDoc, ...featuresDoc]
 
   result.unshift(`# Supported Vault features
 
