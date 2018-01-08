@@ -7,7 +7,7 @@ const refreshFeatures = () => {
     const feature = features[name]
 
     return `
-## vault.${name}
+## vault.${name}()
 
 \`${feature.method} ${feature.path}\`
 
@@ -17,7 +17,7 @@ ${feature.description || 'TODO: add description :S'}
 
   const resourceMethodsDoc = resourceMethods.map(method => {
     return `
-## vault.${method.name}
+## vault.${method.name}(path)
 
 \`${method.operation} <path>${method.query || ''}\`
 
