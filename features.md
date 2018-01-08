@@ -2,7 +2,7 @@
 
  This is a generated list of Vault operations supported by node-vault.
 
-## vault.help
+## vault.help(path)
 
 `GET <path>?help=1`
 
@@ -16,7 +16,7 @@ The command requires that the vault be unsealed, because otherwise
 the mount points of the backends are unknown.
 
 
-## vault.read
+## vault.read(path)
 
 `GET <path>`
 
@@ -28,7 +28,7 @@ materialized backends. Please reference the documentation for the
 backends in use to determine key structure.
 
 
-## vault.write
+## vault.write(path)
 
 `PUT <path>`
 
@@ -47,7 +47,7 @@ be in JSON format. If you want to start the value with a literal "@", then
 prefix the "@" with a slash: "\@".
 
 
-## vault.list
+## vault.list(path)
 
 `LIST <path>`
 
@@ -57,7 +57,7 @@ Retrieve a listing of available data. The data returned, if any, is backend-
 and endpoint-specific.
 
 
-## vault.delete
+## vault.delete(path)
 
 `DELETE <path>`
 
@@ -70,91 +70,91 @@ policy for the AWS backend. Use "vault help" for more details on
 whether delete is supported for a path and what the behavior is.
 
 
-## vault.status
+## vault.status()
 
 `GET /sys/seal-status`
 
 Returns the seal status of the Vault. This is an unauthenticated endpoint.
 
 
-## vault.initialized
+## vault.initialized()
 
 `GET /sys/init`
 
 Returns the initialization status of the Vault.
 
 
-## vault.init
+## vault.init()
 
 `PUT /sys/init`
 
 Initializes a new vault.
 
 
-## vault.unseal
+## vault.unseal()
 
 `PUT /sys/unseal`
 
 Unseals the Vault.
 
 
-## vault.seal
+## vault.seal()
 
 `PUT /sys/seal`
 
 Seals the Vault.
 
 
-## vault.generateRootStatus
+## vault.generateRootStatus()
 
 `GET /sys/generate-root/attempt`
 
 Reads the configuration and progress of the current root generation attempt.
 
 
-## vault.generateRootInit
+## vault.generateRootInit()
 
 `PUT /sys/generate-root/attempt`
 
 Initializes a new root generation attempt. Only a single root generation attempt can take place at a time. One (and only one) of otp or pgp_key are required.
 
 
-## vault.generateRootCancel
+## vault.generateRootCancel()
 
 `DELETE /sys/generate-root/attempt`
 
 Cancels any in-progress root generation attempt. This clears any progress made. This must be called to change the OTP or PGP key being used.
 
 
-## vault.generateRootUpdate
+## vault.generateRootUpdate()
 
 `PUT /sys/generate-root/update`
 
 TODO: add description :S
 
 
-## vault.mounts
+## vault.mounts()
 
 `GET /sys/mounts`
 
 Lists all the mounted secret backends.
 
 
-## vault.mount
+## vault.mount()
 
 `POST /sys/mounts/{{mount_point}}`
 
 Mount a new secret backend to the mount point in the URL.
 
 
-## vault.unmount
+## vault.unmount()
 
 `DELETE /sys/mounts/{{mount_point}}`
 
 Unmount the specified mount point.
 
 
-## vault.remount
+## vault.remount()
 
 `POST /sys/remount`
 
@@ -169,77 +169,77 @@ Changes the mount point of an already-mounted backend.
         The new mount point.
 
 
-## vault.policies
+## vault.policies()
 
 `GET /sys/policy`
 
 List the names of the configured access control policies.
 
 
-## vault.getPolicy
+## vault.getPolicy()
 
 `GET /sys/policy/{{name}}`
 
 Retrieve the rules for the named policy.
 
 
-## vault.addPolicy
+## vault.addPolicy()
 
 `PUT /sys/policy/{{name}}`
 
 Add or update a policy.
 
 
-## vault.removePolicy
+## vault.removePolicy()
 
 `DELETE /sys/policy/{{name}}`
 
 Delete the policy with the given name.
 
 
-## vault.auths
+## vault.auths()
 
 `GET /sys/auth`
 
 List the currently enabled credential backends: the name, the type of the backend, and a user friendly description of the purpose for the credential backend.
 
 
-## vault.enableAuth
+## vault.enableAuth()
 
 `POST /sys/auth/{{mount_point}}`
 
 Enable a new auth backend.
 
 
-## vault.disableAuth
+## vault.disableAuth()
 
 `DELETE /sys/auth/{{mount_point}}`
 
 Disable the auth backend at the given mount point.
 
 
-## vault.audits
+## vault.audits()
 
 `GET /sys/audit`
 
 List the currently enabled audit backends.
 
 
-## vault.enableAudit
+## vault.enableAudit()
 
 `PUT /sys/audit/{{name}}`
 
 Enable an audit backend at the given path.
 
 
-## vault.disableAudit
+## vault.disableAudit()
 
 `DELETE /sys/audit/{{name}}`
 
 Disable the given audit backend.
 
 
-## vault.renew
+## vault.renew()
 
 `PUT /sys/leases/renew`
 
@@ -264,7 +264,7 @@ lease renewal, this endpoint is used to extend the validity of the
 lease and to prevent an automatic revocation.
 
 
-## vault.revoke
+## vault.revoke()
 
 `PUT /sys/leases/revoke`
 
@@ -286,14 +286,14 @@ you may want to force an immediate revocation. This endpoint can be
 used to revoke the secret with the given Lease ID.
 
 
-## vault.revokePrefix
+## vault.revokePrefix()
 
 `PUT /sys/revoke-prefix/{{path_prefix}}`
 
 TODO: add description :S
 
 
-## vault.rotate
+## vault.rotate()
 
 `PUT /sys/rotate`
 
@@ -307,7 +307,7 @@ data going to the storage backend. The old encryption keys are kept so
 that data encrypted using those keys can still be decrypted.
 
 
-## vault.unwrap
+## vault.unwrap()
 
 `POST /sys/wrapping/unwrap`
 
@@ -325,266 +325,266 @@ this provides additional validation on the token, and rather than a JSON-escaped
 string, the returned response is the exact same as the contained wrapped response.
 
 
-## vault.githubLogin
+## vault.githubLogin()
 
 `POST /auth/{{mount_point}}{{^mount_point}}github{{/mount_point}}/login`
 
 TODO: add description :S
 
 
-## vault.userpassLogin
+## vault.userpassLogin()
 
 `POST /auth/{{mount_point}}{{^mount_point}}userpass{{/mount_point}}/login/{{username}}`
 
 TODO: add description :S
 
 
-## vault.ldapLogin
+## vault.ldapLogin()
 
 `POST /auth/{{mount_point}}{{^mount_point}}ldap{{/mount_point}}/login/{{username}}`
 
 TODO: add description :S
 
 
-## vault.oktaLogin
+## vault.oktaLogin()
 
 `POST /auth/{{mount_point}}{{^mount_point}}okta{{/mount_point}}/login/{{username}}`
 
 TODO: add description :S
 
 
-## vault.radiusLogin
+## vault.radiusLogin()
 
 `POST /auth/{{mount_point}}{{^mount_point}}radius{{/mount_point}}/login/{{username}}`
 
 TODO: add description :S
 
 
-## vault.tokenAccessors
+## vault.tokenAccessors()
 
 `LIST /auth/token/accessors`
 
 TODO: add description :S
 
 
-## vault.tokenCreate
+## vault.tokenCreate()
 
 `POST /auth/token/create`
 
 TODO: add description :S
 
 
-## vault.tokenCreateOrphan
+## vault.tokenCreateOrphan()
 
 `POST /auth/token/create-orphan`
 
 TODO: add description :S
 
 
-## vault.tokenCreateRole
+## vault.tokenCreateRole()
 
 `POST /auth/token/create/{{role_name}}`
 
 TODO: add description :S
 
 
-## vault.tokenLookup
+## vault.tokenLookup()
 
 `POST /auth/token/lookup`
 
 TODO: add description :S
 
 
-## vault.tokenLookupAccessor
+## vault.tokenLookupAccessor()
 
 `POST /auth/token/lookup-accessor`
 
 TODO: add description :S
 
 
-## vault.tokenLookupSelf
+## vault.tokenLookupSelf()
 
 `GET /auth/token/lookup-self`
 
 TODO: add description :S
 
 
-## vault.tokenRenew
+## vault.tokenRenew()
 
 `POST /auth/token/renew`
 
 TODO: add description :S
 
 
-## vault.tokenRenewSelf
+## vault.tokenRenewSelf()
 
 `POST /auth/token/renew-self`
 
 TODO: add description :S
 
 
-## vault.tokenRevoke
+## vault.tokenRevoke()
 
 `POST /auth/token/revoke`
 
 TODO: add description :S
 
 
-## vault.tokenRevokeAccessor
+## vault.tokenRevokeAccessor()
 
 `POST /auth/token/revoke-accessor`
 
 TODO: add description :S
 
 
-## vault.tokenRevokeOrphan
+## vault.tokenRevokeOrphan()
 
 `POST /auth/token/revoke-orphan`
 
 TODO: add description :S
 
 
-## vault.tokenRevokeSelf
+## vault.tokenRevokeSelf()
 
 `POST /auth/token/revoke-self`
 
 TODO: add description :S
 
 
-## vault.tokenRoles
+## vault.tokenRoles()
 
 `GET /auth/token/roles?list=true`
 
 TODO: add description :S
 
 
-## vault.addTokenRole
+## vault.addTokenRole()
 
 `POST /auth/token/roles/{{role_name}}`
 
 TODO: add description :S
 
 
-## vault.getTokenRole
+## vault.getTokenRole()
 
 `GET /auth/token/roles/{{role_name}}`
 
 TODO: add description :S
 
 
-## vault.removeTokenRole
+## vault.removeTokenRole()
 
 `DELETE /auth/token/roles/{{role_name}}`
 
 TODO: add description :S
 
 
-## vault.approleRoles
+## vault.approleRoles()
 
 `LIST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role`
 
 TODO: add description :S
 
 
-## vault.addApproleRole
+## vault.addApproleRole()
 
 `POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
 
 TODO: add description :S
 
 
-## vault.getApproleRole
+## vault.getApproleRole()
 
 `GET /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
 
 TODO: add description :S
 
 
-## vault.deleteApproleRole
+## vault.deleteApproleRole()
 
 `DELETE /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
 
 TODO: add description :S
 
 
-## vault.getApproleRoleId
+## vault.getApproleRoleId()
 
 `GET /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id`
 
 TODO: add description :S
 
 
-## vault.updateApproleRoleId
+## vault.updateApproleRoleId()
 
 `POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id`
 
 TODO: add description :S
 
 
-## vault.getApproleRoleSecret
+## vault.getApproleRoleSecret()
 
 `POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id`
 
 TODO: add description :S
 
 
-## vault.approleSecretAccessors
+## vault.approleSecretAccessors()
 
 `LIST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id`
 
 TODO: add description :S
 
 
-## vault.approleSecretLookup
+## vault.approleSecretLookup()
 
 `POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id/lookup`
 
 TODO: add description :S
 
 
-## vault.approleSecretDestroy
+## vault.approleSecretDestroy()
 
 `POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id/destroy`
 
 TODO: add description :S
 
 
-## vault.approleSecretAccessorLookup
+## vault.approleSecretAccessorLookup()
 
 `POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id-accessor/lookup`
 
 TODO: add description :S
 
 
-## vault.approleSecretAccessorDestroy
+## vault.approleSecretAccessorDestroy()
 
 `POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id-accessor/destroy`
 
 TODO: add description :S
 
 
-## vault.approleLogin
+## vault.approleLogin()
 
 `POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/login`
 
 TODO: add description :S
 
 
-## vault.health
+## vault.health()
 
 `GET /sys/health`
 
 TODO: add description :S
 
 
-## vault.leader
+## vault.leader()
 
 `GET /sys/leader`
 
 TODO: add description :S
 
 
-## vault.stepDown
+## vault.stepDown()
 
 `PUT /sys/step-down`
 
