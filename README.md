@@ -20,7 +20,7 @@ make sure to use node.js version >= 8
 
 ## Usage
 
-*[All features](features.md)*
+**[All features](features.md)**
 
 ### Init and unseal
 
