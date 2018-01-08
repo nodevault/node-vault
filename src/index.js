@@ -1,7 +1,7 @@
 const debug = require('debug')('node-vault')
 const tv4 = require('tv4')
 const mustache = require('mustache')
-const rp = require('request-promise-native')
+const request = require('request-promise-native')
 
 // ----------------
 // import features and methods definitions
@@ -52,7 +52,7 @@ class VaultClient {
     }
 
     // testing stubs
-    this.rp = ((options._test && options._test['request-promise']) || rp).defaults({
+    this.request = ((options._test && options._test['request-promise']) || request).defaults({
       json: true,
       resolveWithFullResponse: true,
       simple: false,
@@ -150,7 +150,7 @@ class VaultClient {
     options.uri = uri
     debug(options.method, uri)
     // debug(options.json);
-    const response = await this.rp(options)
+    const response = await this.request(options)
     return this._handleVaultResponse(response)
   }
 
