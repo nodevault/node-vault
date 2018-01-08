@@ -3,13 +3,14 @@ const sinon = require('sinon')
 const sinonChai = require('sinon-chai')
 const chai = require('chai')
 const dirtyChai = require('dirty-chai')
+
+const nodeVault = require('./../src/main')
+
 const should = chai.Should
 
 should()
 chai.use(dirtyChai)
 chai.use(sinonChai)
-
-const vaultClient = require('./../src/index.js')
 
 const error = new Error('should not be called')
 
@@ -20,15 +21,15 @@ describe('node-vault', () => {
     })
 
     it('should export a function that returns a new client', () => {
-      const v = vaultClient()
-      vaultClient.should.be.a('function')
+      const v = nodeVault()
+      nodeVault.should.be.a('function')
       v.should.be.an('object')
     })
 
     it('should set default values for request library', () => {
       const defaultsStub = sinon.stub()
 
-      vaultClient({
+      nodeVault({
         _test: {
           'request-promise': {
             defaults: defaultsStub
@@ -51,7 +52,7 @@ describe('node-vault', () => {
       // see https://www.vaultproject.io/docs/commands/environment.html for details
       process.env.VAULT_SKIP_VERIFY = 'catpants'
 
-      vaultClient({
+      nodeVault({
         _test: {
           'request-promise': {
             defaults: defaultsStub
@@ -102,7 +103,7 @@ describe('node-vault', () => {
         }
       })
 
-      vault = vaultClient({
+      vault = nodeVault({
         endpoint: 'http://localhost:8200',
         token: '123',
         _test: {

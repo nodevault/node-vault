@@ -1,16 +1,19 @@
 const debug = require('debug')('node-vault')
+// tv4 is a tool to validate json structures
 const tv4 = require('tv4')
+// mustache is a string templating tool used for
+// the substitution of vault paths
 const mustache = require('mustache')
 const request = require('request-promise-native')
 
 // ----------------
 // import features and methods definitions
 
-const FEATURES = require('./features.js')
-const RESOURCE_METHODS = require('./resource-methods.js')
+const FEATURES = require('./interface/features.js')
+const RESOURCE_METHODS = require('./interface/resource-methods.js')
 
 // ----------------
-// validation schemas
+// request validation schema
 
 const REQUEST_SCHEMA = {
   type: 'object',
@@ -26,7 +29,8 @@ const REQUEST_SCHEMA = {
 }
 
 /**
- * Vault client class
+ * Vault client class (not exported by the module, see
+ * explanation at the end of this file - src/main.js)
  *
  * @param {object} [options={}] Options for the vault client
  * @param {string} [options.apiVersion='v1'] Vault's API version
@@ -35,10 +39,15 @@ const REQUEST_SCHEMA = {
  * @param {object} [options.features='<default features>'] JSON definition of the features
  * @param {object} [options.resourceMethods='<default resource methods>'] JSON definition of the resource methods
  * @param {object} [options.requestOptions={}] Request options
+ * @param {object} [options._test={}] Testing options (only for unit testing, DON'T USE IT IN PRODUCTION!)
  */
 class VaultClient {
   constructor (options = {}) {
     // optionally overwrite features
+    // TODO: maybe a better behavior is to only extend the
+    // default features and resource methods instead of
+    // replacing them entirely, and move this overwriting
+    // option to the _test namespace if needed
     this._features = options.features || FEATURES
     this._resourceMethods = options.resourceMethods || RESOURCE_METHODS
 
@@ -51,7 +60,7 @@ class VaultClient {
       insecure: (options._test && options._test.insecure) || false
     }
 
-    // testing stubs
+    // request testing stub injection
     this.request = ((options._test && options._test['request-promise']) || request).defaults({
       json: true,
       resolveWithFullResponse: true,
@@ -88,32 +97,43 @@ class VaultClient {
     const schema = original.schema.query
     // no schema for the query -> no need to extend
     if (!schema) return options
+    // create params array
     const params = []
+    // loop ONLY through schema params
     for (const key of Object.keys(schema.properties)) {
-      if (key in options.json) {
+      // if and only if the property exists in the new
+      // params, add it to the extended params array
+      key in options.json &&
         params.push(`${key}=${encodeURIComponent(options.json[key])}`)
-      }
     }
-    if (params.length > 0) {
-      options.path += `?${params.join('&')}`
-    }
+    // this way, only whitelisted params (on the schema)
+    // will be allowed in the request
+
+    // add params (if any) to path as URL query
+    if (params.length) options.path += `?${params.join('&')}`
     return options
   }
 
   _generateFeature (data) {
     return async (args = {}) => {
+      // merge all request options
       const requestOptions = Object.assign({},
         this._getOption('requestOptions'),
         args.requestOptions)
+
+      // generate request options
       requestOptions.method = data.method
       requestOptions.path = data.path
       delete args.requestOptions
       requestOptions.json = args
+
       // no schema object -> no validation
       if (!data.schema) return this._request(requestOptions)
       // else do validation of request URL and body
       this._validate(requestOptions.json, data.schema.req)
       this._validate(requestOptions.json, data.schema.query)
+
+      // extend the options and execute request
       const extendedOptions = this._extendRequestOptions(data, requestOptions)
       return this._request(extendedOptions)
     }
@@ -121,54 +141,80 @@ class VaultClient {
 
   _generateResourceMethod (operation, query = '') {
     return (...args) => {
+      // by using ...args we get an array of arguments
+      // similar to the arguments object in non-arrow functions
+
+      // the arguments for a resource method are:
+      // client.<resource method>(path, [data], requestOptions)
+
+      // the data argument is not exactly optional, it will not exist
+      // for all methods except the ones using 'PUT', where it will
+      // have a fixed second spot (and requestOptions becomes third)
       const path = args[0]
 
+      // merge all request options
       const requestOptions = Object.assign({},
         this._getOption('requestOptions'),
         operation === 'PUT' ? args[2] : args[1])
 
+      // generate request options
       requestOptions.path = `/${path}${query}`
       requestOptions.method = operation
       if (operation === 'PUT') requestOptions.json = args[1]
 
+      // execute request
       return this._request(requestOptions)
     }
   }
 
   async _request (options = {}) {
-    const valid = tv4.validate(options, REQUEST_SCHEMA)
-    if (!valid) return Promise.reject(tv4.error)
-    let uri = `${this._getOption('endpoint')}/${this._getOption('apiVersion')}${options.path}`
-    // Replace variables in uri.
-    uri = mustache.render(uri, options.json)
-    // Replace unicode encodings.
-    uri = uri.replace(/&#x2F;/g, '/')
-    options.headers = options.headers || {}
-    if (this._getOption('token') !== undefined || this._getOption('token') !== null || this._getOption('token') !== '') {
-      options.headers['X-Vault-Token'] = this._getOption('token')
-    }
+    // validate
+    if (!tv4.validate(options, REQUEST_SCHEMA)) throw tv4.error
+    // create URI template
+    const uriTemplate = `${this._getOption('endpoint')}/${this._getOption('apiVersion')}${options.path}`
+    // replace variables in uri
+    const uri = mustache.render(uriTemplate, options.json)
+      // replace unicode encodings
+      .replace(/&#x2F;/g, '/')
+    // add URI
     options.uri = uri
+    // add headers
+    options.headers = options.headers || {}
+    // add token
+    const token = this._getOption('token')
+    typeof token === 'string' && token.length &&
+      (options.headers['X-Vault-Token'] = token)
+
+    // execute request
     debug(options.method, uri)
-    // debug(options.json);
     const response = await this.request(options)
+    // handle response from vault
     return this._handleVaultResponse(response)
   }
 
   async _handleVaultResponse (response) {
+    // throw exception is there's no response argument
     if (!response) throw new Error('[node-vault:handleVaultResponse] No response passed')
+
+    // if response status code is not 200 or 204 (ok responses)
     debug(response.statusCode)
     if (response.statusCode !== 200 && response.statusCode !== 204) {
       // healthcheck response is never handled as an error
       if (response.request.path.match(/sys\/health/) !== null) return response.body
 
+      // get the error message
       let message
       if (response.body && response.body.errors && response.body.errors.length) {
         message = response.body.errors[0]
       } else {
         message = `Status ${response.statusCode}`
       }
+
+      // throw an exception with the message
       throw new Error(message)
     }
+
+    // else return the response body
     return response.body
   }
 
@@ -178,17 +224,24 @@ class VaultClient {
   _createClient () {
     const client = {}
 
-    const addMethod = name =>
+    // add a feature to the current client object
+    const addFeature = name =>
       (client[name] = (...args) =>
         this._generateFeature(this._features[name])(...args))
 
+    // add a resource method to the current client object
     const addResourceMethod = (method) =>
       (client[method.name] = (...args) =>
         this._generateResourceMethod(method.operation, method.query)(...args))
 
+    // add all resource methods
     this._resourceMethods.forEach(addResourceMethod)
-    Object.keys(this._features).forEach(addMethod)
 
+    // add all features
+    Object.keys(this._features).forEach(addFeature)
+
+    // add insecure properties and methods to client
+    // if the insecure option is switched on (for testing)
     if (this._options.insecure) {
       client.endpoint = this._options.endpoint
       client.apiVersion = this._options.apiVersion
@@ -200,6 +253,7 @@ class VaultClient {
         (...args) => this._request(...args)
     }
 
+    // return the generated client
     return client
   }
 }

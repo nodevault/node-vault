@@ -1,6 +1,6 @@
 const fs = require('fs-extra')
-const features = require('../src/features')
-const resourceMethods = require('../src/resource-methods')
+const features = require('../src/interface/features')
+const resourceMethods = require('../src/interface/resource-methods')
 
 const refreshFeatures = () => {
   const featuresDoc = Object.keys(features).map(name => {
