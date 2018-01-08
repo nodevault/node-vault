@@ -1,5 +1,5 @@
 module.exports = [{
-  // help
+  // vault help
   name: 'help',
   query: '?help=1',
   operation: 'GET',
@@ -15,7 +15,10 @@ The command requires that the vault be unsealed, because otherwise
 the mount points of the backends are unknown.
 
     `.trim()
-}, { // secrets
+
+// vault data operations
+}, {
+  // - read
   name: 'read',
   operation: 'GET',
   description: `
@@ -29,6 +32,7 @@ backends in use to determine key structure.
 
     `.trim()
 }, {
+  // - write
   name: 'write',
   operation: 'PUT',
   description: `
@@ -49,6 +53,7 @@ prefix the "@" with a slash: "\\@".
 
     `.trim()
 }, {
+  // - list
   name: 'list',
   operation: 'LIST',
   description: `
@@ -60,6 +65,7 @@ and endpoint-specific.
 
     `.trim()
 }, {
+  // - delete
   name: 'delete',
   operation: 'DELETE',
   description: `
