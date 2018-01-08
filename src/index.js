@@ -139,9 +139,9 @@ class VaultClient {
     const valid = tv4.validate(options, REQUEST_SCHEMA)
     if (!valid) return Promise.reject(tv4.error)
     let uri = `${this._getOption('endpoint')}/${this._getOption('apiVersion')}${options.path}`
-      // Replace variables in uri.
+    // Replace variables in uri.
     uri = mustache.render(uri, options.json)
-      // Replace unicode encodings.
+    // Replace unicode encodings.
     uri = uri.replace(/&#x2F;/g, '/')
     options.headers = options.headers || {}
     if (this._getOption('token') !== undefined || this._getOption('token') !== null || this._getOption('token') !== '') {
