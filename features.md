@@ -327,35 +327,35 @@ string, the returned response is the exact same as the contained wrapped respons
 
 ## vault.githubLogin()
 
-`POST /auth/{{mount_point}}{{^mount_point}}github{{/mount_point}}/login`
+`POST /auth/{{mount_point=github}}/login`
 
 TODO: add description :S
 
 
 ## vault.userpassLogin()
 
-`POST /auth/{{mount_point}}{{^mount_point}}userpass{{/mount_point}}/login/{{username}}`
+`POST /auth/{{mount_point=userpass}}/login/{{username}}`
 
 TODO: add description :S
 
 
 ## vault.ldapLogin()
 
-`POST /auth/{{mount_point}}{{^mount_point}}ldap{{/mount_point}}/login/{{username}}`
+`POST /auth/{{mount_point=ldap}}/login/{{username}}`
 
 TODO: add description :S
 
 
 ## vault.oktaLogin()
 
-`POST /auth/{{mount_point}}{{^mount_point}}okta{{/mount_point}}/login/{{username}}`
+`POST /auth/{{mount_point=okta}}/login/{{username}}`
 
 TODO: add description :S
 
 
 ## vault.radiusLogin()
 
-`POST /auth/{{mount_point}}{{^mount_point}}radius{{/mount_point}}/login/{{username}}`
+`POST /auth/{{mount_point=radius}}/login/{{username}}`
 
 TODO: add description :S
 
@@ -481,91 +481,91 @@ TODO: add description :S
 
 ## vault.approleRoles()
 
-`LIST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role`
+`LIST /auth/{{mount_point=approle}}/role`
 
 TODO: add description :S
 
 
 ## vault.addApproleRole()
 
-`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
+`POST /auth/{{mount_point=approle}}/role/{{role_name}}`
 
 TODO: add description :S
 
 
 ## vault.getApproleRole()
 
-`GET /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
+`GET /auth/{{mount_point=approle}}/role/{{role_name}}`
 
 TODO: add description :S
 
 
 ## vault.deleteApproleRole()
 
-`DELETE /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
+`DELETE /auth/{{mount_point=approle}}/role/{{role_name}}`
 
 TODO: add description :S
 
 
 ## vault.getApproleRoleId()
 
-`GET /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id`
+`GET /auth/{{mount_point=approle}}/role/{{role_name}}/role-id`
 
 TODO: add description :S
 
 
 ## vault.updateApproleRoleId()
 
-`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id`
+`POST /auth/{{mount_point=approle}}/role/{{role_name}}/role-id`
 
 TODO: add description :S
 
 
 ## vault.getApproleRoleSecret()
 
-`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id`
+`POST /auth/{{mount_point=approle}}/role/{{role_name}}/secret-id`
 
 TODO: add description :S
 
 
 ## vault.approleSecretAccessors()
 
-`LIST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id`
+`LIST /auth/{{mount_point=approle}}/role/{{role_name}}/secret-id`
 
 TODO: add description :S
 
 
 ## vault.approleSecretLookup()
 
-`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id/lookup`
+`POST /auth/{{mount_point=approle}}/role/{{role_name}}/secret-id/lookup`
 
 TODO: add description :S
 
 
 ## vault.approleSecretDestroy()
 
-`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id/destroy`
+`POST /auth/{{mount_point=approle}}/role/{{role_name}}/secret-id/destroy`
 
 TODO: add description :S
 
 
 ## vault.approleSecretAccessorLookup()
 
-`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id-accessor/lookup`
+`POST /auth/{{mount_point=approle}}/role/{{role_name}}/secret-id-accessor/lookup`
 
 TODO: add description :S
 
 
 ## vault.approleSecretAccessorDestroy()
 
-`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id-accessor/destroy`
+`POST /auth/{{mount_point=approle}}/role/{{role_name}}/secret-id-accessor/destroy`
 
 TODO: add description :S
 
 
 ## vault.approleLogin()
 
-`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/login`
+`POST /auth/{{mount_point=approle}}/login`
 
 TODO: add description :S
 

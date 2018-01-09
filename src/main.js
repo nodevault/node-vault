@@ -1,9 +1,6 @@
 const debug = require('debug')('node-vault')
 // tv4 is a tool to validate json structures
 const tv4 = require('tv4')
-// mustache is a string templating tool used for
-// the substitution of vault paths
-const mustache = require('mustache')
 const request = require('request-promise-native')
 
 // ----------------
@@ -170,13 +167,22 @@ class VaultClient {
     return options
   }
 
+  _formatRequest (uriTemplate, values = {}) {
+    return uriTemplate.replace(/{{([\S]+?)}}/g, (a, b, c) => {
+      const parts = b.split('=')
+      const prop = parts[0]
+      const defaultValue = parts[1] || ''
+      return values[prop] || defaultValue
+    })
+  }
+
   async _request (options = {}) {
     // validate
     if (!tv4.validate(options, REQUEST_SCHEMA)) throw tv4.error
     // create URI template
     const uriTemplate = `${this._getOption('endpoint')}/${this._getOption('apiVersion')}${options.path}`
     // replace variables in uri
-    const uri = mustache.render(uriTemplate, options.json)
+    const uri = this._formatRequest(uriTemplate, options.json)
       // replace unicode encodings
       .replace(/&#x2F;/g, '/')
     // add URI
@@ -270,6 +276,8 @@ class VaultClient {
         (...args) => this._generateFeature(...args)
       client.request =
         (...args) => this._request(...args)
+      client.formatRequest =
+        (...args) => this._formatRequest(...args)
     }
 
     // return the generated client
