@@ -9,8 +9,8 @@ const request = require('request-promise-native')
 // ----------------
 // import features and methods definitions
 
-const FEATURES = require('./interface/features.js')
-const RESOURCE_METHODS = require('./interface/resource-methods.js')
+const FEATURES = require('./interface/features')
+const RESOURCE_METHODS = require('./interface/resource-methods')
 
 // ----------------
 // request validation schema
@@ -91,28 +91,7 @@ class VaultClient {
   }
 
   // ----------------
-  // helpers
-
-  _extendRequestOptions (original, options) {
-    const schema = original.schema.query
-    // no schema for the query -> no need to extend
-    if (!schema) return options
-    // create params array
-    const params = []
-    // loop ONLY through schema params
-    for (const key of Object.keys(schema.properties)) {
-      // if and only if the property exists in the new
-      // params, add it to the extended params array
-      key in options.json &&
-        params.push(`${key}=${encodeURIComponent(options.json[key])}`)
-    }
-    // this way, only whitelisted params (on the schema)
-    // will be allowed in the request
-
-    // add params (if any) to path as URL query
-    if (params.length) options.path += `?${params.join('&')}`
-    return options
-  }
+  // method generators
 
   _generateFeature (data) {
     return async (args = {}) => {
@@ -167,6 +146,30 @@ class VaultClient {
     }
   }
 
+  // ----------------
+  // requests
+
+  _extendRequestOptions (original, options) {
+    const schema = original.schema.query
+    // no schema for the query -> no need to extend
+    if (!schema) return options
+    // create params array
+    const params = []
+    // loop ONLY through schema params
+    for (const key of Object.keys(schema.properties)) {
+      // if and only if the property exists in the new
+      // params, add it to the extended params array
+      key in options.json &&
+        params.push(`${key}=${encodeURIComponent(options.json[key])}`)
+    }
+    // this way, only whitelisted params (on the schema)
+    // will be allowed in the request
+
+    // add params (if any) to path as URL query
+    if (params.length) options.path += `?${params.join('&')}`
+    return options
+  }
+
   async _request (options = {}) {
     // validate
     if (!tv4.validate(options, REQUEST_SCHEMA)) throw tv4.error
@@ -194,7 +197,7 @@ class VaultClient {
 
   async _handleVaultResponse (response) {
     // throw exception is there's no response argument
-    if (!response) throw new Error('[node-vault:handleVaultResponse] No response passed')
+    if (!response) throw new Error('[node-vault:handleVaultResponse] No response parameter')
 
     // if response status code is not 200 or 204 (ok responses)
     debug(response.statusCode)
@@ -219,6 +222,18 @@ class VaultClient {
   }
 
   // ----------------
+  // authentication
+
+  _setToken (token) {
+    if (typeof token === 'string' && token.length) this._options.token = token
+    else throw new Error('[node-vault:_setToken] Incorrect token parameter')
+  }
+
+  _removeToken () {
+    this.token = null
+  }
+
+  // ----------------
   // client creation
 
   _createClient () {
@@ -239,6 +254,10 @@ class VaultClient {
 
     // add all features
     Object.keys(this._features).forEach(addFeature)
+
+    // add login and logout (setToken and removeToken aliases)
+    client.login = token => this._setToken(token)
+    client.logout = () => this._removeToken()
 
     // add insecure properties and methods to client
     // if the insecure option is switched on (for testing)
