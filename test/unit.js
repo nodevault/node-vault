@@ -325,7 +325,7 @@ describe('node-vault', () => {
       it('should return a Promise with the error if no response is passed', done => {
         const promise = vault.handleVaultResponse()
         promise.catch((err) => {
-          err.message.should.equal('[node-vault:handleVaultResponse] No response passed')
+          err.message.should.equal('[node-vault:handleVaultResponse] No response parameter')
           return done()
         })
       })
