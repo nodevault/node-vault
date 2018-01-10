@@ -15,7 +15,9 @@
     "predocs": "node scripts/write-features.js",
     "docs": "docco --output docs src/**/*.js",
     "prepublishOnly": "yarn nsp",
-    "precommit": "node scripts/write-features.js && git add features.md"
+    "precommit": "node scripts/write-features.js && git add features.md",
+    "refresh-local-vault": "docker-compose down ; nohup docker-compose up vault &",
+    "examples": "node examples/all"
   },
   "directories": {
     "example": "./example",

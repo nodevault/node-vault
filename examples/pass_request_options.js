@@ -2,7 +2,7 @@
 
 process.env.DEBUG = 'node-vault' // switch on debug mode
 
-const vault = require('./../src/index')()
+const vault = require('./../src/main')()
 
 const options = {
   headers: {
@@ -16,6 +16,11 @@ const options = {
   }
 }
 
-vault.help('sys/policy', options)
-.then(() => vault.help('sys/mounts'))
-.catch((err) => console.error(err.message))
+const example = async (vault) => {
+  await vault.help('sys/policy', options)
+  await vault.help('sys/mounts')
+}
+
+module.exports = example
+
+if (require.main === module) example(vault).catch(console.error)

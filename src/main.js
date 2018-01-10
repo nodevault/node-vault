@@ -247,13 +247,21 @@ class VaultClient {
 
     // add a feature to the current client object
     const addFeature = name =>
-      (client[name] = (...args) =>
-        this._generateFeature(this._features[name])(...args))
+      (client[name] = (...args) => {
+        const logMessages = [`${name}()`]
+        args.length && logMessages.push('- arguments:', args)
+        debug(...logMessages)
+        return this._generateFeature(this._features[name])(...args)
+      })
 
     // add a resource method to the current client object
     const addResourceMethod = (method) =>
-      (client[method.name] = (...args) =>
-        this._generateResourceMethod(method.operation, method.query)(...args))
+      (client[method.name] = (...args) => {
+        const logMessages = [`${method.name}()`]
+        args.length && logMessages.push('- arguments:', args)
+        debug(...logMessages)
+        return this._generateResourceMethod(method.operation, method.query)(...args)
+      })
 
     // add all resource methods
     this._resourceMethods.forEach(addResourceMethod)

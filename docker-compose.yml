@@ -13,11 +13,11 @@ services:
   vault:
     image: vault
     volumes:
-      - $PWD/example:/tmp/example
+      - $PWD/examples:/tmp/examples
       - $PWD/logs/:/tmp/logs
     cap_add:
       - IPC_LOCK
-    command: server -config /tmp/example/config.hcl
+    command: server -config /tmp/examples/config.hcl
     ports:
       - "8200:8200"
     depends_on:
