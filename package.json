@@ -2,7 +2,7 @@
   "name": "node-vault",
   "version": "0.7.1",
   "description": "NodeJS API client for HashiCorp's Vault",
-  "main": "./src/index.js",
+  "main": "./src/main.js",
   "scripts": {
     "lint": "standard",
     "test": "mocha",
