@@ -12,7 +12,7 @@ NodeJS API client for HashiCorp's [Vault]
 make sure to use node.js version >= 8
 
     # yarn
-    yarn add node vault
+    yarn add node-vault
     
     # npm
     npm install node-vault
