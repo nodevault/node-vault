@@ -91,7 +91,7 @@ class VaultClient {
   // method generators
 
   _generateFeature (data) {
-    return async (args = {}) => {
+    return (args = {}) => {
       // merge all request options
       const requestOptions = Object.assign({},
         this._getOption('requestOptions'),
@@ -106,8 +106,12 @@ class VaultClient {
       // no schema object -> no validation
       if (!data.schema) return this._request(requestOptions)
       // else do validation of request URL and body
-      this._validate(requestOptions.json, data.schema.req)
-      this._validate(requestOptions.json, data.schema.query)
+      try {
+        this._validate(requestOptions.json, data.schema.req)
+        this._validate(requestOptions.json, data.schema.query)
+      } catch (error) {
+        return Promise.reject(error)
+      }
 
       // extend the options and execute request
       const extendedOptions = this._extendRequestOptions(data, requestOptions)
@@ -176,9 +180,9 @@ class VaultClient {
     })
   }
 
-  async _request (options = {}) {
+  _request (options = {}) {
     // validate
-    if (!tv4.validate(options, REQUEST_SCHEMA)) throw tv4.error
+    if (!tv4.validate(options, REQUEST_SCHEMA)) return Promise.reject(tv4.error)
     // create URI template
     const uriTemplate = `${this._getOption('endpoint')}/${this._getOption('apiVersion')}${options.path}`
     // replace variables in uri
@@ -196,20 +200,20 @@ class VaultClient {
 
     // execute request
     debug(options.method, uri)
-    const response = await this.request(options)
-    // handle response from vault
-    return this._handleVaultResponse(response)
+    return this.request(options)
+      // handle response from vault
+      .then(response => this._handleVaultResponse(response))
   }
 
-  async _handleVaultResponse (response) {
+  _handleVaultResponse (response) {
     // throw exception is there's no response argument
-    if (!response) throw new Error('[node-vault:handleVaultResponse] No response parameter')
+    if (!response) return Promise.reject(new Error('[node-vault:handleVaultResponse] No response parameter'))
 
     // if response status code is not 200 or 204 (ok responses)
     debug(response.statusCode)
     if (response.statusCode !== 200 && response.statusCode !== 204) {
       // healthcheck response is never handled as an error
-      if (response.request.path.match(/sys\/health/) !== null) return response.body
+      if (response.request.path.match(/sys\/health/) !== null) return Promise.resolve(response.body)
 
       // get the error message
       let message
@@ -220,11 +224,11 @@ class VaultClient {
       }
 
       // throw an exception with the message
-      throw new Error(message)
+      return Promise.reject(new Error(message))
     }
 
     // else return the response body
-    return response.body
+    return Promise.resolve(response.body)
   }
 
   // ----------------
