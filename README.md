@@ -9,7 +9,7 @@ NodeJS API client for HashiCorp's [Vault]
 
 
 ## Install
-make sure to use node.js version >= 8
+`node-vault` supports Node.js v6 and above.
 
     # yarn
     yarn add node-vault
@@ -20,7 +20,7 @@ make sure to use node.js version >= 8
 
 ## Usage
 
-**[All features](features.md)**
+**[All features]**
 
 ### Init and unseal
 
@@ -29,48 +29,54 @@ const options = {
   apiVersion: 'v1', // default
   endpoint: 'http://127.0.0.1:8200', // default
   // VAULT_ADDR environment variable is also available
-  token: '<vault token>' // client authentication token
+  token: '<vault token>' // client authentication token, optional
   // VAULT_TOKEN environment variable is also available
 }
 
 // get new instance of the client
-const vault = require('node-vault')(options);
+const vault = require('node-vault')(options)
 
-// init vault server
-vault.init({ secret_shares: 1, secret_threshold: 1 })
-  .then((result) => {
-    const keys = result.keys
-    // set token for all following requests
-    vault.token = result.root_token
-    // unseal vault server
-    return vault.unseal({ secret_shares: 1, key: keys[0] })
-  })
-  .catch(console.error)
+const run = async () => {
+  // init vault server
+  const initData = await vault.init({ secret_shares: 1, secret_threshold: 1 })
+  // set token for all following requests
+  vault.login(initData.root_token)
+  // unseal vault server
+  const [key] = initData.keys
+  return vault.unseal({ secret_shares: 1, key })
+}
+
+run().catch(console.error)
 ```
 
-### write, read and delete secrets
+### Write, read and delete secrets
 
 ```javascript
-vault.write('secret/hello', { value: 'world', lease: '1s' })
-  .then(() => vault.read('secret/hello'))
-  .then(() => vault.delete('secret/hello'))
-  .catch(console.error)
+const run = async () => {
+  await vault.write('secret/hello', { value: 'world', lease: '1s' })
+  vault.read('secret/hello')
+  vault.delete('secret/hello')
+}
+
+run().catch(console.error)
 ```
 
-## Docs
+## Code documentation
 Generate [docco] docs via `yarn docs`.
 
 
-## Examples
-Please have a look at the [examples] and the generated [feature list] to see what is already implemented.
+## Examples and feature list
+Have a look at the [examples] and the generated [feature list] to see what is implemented.
 
-Instead of installing all the dependencies like vault itself, postgres and other stuff you can
+When running the examples, instead of installing all the dependencies like vault, postgres and other stuff you can
 use [docker] and [docker-compose] to link and run multiple docker containers with all of its dependencies.
+
+> Note that node v8+ is required to run the examples, due to the usage of `async/await`.
 
 ```bash
 git clone git@github.com:kr1sp1n/node-vault.git
 cd node-vault
-docker-compose up vault
+docker-compose up --force-recreate vault # or use "yarn refresh-docker-vault"
 ```
 
 Now you can run the examples from another terminal window.
@@ -90,22 +96,30 @@ Now you are able to run all of the other [examples]:
 node example/policies.js
 ```
 
+You can also init vault and run all of the examples in one go by running `yarn examples` (which just executes [examples/all.js])
+
 ## Testing
 
-Run tests inside docker to do also nice integration testing:
+You can run the automated tests with `yarn test`.
+To run tests inside docker (making it very easy to run the integration tests) simply run:
 
     docker-compose up --force-recreate test
+
+There's also this yarn alias available: `yarn docker-test`.
+
+> Note that you will need to install and setup [docker] and [docker-compose]
 
 This will create containers for vault, postgres and running the tests inside
 docker.
 
 
 
-[examples]: /example
+[examples]: /examples
+[examples/all.js]: examples/all.js
 [docker-compose.yml]: /docker-compose.yml
 [Vault]: https://vaultproject.io/
-[docker-compose]: https://www.docker.com/docker-compose
-[docker]: http://docs.docker.com/
-[docker toolbox]: https://www.docker.com/toolbox
-[docco]: http://jashkenas.github.io/docco
+[docker]: https://docs.docker.com/
+[docker-compose]: https://docs.docker.com/compose/
+[docco]: http://ashkenas.com/docco/
+[All features]: features.md
 [feature list]: features.md
