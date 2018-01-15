@@ -1,7 +1,0 @@
-Creating network "nodevault_default" with the default driver
-Creating nodevault_postgres_1 ... 
-[2A[2KCreating nodevault_postgres_1 ... [32mdone[0m[2BCreating nodevault_vault_1    ... 
-[1A[2KCreating nodevault_vault_1    ... [32mdone[0m[1BAttaching to nodevault_vault_1
-[36mvault_1     |[0m Error loading configuration from /tmp/examples/config.hcl: stat /tmp/examples/config.hcl: permission denied
-[36mnodevault_vault_1 exited with code 1
-[0m
