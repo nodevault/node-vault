@@ -43,7 +43,7 @@ const run = async () => {
   vault.login(initData.root_token)
   // unseal vault server
   const [key] = initData.keys
-  return vault.unseal({ secret_shares: 1, key })
+  await vault.unseal({ secret_shares: 1, key })
 }
 
 run().catch(console.error)
@@ -54,8 +54,8 @@ run().catch(console.error)
 ```javascript
 const run = async () => {
   await vault.write('secret/hello', { value: 'world', lease: '1s' })
-  vault.read('secret/hello')
-  vault.delete('secret/hello')
+  await vault.read('secret/hello')
+  await vault.delete('secret/hello')
 }
 
 run().catch(console.error)
