@@ -16,7 +16,7 @@
     "docs": "docco --output docs src/**/*.js",
     "prepublishOnly": "yarn nsp",
     "precommit": "node scripts/write-features.js && git add features.md",
-    "refresh-local-vault": "docker-compose down ; nohup docker-compose up vault &",
+    "refresh-docker-vault": "docker-compose up --force-recreate vault",
     "examples": "node examples/all"
   },
   "directories": {
