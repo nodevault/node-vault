@@ -13,7 +13,7 @@
     "test-unit": "mocha test/unit.js",
     "test-watch": "mocha --watch",
     "predocs": "node scripts/write-features.js",
-    "docs": "docco --output docs src/**/*.js",
+    "docs": "docco --output docs src/**/*.js src/*.js",
     "prepublishOnly": "yarn nsp",
     "precommit": "node scripts/write-features.js && git add features.md",
     "refresh-docker-vault": "docker-compose up --force-recreate vault",
