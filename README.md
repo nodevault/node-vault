@@ -109,8 +109,7 @@ There's also this yarn alias available: `yarn docker-test`.
 
 > Note that you will need to install and setup [docker] and [docker-compose]
 
-This will create containers for vault, postgres and running the tests inside
-docker.
+This will create containers for vault, postgres and the tests themselves.
 
 
 
