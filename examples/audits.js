@@ -1,6 +1,5 @@
-// file: example/audits.js
-
 process.env.DEBUG = 'node-vault' // switch on debug mode
+
 const vault = require('./../src/main')()
 const path = '/tmp/logs/test.log'
 
