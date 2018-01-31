@@ -207,7 +207,7 @@ const ROOT_RESPONSE_SCHEME = {
   required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete']
 }
 
-module.exports = {
+const features = {
   // lifecycle and status
   status: {
     method: 'GET',
@@ -561,87 +561,6 @@ string, the returned response is the exact same as the contained wrapped respons
           }
         }
       }
-    }
-  },
-  // third party tokens
-  githubLogin: {
-    method: 'POST',
-    path: '/auth/{{mount_point=github}}/login',
-    schema: {
-      req: {
-        type: 'object',
-        properties: {
-          token: {
-            type: 'string'
-          }
-        },
-        required: ['token']
-      },
-      res: TOKEN_RESPONSE_SCHEME
-    }
-  },
-  userpassLogin: {
-    method: 'POST',
-    path: '/auth/{{mount_point=userpass}}/login/{{username}}',
-    schema: {
-      req: {
-        type: 'object',
-        properties: {
-          password: {
-            type: 'string'
-          }
-        },
-        required: ['password']
-      },
-      res: TOKEN_RESPONSE_SCHEME
-    }
-  },
-  ldapLogin: {
-    method: 'POST',
-    path: '/auth/{{mount_point=ldap}}/login/{{username}}',
-    schema: {
-      req: {
-        type: 'object',
-        properties: {
-          password: {
-            type: 'string'
-          }
-        },
-        required: ['password']
-      },
-      res: TOKEN_RESPONSE_SCHEME
-    }
-  },
-  oktaLogin: {
-    method: 'POST',
-    path: '/auth/{{mount_point=okta}}/login/{{username}}',
-    schema: {
-      req: {
-        type: 'object',
-        properties: {
-          password: {
-            type: 'string'
-          }
-        },
-        required: ['password']
-      },
-      res: TOKEN_RESPONSE_SCHEME
-    }
-  },
-  radiusLogin: {
-    method: 'POST',
-    path: '/auth/{{mount_point=radius}}/login/{{username}}',
-    schema: {
-      req: {
-        type: 'object',
-        properties: {
-          password: {
-            type: 'string'
-          }
-        },
-        required: ['password']
-      },
-      res: TOKEN_RESPONSE_SCHEME
     }
   },
   // token management
@@ -1093,3 +1012,34 @@ string, the returned response is the exact same as the contained wrapped respons
     path: '/sys/step-down'
   }
 }
+
+// adds a standard third party login feature
+const addAuthLogin = (name) => (features[`${name}Login`] = {
+  method: 'POST',
+  path: `/auth/{{mount_point=${name}}}/login/{{username}}`,
+  schema: {
+    req: {
+      type: 'object',
+      properties: {
+        password: {
+          type: 'string'
+        }
+      },
+      required: ['password']
+    },
+    res: TOKEN_RESPONSE_SCHEME
+  }
+})
+
+// add all third party logins
+const authLogins = [
+  'github',
+  'userpass',
+  'ldap',
+  'okta',
+  'radius']
+authLogins.forEach(addAuthLogin)
+
+console.log(features.githubLogin)
+
+module.exports = features
