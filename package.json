@@ -20,8 +20,10 @@
     "examples": "node examples/all"
   },
   "directories": {
-    "example": "./example",
-    "doc": "./docs"
+    "example": "./examples",
+    "doc": "./docs",
+    "test": "./test",
+    "lib": "src"
   },
   "files": [
     "src"
