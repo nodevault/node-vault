@@ -5,6 +5,9 @@ let tv4 = require('tv4');
 let commands = require('./commands.js');
 let mustache = require('mustache');
 let rp = require('request-promise-native');
+const fs = require('fs');
+const os = require('os');
+const pathJoin = require('path').join;
 
 module.exports = (config = {}) => {
   // load conditional dependencies
@@ -46,6 +49,19 @@ module.exports = (config = {}) => {
   client.apiVersion = config.apiVersion || 'v1';
   client.endpoint = config.endpoint || process.env.VAULT_ADDR || 'http://127.0.0.1:8200';
   client.token = config.token || process.env.VAULT_TOKEN;
+
+  // A few other means of token retrieval
+  if (config.useHomeToken === true && !config.tokenFile) {
+    config.tokenFile = pathJoin(os.homedir(), '.vault-token');
+  }
+  // Allow token retrieval via file
+  if (config.tokenFile) {
+    try {
+      client.token = fs.readFileSync(config.tokenFile).toString();
+    } catch (ex) {
+      // pass
+    }
+  }
 
   const requestSchema = {
     type: 'object',
