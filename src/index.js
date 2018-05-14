@@ -42,6 +42,10 @@ module.exports = (config = {}) => {
     return Promise.resolve(response.body);
   }
 
+  function setVaultToken(token) {
+    client.token = token;
+  }
+
   client.handleVaultResponse = handleVaultResponse;
 
   // defaults
@@ -162,7 +166,16 @@ module.exports = (config = {}) => {
       return validate(options.json, conf.schema.req)
       .then(() => validate(options.json, conf.schema.query))
       .then(() => extendOptions(conf, options))
-      .then((extendedOptions) => client.request(extendedOptions));
+      .then((extendedOptions) => {
+        if (name === 'githubLogin') {
+          return client.request(extendedOptions)
+              .then((githubLoginResp) => {
+                setVaultToken(githubLoginResp.auth.client_token);
+                return githubLoginResp;
+              });
+        }
+        return client.request(extendedOptions);
+      });
     };
   }
 
