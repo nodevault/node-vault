@@ -6,6 +6,18 @@ let commands = require('./commands.js');
 let mustache = require('mustache');
 let rp = require('request-promise-native');
 
+class VaultError extends Error {}
+
+class ApiResponseError extends VaultError {
+  constructor(message, response) {
+    super(message);
+    this.response = {
+      statusCode: response.statusCode,
+      body: response.body,
+    };
+  }
+}
+
 module.exports = (config = {}) => {
   // load conditional dependencies
   debug = config.debug || debug;
@@ -21,7 +33,7 @@ module.exports = (config = {}) => {
   const client = {};
 
   function handleVaultResponse(response) {
-    if (!response) return Promise.reject(new Error('No response passed'));
+    if (!response) return Promise.reject(new VaultError('No response passed'));
     debug(response.statusCode);
     if (response.statusCode !== 200 && response.statusCode !== 204) {
       // handle health response not as error
@@ -34,7 +46,7 @@ module.exports = (config = {}) => {
       } else {
         message = `Status ${response.statusCode}`;
       }
-      const error = new Error(message);
+      const error = new ApiResponseError(message, response);
       return Promise.reject(error);
     }
     return Promise.resolve(response.body);

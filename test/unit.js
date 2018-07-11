@@ -3,6 +3,7 @@ const sinonChai = require('sinon-chai');
 const chai = require('chai');
 const dirtyChai = require('dirty-chai');
 const should = chai.Should;
+const expect = chai.expect;
 
 should();
 chai.use(dirtyChai);
@@ -264,6 +265,8 @@ describe('node-vault', () => {
         const promise = vault.handleVaultResponse(response);
         promise.catch(err => {
           err.message.should.equal(response.body.errors[0]);
+          err.response.statusCode.should.equal(500);
+          err.response.body.should.equal(response.body);
           return done();
         });
       });
@@ -276,6 +279,8 @@ describe('node-vault', () => {
         const promise = vault.handleVaultResponse(response);
         promise.catch(err => {
           err.message.should.equal(`Status ${response.statusCode}`);
+          err.response.statusCode.should.equal(500);
+          expect(err.response.body).to.be.undefined;
           return done();
         });
       });
