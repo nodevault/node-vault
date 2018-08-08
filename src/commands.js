@@ -1080,7 +1080,7 @@ module.exports = {
             type: 'string',
           },
         },
-        required: ['role_id', 'secret_id'],
+        required: ['role_id'],
       },
       res: approleResponse,
     },
