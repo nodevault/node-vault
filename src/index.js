@@ -169,10 +169,22 @@ module.exports = (config = {}) => {
       // no schema object -> no validation
       if (!conf.schema) return client.request(options);
       // else do validation of request URL and body
-      return validate(options.json, conf.schema.req)
+      let promise = validate(options.json, conf.schema.req)
       .then(() => validate(options.json, conf.schema.query))
       .then(() => extendOptions(conf, options))
       .then((extendedOptions) => client.request(extendedOptions));
+
+      if (conf.tokenSource) {
+        promise = promise.then(response => {
+          const candidateToken = response.auth && response.auth.client_token;
+          if (candidateToken) {
+            client.token = candidateToken;
+          }
+          return response;
+        });
+      }
+
+      return promise;
     };
   }
 
