@@ -83,7 +83,7 @@ module.exports = (config = {}) => {
     uri = uri.replace(/&#x2F;/g, '/');
     options.headers = options.headers || {};
     if (typeof client.token === 'string' && client.token.length) {
-      options.headers['X-Vault-Token'] = client.token;
+      options.headers['X-Vault-Token'] = options.headers['X-Vault-Token'] || client.token;
     }
     options.uri = uri;
     debug(options.method, uri);
