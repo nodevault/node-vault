@@ -57,6 +57,96 @@
 `POST /sys/mounts/{{mount_point}}`
 
 
+## vault.addKey
+
+`POST /transit/keys/{{name}}`
+
+
+## vault.getKey
+
+`GET /transit/keys/{{name}}`
+
+
+## vault.keys
+
+`GET /transit/keys`
+
+
+## vault.removeKey
+
+`DELETE /transit/keys/{{name}}`
+
+
+## vault.updateKeyConfiguration
+
+`POST /transit/keys/{{name}}/config`
+
+
+## vault.rotateKey
+
+`POST /transit/keys/{{name}}/rotate`
+
+
+## vault.exportKey
+
+`GET /transit/export/{{key_type}}/{{name}}`
+
+
+## vault.encryptData
+
+`POST /transit/encrypt/{{name}}`
+
+
+## vault.decryptData
+
+`POST /transit/decrypt/{{name}}`
+
+
+## vault.restoreKey
+
+`POST /transit/restore(/:name)`
+
+
+## vault.backupKey
+
+`GET /transit/backup/:name`
+
+
+## vault.verifySignedData
+
+`POST /transit/verify/:name(/:hash_algorithm)`
+
+
+## vault.signData
+
+`POST /transit/sign/:name(/:hash_algorithm)`
+
+
+## vault.generateHmac
+
+`POST /transit/hmac/:name(/:algorithm)`
+
+
+## vault.hashData
+
+`POST /transit/hash(/:algorithm)`
+
+
+## vault.generateRandomBytes
+
+`POST /transit/random(/:bytes)`
+
+
+## vault.generateDataKey
+
+`POST /transit/datakey/:type/:name`
+
+
+## vault.rewrapData
+
+`POST /transit/rewrap/:name`
+
+
 ## vault.unmount
 
 `DELETE /sys/mounts/{{mount_point}}`
