@@ -1,6 +1,6 @@
 {
   "name": "@banno/node-vault-fork",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "scripts": {
@@ -21,7 +21,8 @@
     "doc": "./docs"
   },
   "files": [
-    "src"
+    "src",
+    "index.d.ts"
   ],
   "dependencies": {
     "debug": "3.1.0",
@@ -48,7 +49,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/kr1sp1n/node-vault.git"
+    "url": "git://github.com/banno/node-vault-fork.git"
   },
   "keywords": [
     "vault",
@@ -67,7 +68,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kr1sp1n/node-vault/issues"
+    "url": "https://github.com/banno/node-vault-fork/issues"
   },
-  "homepage": "https://github.com/kr1sp1n/node-vault"
+  "homepage": "https://github.com/banno/node-vault-fork"
 }
