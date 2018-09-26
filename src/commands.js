@@ -283,7 +283,7 @@ module.exports = {
     path: '/transit/keys/{{name}}',
   },
   keys: {
-    method: 'GET',
+    method: 'LIST',
     path: '/transit/keys',
   },
   removeKey: {

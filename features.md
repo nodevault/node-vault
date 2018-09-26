@@ -69,7 +69,7 @@
 
 ## vault.keys
 
-`GET /transit/keys`
+`LIST /transit/keys`
 
 
 ## vault.removeKey
