@@ -2,10 +2,6 @@
 # yarn lockfile v1
 
 
-"@types/mustache@^0.8.31":
-  version "0.8.31"
-  resolved "https://registry.yarnpkg.com/@types/mustache/-/mustache-0.8.31.tgz#7c86cbf74f7733f9e3bdc28817623927eb386616"
-
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"

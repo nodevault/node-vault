@@ -1,6 +1,6 @@
 {
   "name": "@banno/node-vault-fork",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "scripts": {
@@ -25,7 +25,6 @@
     "index.d.ts"
   ],
   "dependencies": {
-    "@types/mustache": "^0.8.31",
     "debug": "3.1.0",
     "mustache": "^2.2.1",
     "request": "^2.83.0",
