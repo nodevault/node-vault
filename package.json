@@ -1,6 +1,6 @@
 {
   "name": "@banno/node-vault-fork",
-  "version": "0.9.4",
+  "version": "0.9.7",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "scripts": {
