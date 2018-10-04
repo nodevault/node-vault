@@ -346,6 +346,14 @@ module.exports = {
     method: 'POST',
     path: '/transit/rewrap/:name',
   },
+  readConnection: {
+    method: 'POST',
+    path: '/database/config/:name',
+  },
+  generateCredentials: {
+    method: 'GET',
+    path: '/database/creds/:name',
+  },
   unmount: {
     method: 'DELETE',
     path: '/sys/mounts/{{mount_point}}',

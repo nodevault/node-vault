@@ -147,6 +147,16 @@
 `POST /transit/rewrap/:name`
 
 
+## vault.readConnection
+
+`POST /database/config/:name`
+
+
+## vault.generateCredentials
+
+`GET /database/creds/:name`
+
+
 ## vault.unmount
 
 `DELETE /sys/mounts/{{mount_point}}`

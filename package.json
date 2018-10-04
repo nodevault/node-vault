@@ -1,6 +1,6 @@
 {
   "name": "@banno/node-vault-fork",
-  "version": "0.9.7",
+  "version": "0.10.0",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "scripts": {
@@ -14,7 +14,10 @@
     "docs": "docco --output docs src/*.js",
     "nsp": "nsp check",
     "prepublish": "npm run nsp",
-    "precommit": "node scripts/write-features.js && git add features.md"
+    "precommit": "node scripts/write-features.js && git add features.md",
+    "release:patch": "npm version patch && git push origin master && git push --tags && npm publish",
+    "release:minor": "npm version minor && git push origin master && git push --tags && npm publish",
+    "release:major": "npm version major && git push origin master && git push --tags && npm publish"
   },
   "directories": {
     "example": "./example",
