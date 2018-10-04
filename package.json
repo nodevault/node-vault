@@ -1,6 +1,6 @@
 {
-  "name": "node-vault",
-  "version": "0.9.0",
+  "name": "@banno/node-vault-fork",
+  "version": "0.10.0",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "scripts": {
@@ -14,14 +14,18 @@
     "docs": "docco --output docs src/*.js",
     "nsp": "nsp check",
     "prepublish": "npm run nsp",
-    "precommit": "node scripts/write-features.js && git add features.md"
+    "precommit": "node scripts/write-features.js && git add features.md",
+    "release:patch": "npm version patch && git push origin master && git push --tags && npm publish",
+    "release:minor": "npm version minor && git push origin master && git push --tags && npm publish",
+    "release:major": "npm version major && git push origin master && git push --tags && npm publish"
   },
   "directories": {
     "example": "./example",
     "doc": "./docs"
   },
   "files": [
-    "src"
+    "src",
+    "index.d.ts"
   ],
   "dependencies": {
     "debug": "3.1.0",
@@ -48,7 +52,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/kr1sp1n/node-vault.git"
+    "url": "git://github.com/banno/node-vault-fork.git"
   },
   "keywords": [
     "vault",
@@ -67,7 +71,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kr1sp1n/node-vault/issues"
+    "url": "https://github.com/banno/node-vault-fork/issues"
   },
-  "homepage": "https://github.com/kr1sp1n/node-vault"
+  "homepage": "https://github.com/banno/node-vault-fork"
 }
