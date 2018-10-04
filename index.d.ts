@@ -122,6 +122,11 @@ declare namespace NodeVault {
         updateKeyConfiguration(options?: Option): Promise<any>;
         userpassLogin(options?: Option): Promise<any>;
         verifySignedData(options?: Option): Promise<any>;
+        readConnection(options?: Option): Promise<any>;
+        generateCredentials(options?: Option): Promise<any>;
+        configureConnection(options?: Option): Promise<any>;
+        createRole(options?: Option): Promise<any>;
+        readRole(options?: Option): Promise<any>;
     }
 
     interface VaultOptions {
