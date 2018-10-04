@@ -14,7 +14,10 @@
     "docs": "docco --output docs src/*.js",
     "nsp": "nsp check",
     "prepublish": "npm run nsp",
-    "precommit": "node scripts/write-features.js && git add features.md"
+    "precommit": "node scripts/write-features.js && git add features.md",
+    "release:patch": "npm version patch && git push origin master && git push --tags && npm publish",
+    "release:minor": "npm version minor && git push origin master && git push --tags && npm publish",
+    "release:major": "npm version major && git push origin master && git push --tags && npm publish"
   },
   "directories": {
     "example": "./example",
