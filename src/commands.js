@@ -354,6 +354,18 @@ module.exports = {
     method: 'GET',
     path: '/database/creds/:name',
   },
+  readRole: {
+    method: 'GET',
+    path: '/database/roles/:name',
+  },
+  createRole: {
+    method: 'POST',
+    path: '/database/roles/:name',
+  },
+  configureConnection: {
+    method: 'POST',
+    path: '/database/config/:name',
+  },
   unmount: {
     method: 'DELETE',
     path: '/sys/mounts/{{mount_point}}',
