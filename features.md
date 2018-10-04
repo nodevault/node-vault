@@ -149,27 +149,27 @@
 
 ## vault.readConnection
 
-`POST /database/config/:name`
+`POST /database/config/{{name}}`
 
 
 ## vault.generateCredentials
 
-`GET /database/creds/:name`
+`GET /database/creds/{{name}}`
 
 
 ## vault.readRole
 
-`GET /database/roles/:name`
+`GET /database/roles/{{name}}`
 
 
 ## vault.createRole
 
-`POST /database/roles/:name`
+`POST /database/roles/{{name}}`
 
 
 ## vault.configureConnection
 
-`POST /database/config/:name`
+`POST /database/config/{{name}}`
 
 
 ## vault.unmount
