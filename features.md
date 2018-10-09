@@ -69,7 +69,7 @@
 
 ## vault.generateDatabaseCredentials
 
-`GET /database/creds/{{name}}`
+`GET /{{databasePath}}/creds/{{name}}`
 
 
 ## vault.unmount

@@ -284,7 +284,7 @@ module.exports = {
   },
   generateDatabaseCredentials: {
     method: 'GET',
-    path: '/database/creds/{{name}}',
+    path: '/{{databasePath}}/creds/{{name}}',
   },
   unmount: {
     method: 'DELETE',
