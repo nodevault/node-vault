@@ -282,9 +282,9 @@ module.exports = {
     method: 'POST',
     path: '/transit/decrypt/{{name}}',
   },
-  generatePostgresCredentials: {
+  generateDatabaseCredentials: {
     method: 'GET',
-    path: '/postgres/creds/{{name}}',
+    path: '/database/creds/{{name}}',
   },
   unmount: {
     method: 'DELETE',

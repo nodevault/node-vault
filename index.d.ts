@@ -106,7 +106,7 @@ declare namespace NodeVault {
         stepDown(options?: Option): Promise<any>;
         encryptData(options?: Option): Promise<any>;
         decryptData(options?: Option): Promise<any>;
-        generatePostgresCredentials(options?: Option): Promise<any>;
+        generateDatabaseCredentials(options?: Option): Promise<any>;
     }
 
     interface VaultOptions {

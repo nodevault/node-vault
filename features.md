@@ -67,9 +67,9 @@
 `POST /transit/decrypt/{{name}}`
 
 
-## vault.generatePostgresCredentials
+## vault.generateDatabaseCredentials
 
-`GET /postgres/creds/{{name}}`
+`GET /database/creds/{{name}}`
 
 
 ## vault.unmount
