@@ -407,6 +407,25 @@ module.exports = {
       res: tokenResponse,
     },
   },
+  kubernetesLogin: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/login',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          role: {
+            type: 'string',
+          },
+          jwt: {
+            type: 'string',
+          },
+        },
+        required: ['role', 'jwt'],
+      },
+      res: tokenResponse,
+    },
+  },
   userpassLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}userpass{{/mount_point}}/login/{{username}}',
