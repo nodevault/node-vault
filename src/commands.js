@@ -394,6 +394,7 @@ module.exports = {
   githubLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}github{{/mount_point}}/login',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -429,6 +430,7 @@ module.exports = {
   userpassLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}userpass{{/mount_point}}/login/{{username}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -445,6 +447,7 @@ module.exports = {
   ldapLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}ldap{{/mount_point}}/login/{{username}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -461,6 +464,7 @@ module.exports = {
   oktaLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}okta{{/mount_point}}/login/{{username}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -477,6 +481,7 @@ module.exports = {
   radiusLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}radius{{/mount_point}}/login/{{username}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -1088,6 +1093,7 @@ module.exports = {
   approleLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/login',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
