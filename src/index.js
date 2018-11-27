@@ -165,7 +165,8 @@ module.exports = (config = {}) => {
       const options = Object.assign({}, config.requestOptions, args.requestOptions);
       options.method = conf.method;
       options.path = conf.path;
-      options.json = args;
+      // set body only if args exist
+      if (Object.keys(args).length) options.json = args;
       // no schema object -> no validation
       if (!conf.schema) return client.request(options);
       // else do validation of request URL and body
