@@ -57,6 +57,7 @@ module.exports = (config = {}) => {
   // defaults
   client.apiVersion = config.apiVersion || 'v1';
   client.endpoint = config.endpoint || process.env.VAULT_ADDR || 'http://127.0.0.1:8200';
+  client.pathPrefix = config.pathPrefix || process.env.VAULT_PREFIX || '';
   client.token = config.token || process.env.VAULT_TOKEN;
 
   const requestSchema = {
@@ -76,7 +77,7 @@ module.exports = (config = {}) => {
   client.request = (options = {}) => {
     const valid = tv4.validate(options, requestSchema);
     if (!valid) return Promise.reject(tv4.error);
-    let uri = `${client.endpoint}/${client.apiVersion}${options.path}`;
+    let uri = `${client.endpoint}/${client.apiVersion}${client.pathPrefix}${options.path}`;
     // Replace variables in uri.
     uri = mustache.render(uri, options.json);
     // Replace unicode encodings.
@@ -87,8 +88,8 @@ module.exports = (config = {}) => {
     }
     options.uri = uri;
     debug(options.method, uri);
-    // debug(options.json);
-    return rp(options).then(handleVaultResponse);
+    if (options.json) debug(options.json);
+    return rp(options).then(client.handleVaultResponse);
   };
 
   client.help = (path, requestOptions) => {
@@ -169,10 +170,22 @@ module.exports = (config = {}) => {
       // no schema object -> no validation
       if (!conf.schema) return client.request(options);
       // else do validation of request URL and body
-      return validate(options.json, conf.schema.req)
+      let promise = validate(options.json, conf.schema.req)
       .then(() => validate(options.json, conf.schema.query))
       .then(() => extendOptions(conf, options))
       .then((extendedOptions) => client.request(extendedOptions));
+
+      if (conf.tokenSource) {
+        promise = promise.then(response => {
+          const candidateToken = response.auth && response.auth.client_token;
+          if (candidateToken) {
+            client.token = candidateToken;
+          }
+          return response;
+        });
+      }
+
+      return promise;
     };
   }
 
