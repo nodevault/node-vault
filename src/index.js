@@ -57,6 +57,7 @@ module.exports = (config = {}) => {
   // defaults
   client.apiVersion = config.apiVersion || 'v1';
   client.endpoint = config.endpoint || process.env.VAULT_ADDR || 'http://127.0.0.1:8200';
+  client.pathPrefix = config.pathPrefix || process.env.VAULT_PREFIX || '';
   client.token = config.token || process.env.VAULT_TOKEN;
 
   const requestSchema = {
@@ -76,7 +77,7 @@ module.exports = (config = {}) => {
   client.request = (options = {}) => {
     const valid = tv4.validate(options, requestSchema);
     if (!valid) return Promise.reject(tv4.error);
-    let uri = `${client.endpoint}/${client.apiVersion}${options.path}`;
+    let uri = `${client.endpoint}/${client.apiVersion}${client.pathPrefix}${options.path}`;
     // Replace variables in uri.
     uri = mustache.render(uri, options.json);
     // Replace unicode encodings.
@@ -87,8 +88,8 @@ module.exports = (config = {}) => {
     }
     options.uri = uri;
     debug(options.method, uri);
-    // debug(options.json);
-    return rp(options).then(handleVaultResponse);
+    if (options.json) debug(options.json);
+    return rp(options).then(client.handleVaultResponse);
   };
 
   client.help = (path, requestOptions) => {

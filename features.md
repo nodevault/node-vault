@@ -147,6 +147,11 @@
 `POST /auth/{{mount_point}}{{^mount_point}}github{{/mount_point}}/login`
 
 
+## vault.kubernetesLogin
+
+`POST /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/login`
+
+
 ## vault.userpassLogin
 
 `POST /auth/{{mount_point}}{{^mount_point}}userpass{{/mount_point}}/login/{{username}}`
