@@ -1,6 +1,6 @@
 {
   "name": "node-vault",
-  "version": "0.9.0",
+  "version": "0.9.4",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "scripts": {
@@ -63,7 +63,12 @@
     "Trevor Robinson (https://github.com/trevorr)",
     "Tim Robinson (https://github.com/timjrobinson)",
     "Adam Kelsall (https://github.com/adamkelsall)",
-    "Charles Phillips (https://github.com/doublerebel)"
+    "Charles Phillips (https://github.com/doublerebel)",
+    "Karthik Kumar Viswanathan (https://github.com/guilt)",
+    "Mario Pareja (https://github.com/mpareja)",
+    "Saverio Proto (https://github.com/zioproto)",
+    "Tom Vogel (https://github.com/tavogel)",
+    "Jonathan Bastnagel (https://github.com/inkadnb)"
   ],
   "license": "MIT",
   "bugs": {
