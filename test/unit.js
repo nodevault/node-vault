@@ -331,8 +331,13 @@ describe('node-vault', () => {
     });
 
     describe('generateFunction(name, config)', () => {
-      const config = {
+      const configGet = {
         method: 'GET',
+        path: '/myroute',
+      };
+
+      const configPost = {
+        method: 'POST',
         path: '/myroute',
       };
 
@@ -373,9 +378,29 @@ describe('node-vault', () => {
         },
       };
 
+      const configWithRequestSchema = {
+        method: 'POST',
+        path: '/myroute',
+        schema: {
+          req: {
+            type: 'object',
+            properties: {
+              testParam1: {
+                type: 'integer',
+                minimum: 1,
+              },
+              testParam2: {
+                type: 'string',
+              },
+            },
+            required: ['testParam1', 'testParam2'],
+          },
+        },
+      };
+
       it('should generate a function with name as defined in config', () => {
         const name = 'myGeneratedFunction';
-        vault.generateFunction(name, config);
+        vault.generateFunction(name, configGet);
         vault.should.have.property(name);
         const fn = vault[name];
         fn.should.be.a('function');
@@ -384,7 +409,7 @@ describe('node-vault', () => {
       describe('generated function', () => {
         it('should return a promise', done => {
           const name = 'myGeneratedFunction';
-          vault.generateFunction(name, config);
+          vault.generateFunction(name, configGet);
           const fn = vault[name];
           const promise = fn();
           request.calledOnce.should.be.ok();
@@ -392,6 +417,23 @@ describe('node-vault', () => {
           promise.should.be.promise;
           promise.then(done)
           .catch(done);
+        });
+
+        it('should handle config without a schema', done => {
+          const name = 'myGeneratedFunction';
+          vault.generateFunction(name, configPost);
+          const fn = vault[name];
+          const promise = fn({ testProperty: 3 });
+          const options = {
+            path: '/myroute',
+            json: { testProperty: 3 },
+          };
+          promise
+            .then(() => {
+              request.calledWithMatch(options).should.be.ok();
+              done();
+            })
+            .catch(done);
         });
 
         it('should handle config with schema property', done => {
@@ -427,6 +469,23 @@ describe('node-vault', () => {
             done();
           })
           .catch(done);
+        });
+
+        it('should handle schema with request property', done => {
+          const name = 'myGeneratedFunction';
+          vault.generateFunction(name, configWithRequestSchema);
+          const fn = vault[name];
+          const promise = fn({ testParam1: 3, testParam2: 'hello' });
+          const options = {
+            path: '/myroute',
+            json: { testParam1: 3, testParam2: 'hello' },
+          };
+          promise
+            .then(() => {
+              request.calledWithMatch(options).should.be.ok();
+              done();
+            })
+            .catch(done);
         });
 
         describe('token updates', () => {
