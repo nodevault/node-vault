@@ -556,6 +556,7 @@ module.exports = {
   tokenCreate: {
     method: 'POST',
     path: '/auth/token/create',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -601,6 +602,7 @@ module.exports = {
   tokenCreateOrphan: {
     method: 'POST',
     path: '/auth/token/create-orphan',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -646,6 +648,7 @@ module.exports = {
   tokenCreateRole: {
     method: 'POST',
     path: '/auth/token/create/{{role_name}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -823,6 +826,7 @@ module.exports = {
   tokenRenew: {
     method: 'POST',
     path: '/auth/token/renew',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -842,6 +846,7 @@ module.exports = {
   tokenRenewSelf: {
     method: 'POST',
     path: '/auth/token/renew-self',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
