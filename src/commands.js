@@ -133,6 +133,20 @@ module.exports = {
     method: 'PUT',
     path: '/sys/unseal',
     schema: {
+      req: {
+        type: 'object',
+        properties: {
+          key: {
+            type: 'string',
+          },
+          reset: {
+            type: 'boolean',
+          },
+          migrate: {
+            type: 'boolean',
+          },
+        },
+      },
       res: sealStatusResponse,
     },
   },
