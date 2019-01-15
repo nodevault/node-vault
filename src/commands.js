@@ -405,6 +405,26 @@ module.exports = {
       },
     },
   },
+  gcpLogin: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}gcp{{/mount_point}}/login',
+    tokenSource: true,
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          role: {
+            type: 'string',
+          },
+          jwt: {
+            type: 'string',
+          },
+        },
+        required: ['role', 'jwt'],
+      },
+      res: tokenResponse,
+    },
+  },
   githubLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}github{{/mount_point}}/login',
