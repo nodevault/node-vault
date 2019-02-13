@@ -71,6 +71,7 @@ declare namespace NodeVault {
         rotate(options?: Option): Promise<any>;
         githubLogin(options?: Option): Promise<any>;
         userpassLogin(options?: Option): Promise<any>;
+        kubernetesLogin(options?: Option): Promise<any>;
         tokenAccessors(options?: Option): Promise<any>;
         tokenCreate(options?: Option): Promise<any>;
         tokenCreateOrphan(options?: Option): Promise<any>;
