@@ -332,6 +332,11 @@
 `POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/login`
 
 
+## vault.kubernetesLogin
+
+`POST /auth/kubernetes/login`
+
+
 ## vault.health
 
 `GET /sys/health`
