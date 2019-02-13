@@ -1217,6 +1217,25 @@ module.exports = {
       res: approleResponse,
     },
   },
+  kubernetesLogin: {
+    method: 'POST',
+    path: '/auth/kubernetes/login',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          role: {
+            type: 'string',
+          },
+          jwt: {
+            type: 'string',
+          },
+        },
+        required: ['role', 'jwt'],
+      },
+      res: approleResponse,
+    },
+  },
   health: {
     method: 'GET',
     path: '/sys/health',
