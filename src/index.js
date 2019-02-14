@@ -135,18 +135,6 @@ module.exports = (config = {}) => {
   function validate(json, schema) {
     // ignore validation if no schema
     if (schema === undefined) return Promise.resolve();
-    console.log(JSON.stringify({
-      '@version': 1,
-      '@timestamp': (new Date()).toISOString(),
-      severity: 'debug',
-      app_name: 'node-vault-fork',
-      app_version: '0.0.1',
-      message: 'SchemaValidate',
-      data: {
-        json,
-        schema
-      }
-    }))
     const valid = tv4.validate(json, schema);
     if (!valid) {
       debug(tv4.error.dataPath);
