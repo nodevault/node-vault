@@ -957,32 +957,35 @@ module.exports = {
     path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}',
     schema: {
       req: {
-        bind_secret_id: {
-          type: 'boolean',
-        },
-        bound_cidr_list: {
-          type: 'string',
-        },
-        policies: {
-          type: 'string',
-        },
-        secret_id_num_uses: {
-          type: 'integer',
-        },
-        secret_id_ttl: {
-          type: 'integer',
-        },
-        token_num_uses: {
-          type: 'integer',
-        },
-        token_ttl: {
-          type: 'integer',
-        },
-        token_max_ttl: {
-          type: 'integer',
-        },
-        period: {
-          type: 'integer',
+        type: 'object',
+        properties: {
+          bind_secret_id: {
+            type: 'boolean',
+          },
+          bound_cidr_list: {
+            type: 'string',
+          },
+          policies: {
+            type: 'string',
+          },
+          secret_id_num_uses: {
+            type: 'integer',
+          },
+          secret_id_ttl: {
+            type: 'integer',
+          },
+          token_num_uses: {
+            type: 'integer',
+          },
+          token_ttl: {
+            type: 'integer',
+          },
+          token_max_ttl: {
+            type: 'integer',
+          },
+          period: {
+            type: 'integer',
+          },
         },
       },
     },
