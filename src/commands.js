@@ -445,6 +445,7 @@ module.exports = {
   kubernetesLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/login',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
