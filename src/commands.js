@@ -288,34 +288,6 @@ module.exports = {
     method: 'POST',
     path: '/sys/mounts/{{mount_point}}',
   },
-  addKey: {
-    method: 'POST',
-    path: '/transit/keys/{{name}}',
-  },
-  getKey: {
-    method: 'GET',
-    path: '/transit/keys/{{name}}',
-  },
-  keys: {
-    method: 'GET',
-    path: '/transit/keys',
-  },
-  removeKey: {
-    method: 'DELETE',
-    path: '/transit/keys/{{name}}',
-  },
-  updateKeyConfiguration: {
-    method: 'POST',
-    path: '/transit/keys/{{name}}/config',
-  },
-  rotateKey: {
-    method: 'POST',
-    path: '/transit/keys/{{name}}/rotate',
-  },
-  exportKey: {
-    method: 'GET',
-    path: '/transit/export/{{key_type}}/{{name}}',
-  },
   encryptData: {
     method: 'POST',
     path: '/transit/encrypt/{{name}}',
@@ -324,41 +296,9 @@ module.exports = {
     method: 'POST',
     path: '/transit/decrypt/{{name}}',
   },
-  restoreKey: {
-    method: 'POST',
-    path: '/transit/restore(/:name)',
-  },
-  backupKey: {
+  generateDatabaseCredentials: {
     method: 'GET',
-    path: '/transit/backup/:name',
-  },
-  verifySignedData: {
-    method: 'POST',
-    path: '/transit/verify/:name(/:hash_algorithm)',
-  },
-  signData: {
-    method: 'POST',
-    path: '/transit/sign/:name(/:hash_algorithm)',
-  },
-  generateHmac: {
-    method: 'POST',
-    path: '/transit/hmac/:name(/:algorithm)',
-  },
-  hashData: {
-    method: 'POST',
-    path: '/transit/hash(/:algorithm)',
-  },
-  generateRandomBytes: {
-    method: 'POST',
-    path: '/transit/random(/:bytes)',
-  },
-  generateDataKey: {
-    method: 'POST',
-    path: '/transit/datakey/:type/:name',
-  },
-  rewrapData: {
-    method: 'POST',
-    path: '/transit/rewrap/:name',
+    path: '/{{databasePath}}/creds/{{name}}',
   },
   unmount: {
     method: 'DELETE',
