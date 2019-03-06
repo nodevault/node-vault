@@ -24,14 +24,14 @@
   "dependencies": {
     "debug": "3.1.0",
     "mustache": "^2.2.1",
-    "request": "^2.83.0",
-    "request-promise-native": "^1.0.5",
+    "request": "2.88.0",
+    "request-promise-native": "1.0.7",
     "tv4": "^1.2.7"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "3.5.0",
     "dirty-chai": "^1.2.2",
-    "docco": "^0.7.0",
+    "docco": "0.8.0",
     "eslint": "2.13.1",
     "eslint-config-airbnb": "^9.0.1",
     "eslint-plugin-import": "^1.11.1",
@@ -39,7 +39,7 @@
     "eslint-plugin-react": "^5.2.2",
     "husky": "^0.14.3",
     "istanbul": "^0.4.5",
-    "mocha": "2.4.5",
+    "mocha": "6.0.2",
     "sinon": "1.17.3",
     "sinon-chai": "^2.8.0"
   },
@@ -65,7 +65,9 @@
     "Mario Pareja (https://github.com/mpareja)",
     "Saverio Proto (https://github.com/zioproto)",
     "Tom Vogel (https://github.com/tavogel)",
-    "Jonathan Bastnagel (https://github.com/inkadnb)"
+    "Jonathan Bastnagel (https://github.com/inkadnb)",
+    "Mario Pareja (https://github.com/mpareja)",
+    "Jeff Sisson (https://github.com/saranrapjs)"
   ],
   "license": "MIT",
   "bugs": {
