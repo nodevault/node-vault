@@ -57,6 +57,7 @@ module.exports = (config = {}) => {
   // defaults
   client.apiVersion = config.apiVersion || 'v1';
   client.endpoint = config.endpoint || process.env.VAULT_ADDR || 'http://127.0.0.1:8200';
+  client.pathPrefix = config.pathPrefix || process.env.VAULT_PREFIX || '';
   client.token = config.token || process.env.VAULT_TOKEN;
 
   const requestSchema = {
@@ -76,19 +77,17 @@ module.exports = (config = {}) => {
   client.request = (options = {}) => {
     const valid = tv4.validate(options, requestSchema);
     if (!valid) return Promise.reject(tv4.error);
-    let uri = `${client.endpoint}/${client.apiVersion}${options.path}`;
-    // Replace variables in uri.
-    uri = mustache.render(uri, options.json);
+    let uri = `${client.endpoint}/${client.apiVersion}${client.pathPrefix}${options.path}`;
     // Replace unicode encodings.
     uri = uri.replace(/&#x2F;/g, '/');
     options.headers = options.headers || {};
     if (typeof client.token === 'string' && client.token.length) {
-      options.headers['X-Vault-Token'] = client.token;
+      options.headers['X-Vault-Token'] = options.headers['X-Vault-Token'] || client.token;
     }
     options.uri = uri;
     debug(options.method, uri);
-    // debug(options.json);
-    return rp(options).then(handleVaultResponse);
+    if (options.json) debug(options.json);
+    return rp(options).then(client.handleVaultResponse);
   };
 
   client.help = (path, requestOptions) => {
@@ -144,19 +143,36 @@ module.exports = (config = {}) => {
     return Promise.resolve();
   }
 
-  function extendOptions(conf, options) {
-    const schema = conf.schema.query;
-    // no schema for the query -> no need to extend
-    if (!schema) return Promise.resolve(options);
-    const params = [];
-    for (const key of Object.keys(schema.properties)) {
-      if (key in options.json) {
-        params.push(`${key}=${encodeURIComponent(options.json[key])}`);
+  function extendOptions(conf, options, args = {}) {
+    const hasArgs = Object.keys(args).length > 0;
+    if (!hasArgs) return Promise.resolve(options);
+
+    const querySchema = conf.schema.query;
+    if (querySchema) {
+      const params = [];
+      for (const key of Object.keys(querySchema.properties)) {
+        if (key in args) {
+          params.push(`${key}=${encodeURIComponent(args[key])}`);
+        }
+      }
+      if (params.length > 0) {
+        options.path += `?${params.join('&')}`;
       }
     }
-    if (params.length > 0) {
-      options.path += `?${params.join('&')}`;
+
+    const reqSchema = conf.schema.req;
+    if (reqSchema) {
+      const json = {};
+      for (const key of Object.keys(reqSchema.properties)) {
+        if (key in args) {
+          json[key] = args[key];
+        }
+      }
+      if (Object.keys(json).length > 0) {
+        options.json = json;
+      }
     }
+
     return Promise.resolve(options);
   }
 
@@ -164,15 +180,32 @@ module.exports = (config = {}) => {
     client[name] = (args = {}) => {
       const options = Object.assign({}, config.requestOptions, args.requestOptions);
       options.method = conf.method;
-      options.path = conf.path;
-      options.json = args;
+      // replace args in path.
+      options.path = mustache.render(conf.path, args);
       // no schema object -> no validation
-      if (!conf.schema) return client.request(options);
+      if (!conf.schema) {
+        if (options.method === 'POST' || options.method === 'PUT') {
+          options.json = args;
+        }
+        return client.request(options);
+      }
       // else do validation of request URL and body
-      return validate(options.json, conf.schema.req)
-      .then(() => validate(options.json, conf.schema.query))
-      .then(() => extendOptions(conf, options))
+      let promise = validate(args, conf.schema.req)
+      .then(() => validate(args, conf.schema.query))
+      .then(() => extendOptions(conf, options, args))
       .then((extendedOptions) => client.request(extendedOptions));
+
+      if (conf.tokenSource) {
+        promise = promise.then(response => {
+          const candidateToken = response.auth && response.auth.client_token;
+          if (candidateToken) {
+            client.token = candidateToken;
+          }
+          return response;
+        });
+      }
+
+      return promise;
     };
   }
 

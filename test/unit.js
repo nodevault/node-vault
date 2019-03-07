@@ -331,12 +331,17 @@ describe('node-vault', () => {
     });
 
     describe('generateFunction(name, config)', () => {
-      const config = {
+      const configGet = {
         method: 'GET',
         path: '/myroute',
       };
 
-      const configWithSchema = {
+      const configPost = {
+        method: 'POST',
+        path: '/myroute',
+      };
+
+      const configWithSchema = () => ({
         method: 'GET',
         path: '/myroute',
         schema: {
@@ -351,7 +356,7 @@ describe('node-vault', () => {
             required: ['testProperty'],
           },
         },
-      };
+      });
 
       const configWithQuerySchema = {
         method: 'GET',
@@ -373,9 +378,29 @@ describe('node-vault', () => {
         },
       };
 
+      const configWithRequestSchema = {
+        method: 'POST',
+        path: '/myroute',
+        schema: {
+          req: {
+            type: 'object',
+            properties: {
+              testParam1: {
+                type: 'integer',
+                minimum: 1,
+              },
+              testParam2: {
+                type: 'string',
+              },
+            },
+            required: ['testParam1', 'testParam2'],
+          },
+        },
+      };
+
       it('should generate a function with name as defined in config', () => {
         const name = 'myGeneratedFunction';
-        vault.generateFunction(name, config);
+        vault.generateFunction(name, configGet);
         vault.should.have.property(name);
         const fn = vault[name];
         fn.should.be.a('function');
@@ -384,7 +409,7 @@ describe('node-vault', () => {
       describe('generated function', () => {
         it('should return a promise', done => {
           const name = 'myGeneratedFunction';
-          vault.generateFunction(name, config);
+          vault.generateFunction(name, configGet);
           const fn = vault[name];
           const promise = fn();
           request.calledOnce.should.be.ok();
@@ -394,9 +419,26 @@ describe('node-vault', () => {
           .catch(done);
         });
 
+        it('should handle config without a schema', done => {
+          const name = 'myGeneratedFunction';
+          vault.generateFunction(name, configPost);
+          const fn = vault[name];
+          const promise = fn({ testProperty: 3 });
+          const options = {
+            path: '/myroute',
+            json: { testProperty: 3 },
+          };
+          promise
+            .then(() => {
+              request.calledWithMatch(options).should.be.ok();
+              done();
+            })
+            .catch(done);
+        });
+
         it('should handle config with schema property', done => {
           const name = 'myGeneratedFunction';
-          vault.generateFunction(name, configWithSchema);
+          vault.generateFunction(name, configWithSchema());
           const fn = vault[name];
           const promise = fn({ testProperty: 3 });
           promise.then(done).catch(done);
@@ -404,7 +446,7 @@ describe('node-vault', () => {
 
         it('should handle invalid arguments via schema property', done => {
           const name = 'myGeneratedFunction';
-          vault.generateFunction(name, configWithSchema);
+          vault.generateFunction(name, configWithSchema());
           const fn = vault[name];
           const promise = fn({ testProperty: 'wrong data type here' });
           promise.catch(err => {
@@ -427,6 +469,65 @@ describe('node-vault', () => {
             done();
           })
           .catch(done);
+        });
+
+        it('should handle schema with request property', done => {
+          const name = 'myGeneratedFunction';
+          vault.generateFunction(name, configWithRequestSchema);
+          const fn = vault[name];
+          const promise = fn({ testParam1: 3, testParam2: 'hello' });
+          const options = {
+            path: '/myroute',
+            json: { testParam1: 3, testParam2: 'hello' },
+          };
+          promise
+            .then(() => {
+              request.calledWithMatch(options).should.be.ok();
+              done();
+            })
+            .catch(done);
+        });
+
+        describe('token updates', () => {
+          it('should set vault token based on configuration', done => {
+            const configWithTokenSource = configWithSchema();
+            configWithTokenSource.tokenSource = true;
+
+            const A_RESPONSE_TOKEN = 'a-response-token';
+            response.body = { auth: { client_token: A_RESPONSE_TOKEN } }; // k8s example
+
+            const name = 'myGeneratedFunction';
+            vault.generateFunction(name, configWithTokenSource);
+            const fn = vault[name];
+            const promise = fn({ testProperty: 3 });
+
+            promise
+            .then(res => {
+              expect(res).to.exist();
+              vault.token.should.equal(A_RESPONSE_TOKEN);
+              done();
+            })
+            .catch(done);
+          });
+
+          it('should not set vault token if not found in response', done => {
+            const configWithTokenSource = configWithSchema();
+            configWithTokenSource.tokenSource = true;
+
+            response.body = {}; // missing token
+
+            const name = 'myGeneratedFunction';
+            vault.generateFunction(name, configWithTokenSource);
+            const fn = vault[name];
+            const promise = fn({ testProperty: 3 });
+
+            promise
+            .then(() => {
+              vault.token.should.equal('123');
+              done();
+            })
+            .catch(done);
+          });
         });
       });
     });

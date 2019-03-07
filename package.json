@@ -1,6 +1,6 @@
 {
   "name": "node-vault",
-  "version": "0.9.0",
+  "version": "0.9.7",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "scripts": {
@@ -12,8 +12,6 @@
     "test-watch": "mocha --watch",
     "predocs": "node scripts/write-features.js",
     "docs": "docco --output docs src/*.js",
-    "nsp": "nsp check",
-    "prepublish": "npm run nsp",
     "precommit": "node scripts/write-features.js && git add features.md"
   },
   "directories": {
@@ -26,8 +24,8 @@
   "dependencies": {
     "debug": "3.1.0",
     "mustache": "^2.2.1",
-    "request": "^2.83.0",
-    "request-promise-native": "^1.0.5",
+    "request": "2.88.0",
+    "request-promise-native": "1.0.7",
     "tv4": "^1.2.7"
   },
   "devDependencies": {
@@ -63,7 +61,14 @@
     "Trevor Robinson (https://github.com/trevorr)",
     "Tim Robinson (https://github.com/timjrobinson)",
     "Adam Kelsall (https://github.com/adamkelsall)",
-    "Charles Phillips (https://github.com/doublerebel)"
+    "Charles Phillips (https://github.com/doublerebel)",
+    "Karthik Kumar Viswanathan (https://github.com/guilt)",
+    "Mario Pareja (https://github.com/mpareja)",
+    "Saverio Proto (https://github.com/zioproto)",
+    "Tom Vogel (https://github.com/tavogel)",
+    "Jonathan Bastnagel (https://github.com/inkadnb)",
+    "Mario Pareja (https://github.com/mpareja)",
+    "Jeff Sisson (https://github.com/saranrapjs)"
   ],
   "license": "MIT",
   "bugs": {

@@ -133,6 +133,20 @@ module.exports = {
     method: 'PUT',
     path: '/sys/unseal',
     schema: {
+      req: {
+        type: 'object',
+        properties: {
+          key: {
+            type: 'string',
+          },
+          reset: {
+            type: 'boolean',
+          },
+          migrate: {
+            type: 'boolean',
+          },
+        },
+      },
       res: sealStatusResponse,
     },
   },
@@ -391,9 +405,30 @@ module.exports = {
       },
     },
   },
+  gcpLogin: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}gcp{{/mount_point}}/login',
+    tokenSource: true,
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          role: {
+            type: 'string',
+          },
+          jwt: {
+            type: 'string',
+          },
+        },
+        required: ['role', 'jwt'],
+      },
+      res: tokenResponse,
+    },
+  },
   githubLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}github{{/mount_point}}/login',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -407,9 +442,30 @@ module.exports = {
       res: tokenResponse,
     },
   },
+  kubernetesLogin: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/login',
+    tokenSource: true,
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          role: {
+            type: 'string',
+          },
+          jwt: {
+            type: 'string',
+          },
+        },
+        required: ['role', 'jwt'],
+      },
+      res: tokenResponse,
+    },
+  },
   userpassLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}userpass{{/mount_point}}/login/{{username}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -426,6 +482,7 @@ module.exports = {
   ldapLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}ldap{{/mount_point}}/login/{{username}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -442,6 +499,7 @@ module.exports = {
   oktaLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}okta{{/mount_point}}/login/{{username}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -458,6 +516,7 @@ module.exports = {
   radiusLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}radius{{/mount_point}}/login/{{username}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -1069,6 +1128,7 @@ module.exports = {
   approleLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/login',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',

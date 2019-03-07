@@ -142,9 +142,19 @@
 `POST /sys/wrapping/unwrap`
 
 
+## vault.gcpLogin
+
+`POST /auth/{{mount_point}}{{^mount_point}}gcp{{/mount_point}}/login`
+
+
 ## vault.githubLogin
 
 `POST /auth/{{mount_point}}{{^mount_point}}github{{/mount_point}}/login`
+
+
+## vault.kubernetesLogin
+
+`POST /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/login`
 
 
 ## vault.userpassLogin
