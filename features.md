@@ -204,7 +204,7 @@
 
 ## vault.tokenLookupSelf
 
-`GET /auth/token/lookup-self`
+`POST /auth/token/lookup-self`
 
 
 ## vault.tokenLookupAccessor
