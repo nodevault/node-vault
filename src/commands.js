@@ -735,6 +735,44 @@ module.exports = {
       },
     },
   },
+  tokenLookupSelf: {
+    method: 'POST',
+    path: '/auth/token/lookup-self',
+    schema: {
+      res: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+              },
+              policies: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              path: {
+                type: 'string',
+              },
+              meta: {
+                type: 'object',
+              },
+              display_name: {
+                type: 'string',
+              },
+              num_uses: {
+                type: 'integer',
+              },
+            },
+          },
+        },
+        required: ['data'],
+      },
+    },
+  },
   tokenLookupAccessor: {
     method: 'POST',
     path: '/auth/token/lookup-accessor',

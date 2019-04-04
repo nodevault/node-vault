@@ -202,14 +202,14 @@
 `POST /auth/token/lookup`
 
 
-## vault.tokenLookupAccessor
-
-`POST /auth/token/lookup-accessor`
-
-
 ## vault.tokenLookupSelf
 
 `GET /auth/token/lookup-self`
+
+
+## vault.tokenLookupAccessor
+
+`POST /auth/token/lookup-accessor`
 
 
 ## vault.tokenRenew
