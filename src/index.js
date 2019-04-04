@@ -59,6 +59,7 @@ module.exports = (config = {}) => {
   client.endpoint = config.endpoint || process.env.VAULT_ADDR || 'http://127.0.0.1:8200';
   client.pathPrefix = config.pathPrefix || process.env.VAULT_PREFIX || '';
   client.token = config.token || process.env.VAULT_TOKEN;
+  client.noCustomHTTPVerbs = config.noCustomHTTPVerbs || false;
 
   const requestSchema = {
     type: 'object',
@@ -119,8 +120,15 @@ module.exports = (config = {}) => {
     debug(`list ${path}`);
     const options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = `/${path}`;
-    options.method = 'LIST';
-    return client.request(options);
+
+    if (client.noCustomHTTPVerbs) {
+      options.path = `/${path}?list=1`;
+      options.method = 'GET';
+    } else {
+      options.path = `/${path}`;
+      options.method = 'LIST';
+    }
+    return client.request(options);	    return client.request(options);
   };
 
   client.delete = (path, requestOptions) => {
