@@ -128,7 +128,7 @@ module.exports = (config = {}) => {
       options.path = `/${path}`;
       options.method = 'LIST';
     }
-    return client.request(options);	    return client.request(options);
+    return client.request(options);
   };
 
   client.delete = (path, requestOptions) => {
