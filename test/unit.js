@@ -70,6 +70,7 @@ describe('node-vault', () => {
     let request = null;
     let response = null;
     let vault = null;
+    let vaultNoCustomHTTPVerbs = null;
 
     // helper
     function getURI(path) {
@@ -99,15 +100,17 @@ describe('node-vault', () => {
         },
       });
 
-      vault = index(
-        {
-          endpoint: 'http://localhost:8200',
-          token: '123',
-          'request-promise': {
-            defaults: () => request, // dependency injection of stub
-          },
-        }
-      );
+      const vaultConfig = {
+        endpoint: 'http://localhost:8200',
+        token: '123',
+        'request-promise': {
+          defaults: () => request, // dependency injection of stub
+        },
+      };
+
+      vault = index(vaultConfig);
+      vaultConfig.noCustomHTTPVerbs = true;
+      vaultNoCustomHTTPVerbs = index(vaultConfig);
     });
 
     describe('help(path, options)', () => {
@@ -135,15 +138,30 @@ describe('node-vault', () => {
     });
 
     describe('list(path, requestOptions)', () => {
-      it('should list entries at the specific path', done => {
-        const path = 'secret/hello';
-        const params = {
-          method: 'LIST',
-          uri: getURI(path),
-        };
-        vault.list(path)
-        .then(assertRequest(request, params, done))
-        .catch(done);
+      describe('with default options', () => {
+        it('should list entries at the specific path', done => {
+          const path = 'secret/hello';
+          const params = {
+            method: 'LIST',
+            uri: getURI(path),
+          };
+          vault.list(path)
+            .then(assertRequest(request, params, done))
+            .catch(done);
+        });
+      });
+
+      describe('with noCustomVerbs option', () => {
+        it('should list entries at the specific path', done => {
+          const path = 'secret/hello';
+          const params = {
+            method: 'GET',
+            uri: `${getURI(path)}?list=1`,
+          };
+          vaultNoCustomHTTPVerbs.list(path)
+            .then(assertRequest(request, params, done))
+            .catch(done);
+        });
       });
     });
 
