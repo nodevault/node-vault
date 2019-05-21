@@ -24,12 +24,19 @@ module.exports = (config = {}) => {
   tv4 = config.tv4 || tv4;
   commands = config.commands || commands;
   mustache = config.mustache || mustache;
-  rp = (config['request-promise'] || rp).defaults({
+
+  let rpDefaults = {
     json: true,
     resolveWithFullResponse: true,
     simple: false,
     strictSSL: !process.env.VAULT_SKIP_VERIFY,
-  });
+  };
+
+  if (config.rpDefaults) {
+    rpDefaults = _.merge({}, rpDefaults, config.rpDefaults);
+  }
+
+  rp = (config['request-promise'] || rp).defaults(rpDefaults);
   const client = {};
 
   function handleVaultResponse(response) {
