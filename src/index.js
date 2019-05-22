@@ -33,7 +33,9 @@ module.exports = (config = {}) => {
   };
 
   if (config.rpDefaults) {
-    rpDefaults = _.merge({}, rpDefaults, config.rpDefaults);
+    Object.keys(config.rpDefaults).forEach(key => {
+      rpDefaults[key] = config.rpDefaults[key];
+    });
   }
 
   rp = (config['request-promise'] || rp).defaults(rpDefaults);
