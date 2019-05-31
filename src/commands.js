@@ -133,6 +133,20 @@ module.exports = {
     method: 'PUT',
     path: '/sys/unseal',
     schema: {
+      req: {
+        type: 'object',
+        properties: {
+          key: {
+            type: 'string',
+          },
+          reset: {
+            type: 'boolean',
+          },
+          migrate: {
+            type: 'boolean',
+          },
+        },
+      },
       res: sealStatusResponse,
     },
   },
@@ -391,6 +405,26 @@ module.exports = {
       },
     },
   },
+  gcpLogin: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}gcp{{/mount_point}}/login',
+    tokenSource: true,
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          role: {
+            type: 'string',
+          },
+          jwt: {
+            type: 'string',
+          },
+        },
+        required: ['role', 'jwt'],
+      },
+      res: tokenResponse,
+    },
+  },
   githubLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}github{{/mount_point}}/login',
@@ -411,6 +445,7 @@ module.exports = {
   kubernetesLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/login',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
