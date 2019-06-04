@@ -25,7 +25,7 @@ module.exports = (config = {}) => {
   commands = config.commands || commands;
   mustache = config.mustache || mustache;
 
-  let rpDefaults = {
+  const rpDefaults = {
     json: true,
     resolveWithFullResponse: true,
     simple: false,
