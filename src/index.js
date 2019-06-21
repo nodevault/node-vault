@@ -4,7 +4,7 @@ let debug = require('debug')('node-vault');
 let tv4 = require('tv4');
 let commands = require('./commands.js');
 let mustache = require('mustache');
-let rp = require('request-promise-native');
+const rp = require('request-promise-native');
 
 class VaultError extends Error {}
 
