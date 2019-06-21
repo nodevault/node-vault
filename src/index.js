@@ -24,7 +24,7 @@ module.exports = (config = {}) => {
   tv4 = config.tv4 || tv4;
   commands = config.commands || commands;
   mustache = config.mustache || mustache;
-  rp = (config['request-promise'] || rp).defaults({
+  const requestPromise = (config['request-promise'] || rp).defaults({
     json: true,
     resolveWithFullResponse: true,
     simple: false,
@@ -88,7 +88,7 @@ module.exports = (config = {}) => {
     options.uri = uri;
     debug(options.method, uri);
     if (options.json) debug(options.json);
-    return rp(options).then(client.handleVaultResponse);
+    return requestPromise(options).then(client.handleVaultResponse);
   };
 
   client.help = (path, requestOptions) => {
