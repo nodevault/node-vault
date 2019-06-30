@@ -1,6 +1,6 @@
 {
   "name": "node-vault",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "scripts": {
