@@ -1,6 +1,6 @@
 {
   "name": "node-vault",
-  "version": "0.9.8",
+  "version": "0.9.10",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "scripts": {
@@ -68,7 +68,8 @@
     "Jonathan Bastnagel (https://github.com/inkadnb)",
     "Mario Pareja (https://github.com/mpareja)",
     "Jeff Sisson (https://github.com/saranrapjs)",
-    "Sean Gallavan (https://github.com/seangallavan)"
+    "Sean Gallavan (https://github.com/seangallavan)",
+    "Ryan Lewis (https://github.com/ryanlewis)"
   ],
   "license": "MIT",
   "bugs": {
