@@ -4,7 +4,7 @@ let debug = require('debug')('node-vault');
 let tv4 = require('tv4');
 let commands = require('./commands.js');
 let mustache = require('mustache');
-let rp = require('request-promise-native');
+const rp = require('request-promise-native');
 
 class VaultError extends Error {}
 
@@ -97,7 +97,8 @@ module.exports = (config = {}) => {
     options.uri = uri;
     debug(options.method, uri);
     if (options.json) debug(options.json);
-    return rp(options).then(client.handleVaultResponse);
+    return 
+    (options).then(client.handleVaultResponse);
   };
 
   client.help = (path, requestOptions) => {
