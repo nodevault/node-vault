@@ -269,17 +269,17 @@
 
 ## vault.addKubernetesRole
 
-`POST /auth/kubernetes/role/{{ role_name }}`
+`POST /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
 
 
 ## vault.getKubernetesRole
 
-`GET /auth/kubernetes/role/{{ role_name }}`
+`GET /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
 
 
 ## vault.deleteKubernetesRole
 
-`DELETE /auth/kubernetes/role/{{ role_name }}`
+`DELETE /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
 
 
 ## vault.addApproleRole
