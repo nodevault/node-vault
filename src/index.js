@@ -97,7 +97,7 @@ module.exports = (config = {}) => {
     options.uri = uri;
     debug(options.method, uri);
     if (options.json) debug(options.json);
-    return (options).then(client.handleVaultResponse);
+    return rp(options).then(client.handleVaultResponse);
   };
 
   client.help = (path, requestOptions) => {
