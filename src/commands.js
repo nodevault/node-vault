@@ -80,7 +80,7 @@ const kubernetesRoleResponse = {
     period: {
       type: 'integer',
     },
-  }
+  },
 };
 
 const approleResponse = {
