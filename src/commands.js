@@ -578,6 +578,9 @@ module.exports = {
           no_default_policy: {
             type: 'boolean',
           },
+          period: {
+            type: 'string',
+          },
           renewable: {
             type: 'boolean',
           },
