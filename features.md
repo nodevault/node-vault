@@ -57,6 +57,21 @@
 `POST /sys/mounts/{{mount_point}}`
 
 
+## vault.encryptData
+
+`POST /transit/encrypt/{{name}}`
+
+
+## vault.decryptData
+
+`POST /transit/decrypt/{{name}}`
+
+
+## vault.generateDatabaseCredentials
+
+`GET /{{databasePath}}/creds/{{name}}`
+
+
 ## vault.unmount
 
 `DELETE /sys/mounts/{{mount_point}}`

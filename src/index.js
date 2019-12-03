@@ -4,7 +4,7 @@ let debug = require('debug')('node-vault');
 let tv4 = require('tv4');
 let commands = require('./commands.js');
 let mustache = require('mustache');
-let rp = require('request-promise-native');
+const rp = require('request-promise-native');
 
 class VaultError extends Error {}
 
@@ -24,7 +24,7 @@ module.exports = (config = {}) => {
   tv4 = config.tv4 || tv4;
   commands = config.commands || commands;
   mustache = config.mustache || mustache;
-  rp = (config['request-promise'] || rp).defaults({
+  const requestPromise = (config['request-promise'] || rp).defaults({
     json: true,
     resolveWithFullResponse: true,
     simple: false,
@@ -59,6 +59,7 @@ module.exports = (config = {}) => {
   client.endpoint = config.endpoint || process.env.VAULT_ADDR || 'http://127.0.0.1:8200';
   client.pathPrefix = config.pathPrefix || process.env.VAULT_PREFIX || '';
   client.token = config.token || process.env.VAULT_TOKEN;
+  client.noCustomHTTPVerbs = config.noCustomHTTPVerbs || false;
 
   const requestSchema = {
     type: 'object',
@@ -87,7 +88,7 @@ module.exports = (config = {}) => {
     options.uri = uri;
     debug(options.method, uri);
     if (options.json) debug(options.json);
-    return rp(options).then(client.handleVaultResponse);
+    return requestPromise(options).then(client.handleVaultResponse);
   };
 
   client.help = (path, requestOptions) => {
@@ -119,7 +120,14 @@ module.exports = (config = {}) => {
     debug(`list ${path}`);
     const options = Object.assign({}, config.requestOptions, requestOptions);
     options.path = `/${path}`;
-    options.method = 'LIST';
+
+    if (client.noCustomHTTPVerbs) {
+      options.path = `/${path}?list=1`;
+      options.method = 'GET';
+    } else {
+      options.path = `/${path}`;
+      options.method = 'LIST';
+    }
     return client.request(options);
   };
 
