@@ -19,7 +19,8 @@
     "doc": "./docs"
   },
   "files": [
-    "src"
+    "src",
+    "index.d.ts"
   ],
   "dependencies": {
     "debug": "3.1.0",
