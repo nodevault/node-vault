@@ -288,6 +288,18 @@ module.exports = {
     method: 'POST',
     path: '/sys/mounts/{{mount_point}}',
   },
+  encryptData: {
+    method: 'POST',
+    path: '/transit/encrypt/{{name}}',
+  },
+  decryptData: {
+    method: 'POST',
+    path: '/transit/decrypt/{{name}}',
+  },
+  generateDatabaseCredentials: {
+    method: 'GET',
+    path: '/{{databasePath}}/creds/{{name}}',
+  },
   unmount: {
     method: 'DELETE',
     path: '/sys/mounts/{{mount_point}}',
