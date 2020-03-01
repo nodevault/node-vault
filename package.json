@@ -1,6 +1,6 @@
 {
   "name": "node-vault",
-  "version": "0.9.11",
+  "version": "0.9.13",
   "description": "Javascript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "scripts": {
@@ -12,23 +12,28 @@
     "test-watch": "mocha --watch",
     "predocs": "node scripts/write-features.js",
     "docs": "docco --output docs src/*.js",
-    "precommit": "node scripts/write-features.js && git add features.md"
+    "precommit": "node scripts/write-features.js && git add features.md",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "directories": {
     "example": "./example",
     "doc": "./docs"
   },
   "files": [
-    "src"
+    "src",
+    "index.d.ts"
   ],
   "dependencies": {
     "debug": "3.1.0",
     "mustache": "^2.2.1",
     "request": "2.88.0",
     "request-promise-native": "1.0.7",
-    "tv4": "^1.2.7"
+    "tv4": "^1.2.7",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
+    "@types/request": "^2.48.1",
     "chai": "3.5.0",
     "dirty-chai": "^1.2.2",
     "docco": "0.8.0",
@@ -58,6 +63,7 @@
   "contributors": [
     "Adam Kelsall (https://github.com/adamkelsall)",
     "Alex Early (https://github.com/aearly)",
+    "Brandon Ros (https://github.com/brandonros)",
     "Charles Phillips (https://github.com/doublerebel)",
     "David Drewery (https://github.com/EXPEddrewery)",
     "Dustin (https://github.com/at88mph)",
@@ -85,5 +91,6 @@
   "bugs": {
     "url": "https://github.com/kr1sp1n/node-vault/issues"
   },
-  "homepage": "https://github.com/kr1sp1n/node-vault"
+  "homepage": "https://github.com/kr1sp1n/node-vault",
+  "snyk": true
 }
