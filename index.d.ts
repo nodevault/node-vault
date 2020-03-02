@@ -19,6 +19,7 @@ declare namespace NodeVault {
     interface functionConf {
         method: string;
         path: string;
+        tokenSource?: boolean;
         schema?: {
             req?: Option;
             query?: Option;
