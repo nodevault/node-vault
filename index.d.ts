@@ -69,6 +69,7 @@ declare namespace NodeVault {
         revoke(options?: Option): Promise<any>;
         revokePrefix(options?: Option): Promise<any>;
         rotate(options?: Option): Promise<any>;
+        gcpLogin(options?: Option): Promise<any>;
         githubLogin(options?: Option): Promise<any>;
         userpassLogin(options?: Option): Promise<any>;
         kubernetesLogin(options?: Option): Promise<any>;
