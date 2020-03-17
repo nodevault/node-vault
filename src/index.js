@@ -4,7 +4,9 @@ const originalDebug = require('debug')('node-vault');
 const originalTv4 = require('tv4');
 const originalCommands = require('./commands.js');
 const originalMustache = require('mustache');
-const originalRp = require('request-promise-native');
+const axios = require('axios').default;
+const https = require('https');
+const http = require('http');
 
 class VaultError extends Error {}
 
@@ -25,24 +27,38 @@ module.exports = (config = {}) => {
   const commands = config.commands || originalCommands;
   const mustache = config.mustache || originalMustache;
 
-  const rpDefaults = {
-    json: true,
-    resolveWithFullResponse: true,
-    simple: false,
-    strictSSL: !process.env.VAULT_SKIP_VERIFY,
-  };
+  let requestPromise = (config['request-promise'] || axios);
 
-  if (config.rpDefaults) {
-    Object.keys(config.rpDefaults).forEach(key => {
-      rpDefaults[key] = config.rpDefaults[key];
+  // This code sets axios.create.request as the default
+  // Request function
+  // that NodeVault will use
+  if (requestPromise != null && requestPromise.create != null) {
+    requestPromise = requestPromise.create({
     });
+    if (requestPromise != null && requestPromise.options != null) {
+      // Set Default Options fo this requestPromise
+      // Handles strictSSL config of Old API
+      const strictSSL = !process.env.VAULT_SKIP_VERIFY;
+      requestPromise.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: strictSSL });
+      requestPromise.defaults.httpAgent = new http.Agent();
+      // Handles Params
+      // simple && resolveWithFullResponse
+      // Like Old API
+      requestPromise.defaults.validateStatus = (_) => true && _;
+      // Handles json = true
+      // Like Old API
+      requestPromise.defaults.responseType = 'json';
+    }
+    if (requestPromise != null && requestPromise.request != null) {
+      requestPromise = requestPromise.request;
+    }
   }
-
-  const rp = (config['request-promise'] || originalRp).defaults(rpDefaults);
   const client = {};
 
   function handleVaultResponse(response) {
     if (!response) return Promise.reject(new VaultError('No response passed'));
+    response.statusCode = response.statusCode || response.status;
+    response.body = response.body || response.data;
     debug(response.statusCode);
     if (response.statusCode !== 200 && response.statusCode !== 204) {
       // handle health response not as error
@@ -98,10 +114,21 @@ module.exports = (config = {}) => {
     if (typeof client.namespace === 'string' && client.namespace.length) {
       options.headers['X-Vault-Namespace'] = client.namespace;
     }
-    options.uri = uri;
-    debug(options.method, uri);
-    if (options.json) debug(options.json);
-    return rp(options).then(client.handleVaultResponse);
+    options.url = uri;
+    debug(options.method, options.url);
+    // Old API relied on options.uri
+    // Axios uses options.url
+    // Added to ensure compatibility with Old API
+    options.uri = options.url;
+    // Axios uses options.data
+    // Merge Data Received from Old API into new one
+    options.data = Object.assign({}, options.data, options.json);
+    // Old API relied on options.json
+    // Added to ensure compatibility with Old API
+    options.json = options.data;
+
+    if (options.data && Object.keys(options.data).length > 0) debug(options.data);
+    return requestPromise(options).then(client.handleVaultResponse);
   };
 
   client.help = (path, requestOptions) => {
