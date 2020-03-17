@@ -26,41 +26,33 @@ describe('node-vault', () => {
     });
 
     it('should set default values for request library', () => {
-      const defaultsStub = sinon.stub();
+      const createStub = sinon.stub();
 
       index({
         'request-promise': {
-          defaults: defaultsStub,
+          create: createStub,
         },
       });
 
-      defaultsStub.should.be.calledOnce();
-      defaultsStub.should.be.calledWithExactly({
-        json: true,
-        simple: false,
-        resolveWithFullResponse: true,
-        strictSSL: true,
+      createStub.should.be.calledOnce();
+      createStub.should.be.calledWithExactly({
       });
     });
 
     it('should disable ssl security based on vault environment variable', () => {
-      const defaultsStub = sinon.stub();
+      const createStub = sinon.stub();
 
       // see https://www.vaultproject.io/docs/commands/environment.html for details
       process.env.VAULT_SKIP_VERIFY = 'catpants';
 
       index({
         'request-promise': {
-          defaults: defaultsStub,
+          create: createStub,
         },
       });
 
-      defaultsStub.should.be.calledOnce();
-      defaultsStub.should.be.calledWithExactly({
-        json: true,
-        simple: false,
-        resolveWithFullResponse: true,
-        strictSSL: false,
+      createStub.should.be.calledOnce();
+      createStub.should.be.calledWithExactly({
       });
     });
   });
@@ -104,7 +96,7 @@ describe('node-vault', () => {
         endpoint: 'http://localhost:8200',
         token: '123',
         'request-promise': {
-          defaults: () => request, // dependency injection of stub
+          create: () => request, // dependency injection of stub
         },
       };
 

@@ -25,12 +25,11 @@
     "index.d.ts"
   ],
   "dependencies": {
+    "axios": "^0.19.2",
     "debug": "3.1.0",
     "mustache": "^2.2.1",
-    "request": "2.88.0",
-    "request-promise-native": "1.0.7",
-    "tv4": "^1.2.7",
-    "snyk": "^1.189.0"
+    "snyk": "^1.189.0",
+    "tv4": "^1.2.7"
   },
   "devDependencies": {
     "@types/request": "^2.48.1",
