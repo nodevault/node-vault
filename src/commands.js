@@ -1132,11 +1132,11 @@ module.exports = {
       req: {
         type: 'object',
         properties: {
-          secret_id: {
+          secret_id_accessor: {
             type: 'string',
           },
         },
-        required: ['secret_id'],
+        required: ['secret_id_accessor'],
       },
     },
   },
