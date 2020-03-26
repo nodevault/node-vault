@@ -288,6 +288,18 @@ module.exports = {
     method: 'POST',
     path: '/sys/mounts/{{mount_point}}',
   },
+  encryptData: {
+    method: 'POST',
+    path: '/transit/encrypt/{{name}}',
+  },
+  decryptData: {
+    method: 'POST',
+    path: '/transit/decrypt/{{name}}',
+  },
+  generateDatabaseCredentials: {
+    method: 'GET',
+    path: '/{{databasePath}}/creds/{{name}}',
+  },
   unmount: {
     method: 'DELETE',
     path: '/sys/mounts/{{mount_point}}',
@@ -556,6 +568,7 @@ module.exports = {
   tokenCreate: {
     method: 'POST',
     path: '/auth/token/create',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -601,6 +614,7 @@ module.exports = {
   tokenCreateOrphan: {
     method: 'POST',
     path: '/auth/token/create-orphan',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -646,6 +660,7 @@ module.exports = {
   tokenCreateRole: {
     method: 'POST',
     path: '/auth/token/create/{{role_name}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -823,6 +838,7 @@ module.exports = {
   tokenRenew: {
     method: 'POST',
     path: '/auth/token/renew',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -842,6 +858,7 @@ module.exports = {
   tokenRenewSelf: {
     method: 'POST',
     path: '/auth/token/renew-self',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -1115,11 +1132,11 @@ module.exports = {
       req: {
         type: 'object',
         properties: {
-          secret_id: {
+          secret_id_accessor: {
             type: 'string',
           },
         },
-        required: ['secret_id'],
+        required: ['secret_id_accessor'],
       },
     },
   },
