@@ -288,6 +288,18 @@ module.exports = {
     method: 'POST',
     path: '/sys/mounts/{{mount_point}}',
   },
+  encryptData: {
+    method: 'POST',
+    path: '/transit/encrypt/{{name}}',
+  },
+  decryptData: {
+    method: 'POST',
+    path: '/transit/decrypt/{{name}}',
+  },
+  generateDatabaseCredentials: {
+    method: 'GET',
+    path: '/{{databasePath}}/creds/{{name}}',
+  },
   unmount: {
     method: 'DELETE',
     path: '/sys/mounts/{{mount_point}}',
@@ -556,6 +568,7 @@ module.exports = {
   tokenCreate: {
     method: 'POST',
     path: '/auth/token/create',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -601,6 +614,7 @@ module.exports = {
   tokenCreateOrphan: {
     method: 'POST',
     path: '/auth/token/create-orphan',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -646,6 +660,7 @@ module.exports = {
   tokenCreateRole: {
     method: 'POST',
     path: '/auth/token/create/{{role_name}}',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -823,6 +838,7 @@ module.exports = {
   tokenRenew: {
     method: 'POST',
     path: '/auth/token/renew',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -842,6 +858,7 @@ module.exports = {
   tokenRenewSelf: {
     method: 'POST',
     path: '/auth/token/renew-self',
+    tokenSource: true,
     schema: {
       req: {
         type: 'object',
@@ -978,32 +995,35 @@ module.exports = {
     path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}',
     schema: {
       req: {
-        bind_secret_id: {
-          type: 'boolean',
-        },
-        bound_cidr_list: {
-          type: 'string',
-        },
-        policies: {
-          type: 'string',
-        },
-        secret_id_num_uses: {
-          type: 'integer',
-        },
-        secret_id_ttl: {
-          type: 'integer',
-        },
-        token_num_uses: {
-          type: 'integer',
-        },
-        token_ttl: {
-          type: 'integer',
-        },
-        token_max_ttl: {
-          type: 'integer',
-        },
-        period: {
-          type: 'integer',
+        type: 'object',
+        properties: {
+          bind_secret_id: {
+            type: 'boolean',
+          },
+          bound_cidr_list: {
+            type: 'string',
+          },
+          policies: {
+            type: 'string',
+          },
+          secret_id_num_uses: {
+            type: 'integer',
+          },
+          secret_id_ttl: {
+            type: 'integer',
+          },
+          token_num_uses: {
+            type: 'integer',
+          },
+          token_ttl: {
+            type: 'integer',
+          },
+          token_max_ttl: {
+            type: 'integer',
+          },
+          period: {
+            type: 'integer',
+          },
         },
       },
     },
@@ -1140,7 +1160,7 @@ module.exports = {
             type: 'string',
           },
         },
-        required: ['role_id', 'secret_id'],
+        required: ['role_id'],
       },
       res: approleResponse,
     },
