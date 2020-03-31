@@ -120,6 +120,8 @@ declare namespace NodeVault {
 
         apiVersion?: string;
         endpoint?: string;
+        noCustomHTTPVerbs?: boolean;
+        pathPrefix?: string;
         token?: string;
         requestOptions?: request.CoreOptions;
     }
