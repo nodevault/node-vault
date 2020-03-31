@@ -29,8 +29,7 @@
     "mustache": "^2.2.1",
     "request": "2.88.0",
     "request-promise-native": "1.0.7",
-    "tv4": "^1.2.7",
-    "snyk": "^1.189.0"
+    "tv4": "^1.2.7"
   },
   "devDependencies": {
     "@types/request": "^2.48.1",
@@ -46,7 +45,8 @@
     "istanbul": "^0.4.5",
     "mocha": "6.0.2",
     "sinon": "1.17.3",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "snyk": "^1.189.0"
   },
   "repository": {
     "type": "git",
