@@ -59,6 +59,16 @@ vault.write('secret/hello', { value: 'world', lease: '1s' })
 .then( () => vault.delete('secret/hello'))
 .catch(console.error);
 ```
+### strict SSL
+you can **enable / disalbe** *strict SSL* using **VAULT_SKIP_VERIFY** environment variable
+
+**.env**
+```bash
+# default
+VAULT_SKIP_VERIFY=false
+# disable strict SSL
+VAULT_SKIP_VERIFY=true
+```
 
 ## docs
 Just generate [docco] docs via `npm run docs`.
