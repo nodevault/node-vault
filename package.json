@@ -12,9 +12,7 @@
     "test-watch": "mocha --watch",
     "predocs": "node scripts/write-features.js",
     "docs": "docco --output docs src/*.js",
-    "precommit": "node scripts/write-features.js && git add features.md",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "precommit": "node scripts/write-features.js && git add features.md"
   },
   "directories": {
     "example": "./example",
@@ -29,8 +27,7 @@
     "mustache": "^2.2.1",
     "request": "2.88.0",
     "request-promise-native": "1.0.7",
-    "tv4": "^1.2.7",
-    "snyk": "^1.189.0"
+    "tv4": "^1.2.7"
   },
   "devDependencies": {
     "@types/request": "^2.48.1",
@@ -92,6 +89,5 @@
   "bugs": {
     "url": "https://github.com/kr1sp1n/node-vault/issues"
   },
-  "homepage": "https://github.com/kr1sp1n/node-vault",
-  "snyk": true
+  "homepage": "https://github.com/kr1sp1n/node-vault"
 }
