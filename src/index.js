@@ -69,6 +69,7 @@ module.exports = (config = {}) => {
   client.pathPrefix = config.pathPrefix || process.env.VAULT_PREFIX || '';
   client.token = config.token || process.env.VAULT_TOKEN;
   client.noCustomHTTPVerbs = config.noCustomHTTPVerbs || false;
+  client.namespace = config.namespace || process.env.VAULT_NAMESPACE;
 
   const requestSchema = {
     type: 'object',
@@ -93,6 +94,9 @@ module.exports = (config = {}) => {
     options.headers = options.headers || {};
     if (typeof client.token === 'string' && client.token.length) {
       options.headers['X-Vault-Token'] = options.headers['X-Vault-Token'] || client.token;
+    }
+    if (typeof client.namespace === 'string' && client.namespace.length) {
+      options.headers['X-Vault-Namespace'] = client.namespace;
     }
     options.uri = uri;
     debug(options.method, uri);

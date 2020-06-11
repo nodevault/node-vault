@@ -125,6 +125,7 @@ describe('node-vault', () => {
       const vaultConfig = {
         endpoint: 'http://localhost:8200',
         token: '123',
+        namespace: 'test',
         'request-promise': {
           defaults: () => request, // dependency injection of stub
         },
