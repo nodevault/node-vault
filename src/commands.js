@@ -474,6 +474,41 @@ module.exports = {
       res: tokenResponse,
     },
   },
+  awsIamLogin: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}aws{{/mount_point}}/login',
+    tokenSource: true,
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          role: {
+            type: 'string',
+          },
+          iam_http_request_method: {
+            type: 'string',
+          },
+          iam_request_url: {
+            type: 'string',
+          },
+          iam_request_body: {
+            type: 'string',
+          },
+          iam_request_headers: {
+            type: 'string',
+          },
+        },
+        required: [
+          'role',
+          'iam_http_request_method',
+          'iam_request_url',
+          'iam_request_body',
+          'iam_request_headers',
+        ],
+      },
+      res: tokenResponse,
+    },
+  },
   userpassLogin: {
     method: 'POST',
     path: '/auth/{{mount_point}}{{^mount_point}}userpass{{/mount_point}}/login/{{username}}',
