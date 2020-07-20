@@ -120,6 +120,7 @@ declare namespace NodeVault {
 
         apiVersion?: string;
         endpoint?: string;
+        namespace?: string;
         token?: string;
         requestOptions?: request.CoreOptions;
     }
