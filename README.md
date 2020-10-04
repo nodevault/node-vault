@@ -93,7 +93,8 @@ Now you are able to run all of the other [examples]:
 node example/policies.js
 ```
 
-##Connecting to vault through a bastion host
+## Connecting to vault through a bastion host
+
 To connect to a vault server in a private network with a bastion host, you'll need to first open a connection:
 ```bash
 ssh -D <socks4Port> bastion.example.com
