@@ -111,7 +111,9 @@ const options = {
 
 const vault = require('node-vault')(options);
 ```
+
 [![Backers](https://opencollective.com/node-vault/tiers/backers.svg?avatarHeight=80&width=600)](https://opencollective.com/node-vault/contribute)
+
 [examples]: https://github.com/kr1sp1n/node-vault/tree/master/example
 [docker-compose.yml]: https://github.com/kr1sp1n/node-vault/tree/master/docker-compose.yml
 [Vault]: https://vaultproject.io/
