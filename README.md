@@ -97,15 +97,15 @@ node example/policies.js
 
 To connect to a vault server in a private network with a bastion host, you'll need to first open a connection:
 ```bash
-ssh -D <socks4Port> bastion.example.com
+ssh -D <socksPort> bastion.example.com
 ```
 
 ```javascript
 const SocksProxyAgent = require('socks-proxy-agent');
-const agent = new SocksProxyAgent(`socks://127.0.0.1:${socks4Port}`, true);
+const agent = new SocksProxyAgent(`socks5://127.0.0.1:${socksPort}`);
 const options = {
   apiVersion: 'v1',
-  rpOptions: {
+  rpDefaults: {
     agent,
   },
 };
