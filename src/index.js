@@ -4,7 +4,7 @@ let debug = require('debug')('node-vault');
 let tv4 = require('tv4');
 let commands = require('./commands.js');
 let mustache = require('mustache');
-const rp = require('request-promise-native');
+let rp = require('request-promise-native');
 
 class VaultError extends Error {}
 
@@ -24,12 +24,21 @@ module.exports = (config = {}) => {
   tv4 = config.tv4 || tv4;
   commands = config.commands || commands;
   mustache = config.mustache || mustache;
-  const requestPromise = (config['request-promise'] || rp).defaults({
+
+  const rpDefaults = {
     json: true,
     resolveWithFullResponse: true,
     simple: false,
     strictSSL: !process.env.VAULT_SKIP_VERIFY,
-  });
+  };
+
+  if (config.rpDefaults) {
+    Object.keys(config.rpDefaults).forEach(key => {
+      rpDefaults[key] = config.rpDefaults[key];
+    });
+  }
+
+  rp = (config['request-promise'] || rp).defaults(rpDefaults);
   const client = {};
 
   function handleVaultResponse(response) {
@@ -60,6 +69,7 @@ module.exports = (config = {}) => {
   client.pathPrefix = config.pathPrefix || process.env.VAULT_PREFIX || '';
   client.token = config.token || process.env.VAULT_TOKEN;
   client.noCustomHTTPVerbs = config.noCustomHTTPVerbs || false;
+  client.namespace = config.namespace || process.env.VAULT_NAMESPACE;
 
   const requestSchema = {
     type: 'object',
@@ -85,10 +95,13 @@ module.exports = (config = {}) => {
     if (typeof client.token === 'string' && client.token.length) {
       options.headers['X-Vault-Token'] = options.headers['X-Vault-Token'] || client.token;
     }
+    if (typeof client.namespace === 'string' && client.namespace.length) {
+      options.headers['X-Vault-Namespace'] = client.namespace;
+    }
     options.uri = uri;
     debug(options.method, uri);
     if (options.json) debug(options.json);
-    return requestPromise(options).then(client.handleVaultResponse);
+    return rp(options).then(client.handleVaultResponse);
   };
 
   client.help = (path, requestOptions) => {

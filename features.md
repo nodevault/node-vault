@@ -172,6 +172,11 @@
 `POST /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/login`
 
 
+## vault.awsIamLogin
+
+`POST /auth/{{mount_point}}{{^mount_point}}aws{{/mount_point}}/login`
+
+
 ## vault.userpassLogin
 
 `POST /auth/{{mount_point}}{{^mount_point}}userpass{{/mount_point}}/login/{{username}}`
