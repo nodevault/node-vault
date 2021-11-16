@@ -30,3 +30,4 @@ cov.html
 .env
 docs
 dist
+.nyc_output
