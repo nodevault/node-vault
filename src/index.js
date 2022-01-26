@@ -4,7 +4,7 @@ const originalDebug = require('debug')('node-vault');
 const originalTv4 = require('tv4');
 const originalCommands = require('./commands.js');
 const originalMustache = require('mustache');
-const originalRp = require('request-promise-native');
+const originalRp = require('postman-request');
 
 class VaultError extends Error {}
 
@@ -38,7 +38,18 @@ module.exports = (config = {}) => {
     });
   }
 
-  const rp = (config['request-promise'] || originalRp).defaults(rpDefaults);
+  const rpObject = (config['request-promise'] || originalRp).defaults(rpDefaults);
+  function rp(options) {
+    if (config['request-promise'] != null) {
+      return rpObject(options);
+    }
+    return new Promise((resolve, reject) => {
+      rpObject(options, (err, response) => {
+        if (err != null) reject(err);
+        else resolve(response);
+      });
+    });
+  }
   const client = {};
 
   function handleVaultResponse(response) {
