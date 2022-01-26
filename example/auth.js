@@ -2,7 +2,7 @@
 
 process.env.DEBUG = 'node-vault'; // switch on debug mode
 
-const vault = require('./../src/index')();
+const vault = require('../src/index')();
 
 const options = {
   requestOptions: {
@@ -11,5 +11,5 @@ const options = {
 };
 
 vault.auths(options)
-.then(console.log)
-.catch((err) => console.error(err.message));
+  .then(console.log)
+  .catch((err) => console.error(err.message));

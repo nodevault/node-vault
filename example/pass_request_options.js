@@ -2,7 +2,7 @@
 
 process.env.DEBUG = 'node-vault'; // switch on debug mode
 
-const vault = require('./../src/index')();
+const vault = require('../src/index')();
 
 const options = {
   headers: {
@@ -17,5 +17,5 @@ const options = {
 };
 
 vault.help('sys/policy', options)
-.then(() => vault.help('sys/mounts'))
-.catch((err) => console.error(err.message));
+  .then(() => vault.help('sys/mounts'))
+  .catch((err) => console.error(err.message));

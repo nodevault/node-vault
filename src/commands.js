@@ -1098,8 +1098,8 @@ module.exports = {
   },
   getApproleRoleSecret: {
     method: 'POST',
-    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
-      '/role/{{role_name}}/secret-id',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}'
+      + '/role/{{role_name}}/secret-id',
     schema: {
       req: {
         type: 'object',
@@ -1120,16 +1120,16 @@ module.exports = {
   },
   approleSecretAccessors: {
     method: 'LIST',
-    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
-      '/role/{{role_name}}/secret-id',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}'
+      + '/role/{{role_name}}/secret-id',
     schema: {
       res: approleResponse,
     },
   },
   approleSecretLookup: {
     method: 'POST',
-    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
-      '/role/{{role_name}}/secret-id/lookup',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}'
+      + '/role/{{role_name}}/secret-id/lookup',
     schema: {
       req: {
         type: 'object',
@@ -1145,8 +1145,8 @@ module.exports = {
   },
   approleSecretDestroy: {
     method: 'POST',
-    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
-      '/role/{{role_name}}/secret-id/destroy',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}'
+      + '/role/{{role_name}}/secret-id/destroy',
     schema: {
       req: {
         type: 'object',
@@ -1161,8 +1161,8 @@ module.exports = {
   },
   approleSecretAccessorLookup: {
     method: 'POST',
-    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
-      '/role/{{role_name}}/secret-id-accessor/lookup',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}'
+      + '/role/{{role_name}}/secret-id-accessor/lookup',
     schema: {
       req: {
         type: 'object',
@@ -1177,8 +1177,8 @@ module.exports = {
   },
   approleSecretAccessorDestroy: {
     method: 'POST',
-    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
-      '/role/{{role_name}}/secret-id-accessor/destroy',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}'
+      + '/role/{{role_name}}/secret-id-accessor/destroy',
   },
   approleLogin: {
     method: 'POST',

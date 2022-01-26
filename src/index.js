@@ -2,9 +2,9 @@
 
 const originalDebug = require('debug')('node-vault');
 const originalTv4 = require('tv4');
-const originalCommands = require('./commands.js');
 const originalMustache = require('mustache');
 const originalRp = require('request-promise-native');
+const originalCommands = require('./commands');
 
 class VaultError extends Error {}
 
@@ -33,7 +33,7 @@ module.exports = (config = {}) => {
   };
 
   if (config.rpDefaults) {
-    Object.keys(config.rpDefaults).forEach(key => {
+    Object.keys(config.rpDefaults).forEach((key) => {
       rpDefaults[key] = config.rpDefaults[key];
     });
   }
@@ -51,7 +51,7 @@ module.exports = (config = {}) => {
       }
       let message;
       if (response.body && response.body.errors && response.body.errors.length > 0) {
-        message = response.body.errors[0];
+        [message] = response.body.errors;
       } else {
         message = `Status ${response.statusCode}`;
       }
@@ -106,7 +106,7 @@ module.exports = (config = {}) => {
 
   client.help = (path, requestOptions) => {
     debug(`help for ${path}`);
-    const options = Object.assign({}, config.requestOptions, requestOptions);
+    const options = { ...config.requestOptions, ...requestOptions };
     options.path = `/${path}?help=1`;
     options.method = 'GET';
     return client.request(options);
@@ -114,7 +114,7 @@ module.exports = (config = {}) => {
 
   client.write = (path, data, requestOptions) => {
     debug('write %o to %s', data, path);
-    const options = Object.assign({}, config.requestOptions, requestOptions);
+    const options = { ...config.requestOptions, ...requestOptions };
     options.path = `/${path}`;
     options.json = data;
     options.method = 'PUT';
@@ -123,7 +123,7 @@ module.exports = (config = {}) => {
 
   client.read = (path, requestOptions) => {
     debug(`read ${path}`);
-    const options = Object.assign({}, config.requestOptions, requestOptions);
+    const options = { ...config.requestOptions, ...requestOptions };
     options.path = `/${path}`;
     options.method = 'GET';
     return client.request(options);
@@ -131,7 +131,7 @@ module.exports = (config = {}) => {
 
   client.list = (path, requestOptions) => {
     debug(`list ${path}`);
-    const options = Object.assign({}, config.requestOptions, requestOptions);
+    const options = { ...config.requestOptions, ...requestOptions };
     options.path = `/${path}`;
 
     if (client.noCustomHTTPVerbs) {
@@ -146,7 +146,7 @@ module.exports = (config = {}) => {
 
   client.delete = (path, requestOptions) => {
     debug(`delete ${path}`);
-    const options = Object.assign({}, config.requestOptions, requestOptions);
+    const options = { ...config.requestOptions, ...requestOptions };
     options.path = `/${path}`;
     options.method = 'DELETE';
     return client.request(options);
@@ -171,6 +171,7 @@ module.exports = (config = {}) => {
     const querySchema = conf.schema.query;
     if (querySchema) {
       const params = [];
+      // eslint-disable-next-line no-restricted-syntax
       for (const key of Object.keys(querySchema.properties)) {
         if (key in args) {
           params.push(`${key}=${encodeURIComponent(args[key])}`);
@@ -184,6 +185,7 @@ module.exports = (config = {}) => {
     const reqSchema = conf.schema.req;
     if (reqSchema) {
       const json = {};
+      // eslint-disable-next-line no-restricted-syntax
       for (const key of Object.keys(reqSchema.properties)) {
         if (key in args) {
           json[key] = args[key];
@@ -199,7 +201,7 @@ module.exports = (config = {}) => {
 
   function generateFunction(name, conf) {
     client[name] = (args = {}) => {
-      const options = Object.assign({}, config.requestOptions, args.requestOptions);
+      const options = { ...config.requestOptions, ...args.requestOptions };
       options.method = conf.method;
       // replace args in path.
       options.path = mustache.render(conf.path, args);
@@ -212,12 +214,12 @@ module.exports = (config = {}) => {
       }
       // else do validation of request URL and body
       let promise = validate(args, conf.schema.req)
-      .then(() => validate(args, conf.schema.query))
-      .then(() => extendOptions(conf, options, args))
-      .then((extendedOptions) => client.request(extendedOptions));
+        .then(() => validate(args, conf.schema.query))
+        .then(() => extendOptions(conf, options, args))
+        .then((extendedOptions) => client.request(extendedOptions));
 
       if (conf.tokenSource) {
-        promise = promise.then(response => {
+        promise = promise.then((response) => {
           const candidateToken = response.auth && response.auth.client_token;
           if (candidateToken) {
             client.token = candidateToken;
@@ -235,7 +237,7 @@ module.exports = (config = {}) => {
   // protecting global object properties from being added
   // enforcing the immutable rule: https://github.com/airbnb/javascript#iterators-and-generators
   // going the functional way first defining a wrapper function
-  const assignFunctions = commandName => generateFunction(commandName, commands[commandName]);
+  const assignFunctions = (commandName) => generateFunction(commandName, commands[commandName]);
   Object.keys(commands).forEach(assignFunctions);
 
   return client;
