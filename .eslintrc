@@ -5,6 +5,8 @@
   },
   "rules": {
     "strict": 0,
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "max-classes-per-file": ["error", 2],
     "no-param-reassign": [
       "error",
       { "props": false }
