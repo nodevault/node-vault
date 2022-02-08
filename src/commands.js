@@ -300,6 +300,10 @@ module.exports = {
     method: 'GET',
     path: '/{{databasePath}}/creds/{{name}}',
   },
+  raftJoin:{
+    method: 'POST',
+    path: '/sys/storage/raft/join'
+  },
   unmount: {
     method: 'DELETE',
     path: '/sys/mounts/{{mount_point}}',
