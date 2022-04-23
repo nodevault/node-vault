@@ -4,7 +4,7 @@
   "description": "JavaScript/Typescript client for HashiCorp's Vault",
   "main": "./src/index.js",
   "engines": {
-    "pnpm": "6"
+    "pnpm": "^6"
   },
   "scripts": {
     "precoverage": "npm run lint",
