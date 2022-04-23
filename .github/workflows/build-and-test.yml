@@ -29,4 +29,4 @@ jobs:
         cache: 'pnpm'
     - run: |
         docker compose up -d vault
-        pnpm test
+        pnpm run coverage
