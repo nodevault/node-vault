@@ -1,33 +1,23 @@
 version: '3.8'
 
 services:
-  test:
-    build: .
-    command: npm run coverage
-    environment:
-      - VAULT_ADDR=http://vault:8200
-    volumes:
-      - $PWD/coverage:/app/coverage
-    depends_on:
-      - vault
-
   vault:
     image: vault
     volumes:
-      - $PWD/example:/tmp/example
-      - $PWD/logs/:/tmp/logs
+      - ./example:/tmp/example
+      - ./logs/:/tmp/logs
     cap_add:
       - IPC_LOCK
     command: server -config /tmp/example/config.hcl
     ports:
       - "8200:8200"
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres
-    ports:
-      - "5433:5432"
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: test
+#    depends_on:
+#      - postgres
+#
+#  postgres:
+#    image: postgres
+#    ports:
+#      - "5433:5432"
+#    environment:
+#      POSTGRES_USER: root
+#      POSTGRES_PASSWORD: test

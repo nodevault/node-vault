@@ -7,12 +7,12 @@
     "pnpm": "^6"
   },
   "scripts": {
-    "precoverage": "npm run lint",
+    "precoverage": "pnpm run lint",
     "coverage": "istanbul cover --report text-summary node_modules/.bin/_mocha",
     "lint": "eslint .",
     "test": "mocha",
-    "test-unit": "mocha test/unit.js",
-    "test-watch": "mocha --watch",
+    "test:unit": "mocha test/unit.js",
+    "test:watch": "mocha --watch",
     "predocs": "node scripts/write-features.js",
     "docs": "docco --output docs src/*.js",
     "precommit": "node scripts/write-features.js && git add features.md"
