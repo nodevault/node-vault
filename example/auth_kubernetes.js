@@ -1,6 +1,6 @@
 // file: example/kubernetes.js
 
-process.env.DEBUG = 'node-vault'; // switch on debug mode
+process.env.DEBUG = 'vaultaire'; // switch on debug mode
 const vault = require('./../src/index')();
 
 const vaultServicAccountSecretToken = process.env.VAULT_SVC_ACCT_SECRET_TOKEN || 'vault-k8s-token';

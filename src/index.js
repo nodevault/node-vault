@@ -1,6 +1,6 @@
 'use strict';
 
-const originalDebug = require('debug')('node-vault');
+const originalDebug = require('debug')('vaultaire');
 const originalTv4 = require('tv4');
 const originalCommands = require('./commands.js');
 const originalMustache = require('mustache');

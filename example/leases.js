@@ -1,6 +1,6 @@
 // file: example/leases.js
 
-process.env.DEBUG = 'node-vault'; // switch on debug mode
+process.env.DEBUG = 'vaultaire'; // switch on debug mode
 const vault = require('./../src/index')();
 
 // TODO fix example for leases because generic backend does not generate a lease_id anymore

@@ -1,21 +1,20 @@
-# node-vault
+# vaultaire
 
-[![Build Status](https://img.shields.io/travis/kr1sp1n/node-vault/master.svg?style=flat-square)](https://travis-ci.org/kr1sp1n/node-vault)
-[![Coverage Status](https://img.shields.io/codecov/c/github/kr1sp1n/node-vault/master.svg?style=flat-square)](https://codecov.io/gh/kr1sp1n/node-vault/branch/master)
-[![Download Status](https://img.shields.io/npm/dm/node-vault.svg?style=flat-square)](https://www.npmjs.com/package/node-vault)
-[![Dependency Status](https://img.shields.io/david/kr1sp1n/node-vault.svg?style=flat-square)](https://david-dm.org/kr1sp1n/node-vault)
+[![Coverage Status](https://img.shields.io/codecov/c/github/vaultaire/vaultaire/main.svg?style=flat-square)](https://codecov.io/gh/vaultaire/vaultaire/branch/main)
+[![Download Status](https://img.shields.io/npm/dm/vaultaire.svg?style=flat-square)](https://www.npmjs.com/package/vaultaire)
+[![Dependency Status](https://img.shields.io/david/vaultaire/vaultaire.svg?style=flat-square)](https://david-dm.org/vaultaire/vaultaire)
 [![Open Collective backers and sponsors](https://img.shields.io/opencollective/all/node-vault?style=flat-square)](https://opencollective.com/node-vault/contribute)
 
 A client for the HTTP API of HashiCorp's [Vault] written for Node.js.
 
 
-## install
-make sure to use node.js version >= 6
+## Install
+make sure to use node.js version >= 12
 
-    npm install node-vault
+    npm install vaultaire
 
 
-## test
+## Test
 
 Run tests inside docker to do also nice integration testing:
 
@@ -25,11 +24,11 @@ This will create containers for vault, postgres and running the tests inside
 docker.
 
 
-## usage
+## Usage
 
-### init and unseal
+### Init and unseal
 
-```javascript
+```typescript
 var options = {
   apiVersion: 'v1', // default
   endpoint: 'http://127.0.0.1:8200', // default
@@ -37,7 +36,7 @@ var options = {
 };
 
 // get new instance of the client
-var vault = require("node-vault")(options);
+var vault = require("vaultaire")(options);
 
 // init vault server
 vault.init({ secret_shares: 1, secret_threshold: 1 })
@@ -51,7 +50,7 @@ vault.init({ secret_shares: 1, secret_threshold: 1 })
 .catch(console.error);
 ```
 
-### write, read and delete secrets
+### Write, read and delete secrets
 
 ```javascript
 vault.write('secret/hello', { value: 'world', lease: '1s' })
@@ -60,19 +59,19 @@ vault.write('secret/hello', { value: 'world', lease: '1s' })
 .catch(console.error);
 ```
 
-## docs
+## Docs
 Just generate [docco] docs via `npm run docs`.
 
 
-## examples
+## Examples
 Please have a look at the [examples] and the generated [feature list] to see what is already implemented.
 
 Instead of installing all the dependencies like vault itself, postgres and other stuff you can
 use [docker] and [docker-compose] to link and run multiple docker containers with all of its dependencies.
 
 ```bash
-git clone git@github.com:kr1sp1n/node-vault.git
-cd node-vault
+git clone git@github.com:vaultaire/vaultaire.git
+cd vaultaire
 docker-compose up vault
 ```
 
@@ -110,16 +109,16 @@ const options = {
   },
 };
 
-const vault = require('node-vault')(options);
+const vault = require('vaultaire')(options);
 ```
 
 [![Backers](https://opencollective.com/node-vault/tiers/backers.svg?avatarHeight=80&width=600)](https://opencollective.com/node-vault/contribute)
 
-[examples]: https://github.com/kr1sp1n/node-vault/tree/master/example
-[docker-compose.yml]: https://github.com/kr1sp1n/node-vault/tree/master/docker-compose.yml
+[examples]: https://github.com/vaultaire/vaultaire/tree/main/example
+[docker-compose.yml]: https://github.com/vaultaire/vaultaire/tree/main/docker-compose.yml
 [Vault]: https://vaultproject.io/
 [docker-compose]: https://www.docker.com/docker-compose
 [docker]: http://docs.docker.com/
 [docker toolbox]: https://www.docker.com/toolbox
 [docco]: http://jashkenas.github.io/docco
-[feature list]: https://github.com/kr1sp1n/node-vault/tree/master/features.md
+[feature list]: https://github.com/vaultaire/vaultaire/tree/main/features.md

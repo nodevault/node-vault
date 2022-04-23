@@ -13,7 +13,7 @@ const index = require('./../src/index.js');
 
 const error = new Error('should not be called');
 
-describe('node-vault', () => {
+describe('vaultaire', () => {
   describe('module', () => {
     after(() => {
       process.env.VAULT_SKIP_VERIFY = '';

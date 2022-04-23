@@ -17,7 +17,7 @@ const validResult = (commandName, result) => {
 };
 
 describe('integration', () => {
-  describe('node-vault', () => {
+  describe('vaultaire', () => {
     it('should initialize a vault server', (done) => {
       vault.init({ secret_shares: 1, secret_threshold: 1 })
       .then((result) => {

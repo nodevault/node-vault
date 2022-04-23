@@ -1,6 +1,6 @@
 // file: example/auth_github.js
 
-process.env.DEBUG = 'node-vault'; // switch on debug mode
+process.env.DEBUG = 'vaultaire'; // switch on debug mode
 const vault = require('./../src/index')();
 
 const org = process.env.GITHUB_ORG;

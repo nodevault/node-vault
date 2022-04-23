@@ -11,7 +11,7 @@ const result = Object.keys(commands).map(name => {
 `;
 });
 
-result.unshift(`# Supported node-vault features
+result.unshift(`# Supported vaultaire features
 
- This is a generated list of Vault features supported by node-vault.`);
+ This is a generated list of Vault features supported by vaultaire.`);
 fs.writeFileSync('./features.md', result.join('\n'));

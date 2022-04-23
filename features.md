@@ -1,6 +1,6 @@
-# Supported node-vault features
+# Supported vaultaire features
 
- This is a generated list of Vault features supported by node-vault.
+ This is a generated list of Vault features supported by vaultaire.
 
 ## vault.status
 
