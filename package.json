@@ -3,6 +3,9 @@
   "version": "0.10.0",
   "description": "JavaScript/Typescript client for HashiCorp's Vault",
   "main": "./src/index.js",
+  "engines": {
+    "pnpm": "6"
+  },
   "scripts": {
     "precoverage": "npm run lint",
     "coverage": "istanbul cover --report text-summary node_modules/.bin/_mocha",
