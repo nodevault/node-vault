@@ -27,7 +27,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
-    - run: |
+    - name: Lint
+      run: |
+        pnpm run lint
+    - name: Test
+      run: |
         pnpm run pretest
         pnpm test
         pnpm run posttest

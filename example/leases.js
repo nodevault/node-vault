@@ -1,7 +1,9 @@
 // file: example/leases.js
 
+import NodeVault from "./../src/index";
+
 process.env.DEBUG = 'vaultaire'; // switch on debug mode
-const vault = require('./../src/index')();
+const vault = NodeVault();
 
 // TODO fix example for leases because generic backend does not generate a lease_id anymore
 // See: https://github.com/hashicorp/vault/issues/877

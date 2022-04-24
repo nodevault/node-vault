@@ -1,14 +1,16 @@
 // file: example/auth_approle.js
 
+import NodeVault from "./../src/index";
+
 process.env.DEBUG = 'vaultaire'; // switch on debug mode
 
-const vault = require('./../src/index')();
+const vault = NodeVault();
 const mountPoint = 'approle';
 const roleName = 'test-role';
 
 vault.auths()
 .then((result) => {
-  if (result.hasOwnProperty('approle/')) return undefined;
+  if (Object.hasOwn(result,'approle/')) return undefined;
   return vault.enableAuth({
     mount_point: mountPoint,
     type: 'approle',

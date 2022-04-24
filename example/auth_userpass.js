@@ -1,7 +1,9 @@
 // file: example/auth_userpass.js
 
+import NodeVault from "./../src/index";
+
 process.env.DEBUG = 'vaultaire'; // switch on debug mode
-const vault = require('./../src/index')();
+const vault = NodeVault();
 
 const mountPoint = 'userpass';
 const username = 'me';
@@ -9,7 +11,7 @@ const password = 'foo';
 
 vault.auths()
 .then((result) => {
-  if (result.hasOwnProperty('userpass/')) return undefined;
+  if (Object.hasOwn(result,'userpass/')) return undefined;
   return vault.enableAuth({
     mount_point: mountPoint,
     type: 'userpass',

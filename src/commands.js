@@ -74,7 +74,7 @@ const approleResponse = {
   },
 };
 
-module.exports = {
+export default {
   status: {
     method: 'GET',
     path: '/sys/seal-status',
@@ -116,6 +116,7 @@ module.exports = {
             },
             uniqueItems: true,
           },
+          required: ['secret_shares', 'secret_threshold'],
         },        
       },
       res: {

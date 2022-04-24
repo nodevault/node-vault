@@ -1,7 +1,9 @@
 // file: example/auth_okta.js
 
+import NodeVault from "./../src/index";
+
 process.env.DEBUG = 'vaultaire'; // switch on debug mode
-const vault = require('./../src/index')();
+const vault = NodeVault();
 
 const org = process.env.OKTA_ORG;
 const apiKey = process.env.OKTA_API_TOKEN;
@@ -9,7 +11,7 @@ const mountPoint = 'okta';
 
 vault.auths()
 .then((result) => {
-  if (result.hasOwnProperty('okta/')) return undefined;
+  if (Object.hasOwn(result,'okta/')) return undefined;
   return vault.enableAuth({
     mount_point: mountPoint,
     type: 'okta',

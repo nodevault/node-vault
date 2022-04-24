@@ -1,16 +1,15 @@
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const chai = require('chai');
-const dirtyChai = require('dirty-chai');
+import sinon from "sinon";
+import sinonChai from "sinon-chai";
+import chai from "chai";
+import dirtyChai from "dirty-chai";
+import NodeVault from "./../src/index.js";
+
 const should = chai.Should;
 const expect = chai.expect;
 
 should();
 chai.use(dirtyChai);
 chai.use(sinonChai);
-
-const index = require('./../src/index.js');
-
 const error = new Error('should not be called');
 
 describe('vaultaire', () => {
@@ -20,15 +19,15 @@ describe('vaultaire', () => {
     });
 
     it('should export a function that returns a new client', () => {
-      const v = index();
-      index.should.be.a('function');
+      const v = NodeVault();
+      NodeVault.should.be.a('function');
       v.should.be.an('object');
     });
 
     it('should set default values for request library', () => {
       const createStub = sinon.stub();
 
-      index({
+      NodeVault({
         'request-promise': {
           create: createStub,
         },
@@ -44,7 +43,7 @@ describe('vaultaire', () => {
     it.skip('should set additional values for request library', () => {
       const defaultsStub = sinon.stub();
 
-      index({
+      NodeVault({
         'request-promise': {
           defaults: defaultsStub,
         },
@@ -69,7 +68,7 @@ describe('vaultaire', () => {
       // see https://www.vaultproject.io/docs/commands/environment.html for details
       process.env.VAULT_SKIP_VERIFY = 'catpants';
 
-      index({
+      NodeVault({
         'request-promise': {
           create: createStub,
         },
@@ -125,9 +124,9 @@ describe('vaultaire', () => {
         },
       };
 
-      vault = index(vaultConfig);
+      vault = NodeVault(vaultConfig);
       vaultConfig.noCustomHTTPVerbs = true;
-      vaultNoCustomHTTPVerbs = index(vaultConfig);
+      vaultNoCustomHTTPVerbs = NodeVault(vaultConfig);
     });
 
     describe('help(path, options)', () => {

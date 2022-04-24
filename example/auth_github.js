@@ -1,7 +1,9 @@
 // file: example/auth_github.js
 
+import NodeVault from "./../src/index";
+
 process.env.DEBUG = 'vaultaire'; // switch on debug mode
-const vault = require('./../src/index')();
+const vault = NodeVault();
 
 const org = process.env.GITHUB_ORG;
 const team = process.env.GITHUB_TEAM || 'owners';
@@ -10,7 +12,7 @@ const mountPoint = 'github';
 
 vault.auths()
 .then((result) => {
-  if (result.hasOwnProperty('github/')) return undefined;
+  if (Object.hasOwn(result,'github/')) return undefined;
   return vault.enableAuth({
     mount_point: mountPoint,
     type: 'github',

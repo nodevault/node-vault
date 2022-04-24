@@ -1,7 +1,9 @@
 // file: example/kubernetes.js
 
+import NodeVault from "./../src/index";
+
 process.env.DEBUG = 'vaultaire'; // switch on debug mode
-const vault = require('./../src/index')();
+const vault = NodeVault();
 
 const vaultServicAccountSecretToken = process.env.VAULT_SVC_ACCT_SECRET_TOKEN || 'vault-k8s-token';
 const kubernetesHostUrl = process.env.K8S_HOST_URL || 'https://k8s.example.com:6443';
@@ -12,7 +14,7 @@ const appServiceAccountSecretToken = process.env.APP_SVC_ACCT_SECRET_TOKEN || 'a
 
 vault.auths()
 .then((result) => {
-  if (result.hasOwnProperty('kubernetes/')) return undefined;
+  if (Object.hasOwn(result,'kubernetes/')) return undefined;
   return vault.enableAuth({
     mount_point: 'kubernetes',
     type: 'kubernetes',

@@ -11,13 +11,3 @@ services:
     command: server -config /tmp/example/config.hcl
     ports:
       - "8200:8200"
-#    depends_on:
-#      - postgres
-#
-#  postgres:
-#    image: postgres
-#    ports:
-#      - "5433:5432"
-#    environment:
-#      POSTGRES_USER: root
-#      POSTGRES_PASSWORD: test

@@ -1,8 +1,10 @@
 // file: example/auth.js
 
+import NodeVault from "./../src/index";
+
 process.env.DEBUG = 'vaultaire'; // switch on debug mode
 
-const vault = require('./../src/index')();
+const vault = NodeVault();
 
 const options = {
   requestOptions: {

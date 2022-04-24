@@ -1,18 +1,13 @@
-const chai = require('chai');
-const dirtyChai = require('dirty-chai');
-const should = chai.Should;
+import NodeVault from "./../src/index.js";
 
-should();
-chai.use(dirtyChai);
-
-const vault = require('./../src/index.js')();
 // use json schema in commands.js validate response
-const commands = require('./../src/commands.js');
-const tv4 = require('tv4');
-const assert = require('assert');
+import Commands from "./../src/commands.js";
+import tv4 from "tv4";
+import assert from "assert";
 
+const vault = NodeVault();
 const validResult = (commandName, result) => {
-  const schema = commands[commandName].schema.res;
+  const schema = Commands[commandName].schema.res;
   return tv4.validate(result, schema);
 };
 

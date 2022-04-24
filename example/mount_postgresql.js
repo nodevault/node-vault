@@ -1,8 +1,10 @@
 // file: example/mount_postgresql.js
 
+import NodeVault from "./../src/index";
+
 process.env.DEBUG = 'vaultaire'; // switch on debug mode
 
-const vault = require('./../src/index')();
+const vault = NodeVault();
 
 const connection = 'postgresql://root:test@postgres:5432/postgres?sslmode=disable';
 
@@ -22,7 +24,7 @@ const run = () => configure()
 
 vault.mounts()
 .then((result) => {
-  if (result.hasOwnProperty('postgresql/')) return run();
+  if (Object.hasOwn(result, 'postgresql/')) return run();
   return vault.mount({
     mount_point: 'postgresql',
     type: 'postgresql',

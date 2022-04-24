@@ -1,12 +1,14 @@
 'use strict';
 
-const originalDebug = require('debug')('vaultaire');
-const originalTv4 = require('tv4');
-const originalCommands = require('./commands.js');
-const originalMustache = require('mustache');
-const axios = require('axios').default;
-const https = require('https');
-const http = require('http');
+import originalTv4 from "tv4";
+import Commands from "./commands.js";
+import originalMustache from "mustache";
+import http from "http";
+import https from "https";
+import axios from "axios";
+import debug0 from "debug";
+
+const originalDebug = debug0('vaultaire');
 
 class VaultError extends Error {}
 
@@ -20,11 +22,11 @@ class ApiResponseError extends VaultError {
   }
 }
 
-module.exports = (config = {}) => {
+function NodeVault(config = {}) {
   // load conditional dependencies
   const debug = config.debug || originalDebug;
   const tv4 = config.tv4 || originalTv4;
-  const commands = config.commands || originalCommands;
+  const commands = config.commands || Commands;
   const mustache = config.mustache || originalMustache;
 
   let requestPromise = (config['request-promise'] || axios);
@@ -266,4 +268,5 @@ module.exports = (config = {}) => {
   Object.keys(commands).forEach(assignFunctions);
 
   return client;
-};
+}
+export default NodeVault

@@ -1,8 +1,10 @@
 // file: example/secret_mounts.js
 
+import NodeVault from "./../src/index";
+
 process.env.DEBUG = 'vaultaire'; // switch on debug mode
 
-const vault = require('./../src/index')();
+const vault = NodeVault();
 
 vault.mounts()
 .then(() => vault.mount({ mount_point: 'test', type: 'generic', description: 'just a test' }))

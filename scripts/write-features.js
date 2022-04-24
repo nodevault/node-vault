@@ -1,5 +1,5 @@
-const fs = require('fs');
-const commands = require('../src/commands');
+import fs from "fs";
+import commands from "../src/commands";
 
 const result = Object.keys(commands).map(name => {
   const command = commands[name];

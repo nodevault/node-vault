@@ -1,14 +1,11 @@
-// Type definitions for vaultaire 0.9.8
+// Type definitions for vaultaire
 // Project: https://github.com/vaultaire/vaultaire
 // Definitions by: Jianrong Yu <https://github.com/YuJianrong>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// TypeScript Version: 2.3
-
-import * as request from "request";
 
 declare namespace NodeVault {
     interface Option {
-        [p: string]: any;
+        [p: string]: unknown;
     }
 
     interface RequestOption extends Option {
@@ -27,97 +24,97 @@ declare namespace NodeVault {
     }
 
     interface client {
-        handleVaultResponse(res?: { statusCode: number, request: Option, body: any }): Promise<any>;
+        handleVaultResponse(res?: { statusCode: number, request: Option, body: unknown }): Promise<unknown>;
         apiVersion: string;
         endpoint: string;
         token: string;
 
-        request(requestOptions: RequestOption): Promise<any>;
+        request(requestOptions: RequestOption): Promise<unknown>;
 
-        help(path: string, requestOptions?: Option): Promise<any>;
-        write(path: string, data: any, requestOptions?: Option): Promise<any>;
-        read(path: string, requestOptions?: Option): Promise<any>;
-        list(path: string, requestOptions?: Option): Promise<any>;
-        delete(path: string, requestOptions?: Option): Promise<any>;
+        help(path: string, requestOptions?: Option): Promise<unknown>;
+        write(path: string, data: unknown, requestOptions?: Option): Promise<unknown>;
+        read(path: string, requestOptions?: Option): Promise<unknown>;
+        list(path: string, requestOptions?: Option): Promise<unknown>;
+        delete(path: string, requestOptions?: Option): Promise<unknown>;
 
         generateFunction(name: string, conf: functionConf): void;
 
-        status(options?: Option): Promise<any>;
-        initialized(options?: Option): Promise<any>;
-        init(options?: Option): Promise<any>;
-        unseal(options?: Option): Promise<any>;
-        seal(options?: Option): Promise<any>;
-        generateRootStatus(options?: Option): Promise<any>;
-        generateRootInit(options?: Option): Promise<any>;
-        generateRootCancel(options?: Option): Promise<any>;
-        generateRootUpdate(options?: Option): Promise<any>;
-        mounts(options?: Option): Promise<any>;
-        mount(options?: Option): Promise<any>;
-        unmount(options?: Option): Promise<any>;
-        remount(options?: Option): Promise<any>;
-        policies(options?: Option): Promise<any>;
-        addPolicy(options?: Option): Promise<any>;
-        getPolicy(options?: Option): Promise<any>;
-        removePolicy(options?: Option): Promise<any>;
-        auths(options?: Option): Promise<any>;
-        enableAuth(options?: Option): Promise<any>;
-        disableAuth(options?: Option): Promise<any>;
-        audits(options?: Option): Promise<any>;
-        enableAudit(options?: Option): Promise<any>;
-        disableAudit(options?: Option): Promise<any>;
-        renew(options?: Option): Promise<any>;
-        revoke(options?: Option): Promise<any>;
-        revokePrefix(options?: Option): Promise<any>;
-        rotate(options?: Option): Promise<any>;
-        gcpLogin(options?: Option): Promise<any>;
-        githubLogin(options?: Option): Promise<any>;
-        userpassLogin(options?: Option): Promise<any>;
-        kubernetesLogin(options?: Option): Promise<any>;
-        awsIamLogin(options?: Option): Promise<any>;
-        tokenAccessors(options?: Option): Promise<any>;
-        tokenCreate(options?: Option): Promise<any>;
-        tokenCreateOrphan(options?: Option): Promise<any>;
-        tokenCreateRole(options?: Option): Promise<any>;
-        tokenLookup(options?: Option): Promise<any>;
-        tokenLookupAccessor(options?: Option): Promise<any>;
-        tokenLookupSelf(options?: Option): Promise<any>;
-        tokenRenew(options?: Option): Promise<any>;
-        tokenRenewSelf(options?: Option): Promise<any>;
-        tokenRevoke(options?: Option): Promise<any>;
-        tokenRevokeAccessor(options?: Option): Promise<any>;
-        tokenRevokeOrphan(options?: Option): Promise<any>;
-        tokenRevokeSelf(options?: Option): Promise<any>;
-        tokenRoles(options?: Option): Promise<any>;
-        addTokenRole(options?: Option): Promise<any>;
-        getTokenRole(options?: Option): Promise<any>;
-        removeTokenRole(options?: Option): Promise<any>;
-        approleRoles(options?: Option): Promise<any>;
-        addApproleRole(options?: Option): Promise<any>;
-        getApproleRole(options?: Option): Promise<any>;
-        deleteApproleRole(options?: Option): Promise<any>;
-        getApproleRoleId(options?: Option): Promise<any>;
-        updateApproleRoleId(options?: Option): Promise<any>;
-        getApproleRoleSecret(options?: Option): Promise<any>;
-        approleSecretAccessors(options?: Option): Promise<any>;
-        approleSecretLookup(options?: Option): Promise<any>;
-        approleSecretDestroy(options?: Option): Promise<any>;
-        approleSecretAccessorLookup(options?: Option): Promise<any>;
-        approleSecretAccessorDestroy(options?: Option): Promise<any>;
-        approleLogin(options?: Option): Promise<any>;
-        health(options?: Option): Promise<any>;
-        leader(options?: Option): Promise<any>;
-        stepDown(options?: Option): Promise<any>;
-        encryptData(options?: Option): Promise<any>;
-        decryptData(options?: Option): Promise<any>;
-        generateDatabaseCredentials(options?: Option): Promise<any>;
+        status(options?: Option): Promise<unknown>;
+        initialized(options?: Option): Promise<unknown>;
+        init(options?: Option): Promise<unknown>;
+        unseal(options?: Option): Promise<unknown>;
+        seal(options?: Option): Promise<unknown>;
+        generateRootStatus(options?: Option): Promise<unknown>;
+        generateRootInit(options?: Option): Promise<unknown>;
+        generateRootCancel(options?: Option): Promise<unknown>;
+        generateRootUpdate(options?: Option): Promise<unknown>;
+        mounts(options?: Option): Promise<unknown>;
+        mount(options?: Option): Promise<unknown>;
+        unmount(options?: Option): Promise<unknown>;
+        remount(options?: Option): Promise<unknown>;
+        policies(options?: Option): Promise<unknown>;
+        addPolicy(options?: Option): Promise<unknown>;
+        getPolicy(options?: Option): Promise<unknown>;
+        removePolicy(options?: Option): Promise<unknown>;
+        auths(options?: Option): Promise<unknown>;
+        enableAuth(options?: Option): Promise<unknown>;
+        disableAuth(options?: Option): Promise<unknown>;
+        audits(options?: Option): Promise<unknown>;
+        enableAudit(options?: Option): Promise<unknown>;
+        disableAudit(options?: Option): Promise<unknown>;
+        renew(options?: Option): Promise<unknown>;
+        revoke(options?: Option): Promise<unknown>;
+        revokePrefix(options?: Option): Promise<unknown>;
+        rotate(options?: Option): Promise<unknown>;
+        gcpLogin(options?: Option): Promise<unknown>;
+        githubLogin(options?: Option): Promise<unknown>;
+        userpassLogin(options?: Option): Promise<unknown>;
+        kubernetesLogin(options?: Option): Promise<unknown>;
+        awsIamLogin(options?: Option): Promise<unknown>;
+        tokenAccessors(options?: Option): Promise<unknown>;
+        tokenCreate(options?: Option): Promise<unknown>;
+        tokenCreateOrphan(options?: Option): Promise<unknown>;
+        tokenCreateRole(options?: Option): Promise<unknown>;
+        tokenLookup(options?: Option): Promise<unknown>;
+        tokenLookupAccessor(options?: Option): Promise<unknown>;
+        tokenLookupSelf(options?: Option): Promise<unknown>;
+        tokenRenew(options?: Option): Promise<unknown>;
+        tokenRenewSelf(options?: Option): Promise<unknown>;
+        tokenRevoke(options?: Option): Promise<unknown>;
+        tokenRevokeAccessor(options?: Option): Promise<unknown>;
+        tokenRevokeOrphan(options?: Option): Promise<unknown>;
+        tokenRevokeSelf(options?: Option): Promise<unknown>;
+        tokenRoles(options?: Option): Promise<unknown>;
+        addTokenRole(options?: Option): Promise<unknown>;
+        getTokenRole(options?: Option): Promise<unknown>;
+        removeTokenRole(options?: Option): Promise<unknown>;
+        approleRoles(options?: Option): Promise<unknown>;
+        addApproleRole(options?: Option): Promise<unknown>;
+        getApproleRole(options?: Option): Promise<unknown>;
+        deleteApproleRole(options?: Option): Promise<unknown>;
+        getApproleRoleId(options?: Option): Promise<unknown>;
+        updateApproleRoleId(options?: Option): Promise<unknown>;
+        getApproleRoleSecret(options?: Option): Promise<unknown>;
+        approleSecretAccessors(options?: Option): Promise<unknown>;
+        approleSecretLookup(options?: Option): Promise<unknown>;
+        approleSecretDestroy(options?: Option): Promise<unknown>;
+        approleSecretAccessorLookup(options?: Option): Promise<unknown>;
+        approleSecretAccessorDestroy(options?: Option): Promise<unknown>;
+        approleLogin(options?: Option): Promise<unknown>;
+        health(options?: Option): Promise<unknown>;
+        leader(options?: Option): Promise<unknown>;
+        stepDown(options?: Option): Promise<unknown>;
+        encryptData(options?: Option): Promise<unknown>;
+        decryptData(options?: Option): Promise<unknown>;
+        generateDatabaseCredentials(options?: Option): Promise<unknown>;
     }
 
     interface VaultOptions {
-        debug?(...args: any[]): any;
-        tv4?(...args: any[]): any;
-        commands?: Array<{ method: string, path: string, scheme: any }>;
-        mustache?: any;
-        "request-promise"?: any;
+        debug?(...args: unknown[]): unknown;
+        tv4?(...args: unknown[]): unknown;
+        commands?: Array<{ method: string, path: string, scheme: unknown }>;
+        mustache?: unknown;
+        "request-promise"?: unknown;
         Promise?: PromiseConstructor;
 
         apiVersion?: string;
@@ -126,7 +123,6 @@ declare namespace NodeVault {
         noCustomHTTPVerbs?: boolean;
         pathPrefix?: string;
         token?: string;
-        requestOptions?: request.CoreOptions;
     }
 }
 
