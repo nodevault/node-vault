@@ -2,8 +2,6 @@
 
 [![Coverage Status](https://img.shields.io/codecov/c/github/vaultaire/vaultaire/main.svg?style=flat-square)](https://codecov.io/gh/vaultaire/vaultaire/branch/main)
 [![Download Status](https://img.shields.io/npm/dm/vaultaire.svg?style=flat-square)](https://www.npmjs.com/package/vaultaire)
-[![Dependency Status](https://img.shields.io/david/vaultaire/vaultaire.svg?style=flat-square)](https://david-dm.org/vaultaire/vaultaire)
-[![Open Collective backers and sponsors](https://img.shields.io/opencollective/all/node-vault?style=flat-square)](https://opencollective.com/node-vault/contribute)
 
 A client for the HTTP API of HashiCorp's [Vault] written for Node.js.
 

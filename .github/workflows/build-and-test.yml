@@ -27,7 +27,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
-    - run: docker compose up -d vault
     - run: |
-        pnpm run test
+        pnpm run pretest
+        pnpm test
+        pnpm run posttest
     - uses: codecov/codecov-action@v2
