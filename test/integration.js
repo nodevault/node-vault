@@ -1,9 +1,15 @@
 import NodeVault from "./../src/index.js";
+import chai from "chai";
+import dirtyChai from "dirty-chai";
 
 // use json schema in commands.js validate response
 import Commands from "./../src/commands.js";
 import tv4 from "tv4";
 import assert from "assert";
+
+const should = chai.Should;
+should();
+chai.use(dirtyChai);
 
 const vault = NodeVault();
 const validResult = (commandName, result) => {

@@ -71,6 +71,9 @@ declare namespace NodeVault {
         userpassLogin(options?: Option): Promise<unknown>;
         kubernetesLogin(options?: Option): Promise<unknown>;
         awsIamLogin(options?: Option): Promise<unknown>;
+        ldapLogin(options?: Option): Promise<unknown>;
+        oktaLogin(options?: Option): Promise<unknown>;
+        radiusLogin(options?: Option): Promise<unknown>;
         tokenAccessors(options?: Option): Promise<unknown>;
         tokenCreate(options?: Option): Promise<unknown>;
         tokenCreateOrphan(options?: Option): Promise<unknown>;
