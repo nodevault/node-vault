@@ -8,9 +8,10 @@
   },
   "scripts": {
     "precoverage": "pnpm run lint",
-    "coverage": "istanbul cover --report text-summary node_modules/.bin/_mocha",
     "lint": "eslint .",
-    "test": "mocha",
+    "pretest": "docker compose up -d vault",
+    "test": "VAULT_ADDR=http://localhost:8200 nyc mocha",
+    "posttest": "nyc report --reporter=json",
     "test:unit": "mocha test/unit.js",
     "test:watch": "mocha --watch",
     "predocs": "node scripts/write-features.js",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@types/request": "^2.48.1",
     "chai": "3.5.0",
+    "codecov": "^3.8.3",
     "dirty-chai": "^1.2.2",
     "docco": "0.8.0",
     "eslint": "2.13.1",
@@ -43,8 +45,8 @@
     "eslint-plugin-jsx-a11y": "1.2.0",
     "eslint-plugin-react": "^5.2.2",
     "husky": "^0.14.3",
-    "istanbul": "^0.4.5",
-    "mocha": "6.0.2",
+    "mocha": "9.2.2",
+    "nyc": "15.1.0",
     "sinon": "1.17.3",
     "sinon-chai": "^2.8.0"
   },
