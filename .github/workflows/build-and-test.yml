@@ -29,5 +29,5 @@ jobs:
         cache: 'pnpm'
     - run: docker compose up -d vault
     - run: |
-        pnpm test
+        pnpm run test
     - uses: codecov/codecov-action@v2
