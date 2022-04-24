@@ -8,7 +8,7 @@
   },
   "scripts": {
     "precoverage": "pnpm run lint",
-    "coverage": "nyc npm run test",
+    "coverage": "nyc report --reporter=json > coverage/coverage.json",
     "lint": "eslint .",
     "test": "mocha",
     "test:unit": "mocha test/unit.js",
