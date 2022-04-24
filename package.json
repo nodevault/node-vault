@@ -36,7 +36,6 @@
   "devDependencies": {
     "@types/request": "2.48.8",
     "chai": "3.5.0",
-    "codecov": "3.8.3",
     "dirty-chai": "1.2.2",
     "docco": "0.8.0",
     "eslint": "2.13.1",
