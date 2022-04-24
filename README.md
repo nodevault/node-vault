@@ -90,25 +90,6 @@ Now you are able to run all of the other [examples]:
 node example/policies.js
 ```
 
-## Connecting to vault through a bastion host
-
-To connect to a vault server in a private network with a bastion host, you'll need to first open a connection:
-```bash
-ssh -D <socks4Port> bastion.example.com
-```
-
-```javascript
-const SocksProxyAgent = require('socks-proxy-agent');
-const agent = new SocksProxyAgent(`socks://127.0.0.1:${socks4Port}`, true);
-const options = {
-  apiVersion: 'v1',
-  rpOptions: {
-    agent,
-  },
-};
-
-const vault = require('vaultaire')(options);
-```
 
 [![Backers](https://opencollective.com/node-vault/tiers/backers.svg?avatarHeight=80&width=600)](https://opencollective.com/node-vault/contribute)
 
