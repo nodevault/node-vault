@@ -35,4 +35,4 @@ jobs:
         pnpm run pretest
         pnpm test
         pnpm run posttest
-    - uses: codecov/codecov-action@v2
+    - uses: codecov/codecov-action@v3
