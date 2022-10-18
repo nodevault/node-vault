@@ -1,4 +1,4 @@
-version: '2'
+version: '3.8'
 services:
   test:
     build: .
@@ -9,19 +9,36 @@ services:
       - $PWD/coverage:/app/coverage
     depends_on:
       - vault
+    networks:
+      vault-network:
+        ipv4_address: 172.21.0.20
+        aliases:
+          - vault-client
 
   vault:
     image: vault
+    restart: always
+    container_name: vault
+    hostname: vault
     volumes:
       - $PWD/example:/tmp/example
       - $PWD/logs/:/tmp/logs
+      - $PWD/example/vaultHelpers:/helpers
+      - $PWD/example/vault:/vault/file
     cap_add:
       - IPC_LOCK
-    command: server -config /tmp/example/config.hcl
+#    command: server -config /tmp/example/vault/config.hcl
     ports:
       - "8200:8200"
     depends_on:
       - postgres
+    entrypoint: "vault server -dev -config=/tmp/example/vaultHelpers/vault-config.hcl"
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8200 || exit 1
+      interval: 10s
+      retries: 12
+      start_period: 10s
+      timeout: 10s
 
   postgres:
     image: postgres
@@ -30,3 +47,17 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    networks:
+      vault-network:
+        ipv4_address: 172.21.0.30
+        aliases:
+          - postgres
+
+networks:
+
+  vault-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
