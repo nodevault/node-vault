@@ -1,6 +1,6 @@
 pid_file = "./pidfile"
 vault {
-  address = "http://vault:8300"
+  address = "http://vault:8200"
   retry {
     num_retries = 5
   }
@@ -24,6 +24,6 @@ cache {
   use_auto_auth_token = true
 }
 listener "tcp" {
-  address = "0.0.0.0:8300"
+  address = "0.0.0.0:8200"
   tls_disable = true
 }

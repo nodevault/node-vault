@@ -1,5 +1,5 @@
 apk add jq curl
-export VAULT_ADDR=http://localhost:8300
+export VAULT_ADDR=http://localhost:8200
 root_token=$(cat /helpers/keys.json | jq -r '.root_token')
 unseal_vault() {
 export VAULT_TOKEN=$root_token
@@ -12,7 +12,7 @@ then
   unseal_vault
 else
   echo "Vault not initialized"
-  curl --request POST --data '{"secret_shares": 1, "secret_threshold": 1}' http://127.0.0.1:8300/v1/sys/init > /helpers/keys.json
+  curl --request POST --data '{"secret_shares": 1, "secret_threshold": 1}' http://127.0.0.1:8200/v1/sys/init > /helpers/keys.json
   root_token=$(cat /helpers/keys.json | jq -r '.root_token')
 
   unseal_vault
