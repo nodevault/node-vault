@@ -43,6 +43,28 @@ describe('node-vault', () => {
       });
     });
 
+    it('should set additional values for request library', () => {
+      const defaultsStub = sinon.stub();
+
+      index({
+        'request-promise': {
+          defaults: defaultsStub,
+        },
+        rpDefaults: {
+          fakeArgument: 1,
+        },
+      });
+
+      defaultsStub.should.be.calledOnce();
+      defaultsStub.should.be.calledWithExactly({
+        json: true,
+        simple: false,
+        resolveWithFullResponse: true,
+        strictSSL: true,
+        fakeArgument: 1,
+      });
+    });
+
     it('should disable ssl security based on vault environment variable', () => {
       const defaultsStub = sinon.stub();
 
@@ -103,6 +125,7 @@ describe('node-vault', () => {
       const vaultConfig = {
         endpoint: 'http://localhost:8200',
         token: '123',
+        namespace: 'test',
         'request-promise': {
           defaults: () => request, // dependency injection of stub
         },

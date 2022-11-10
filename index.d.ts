@@ -69,9 +69,11 @@ declare namespace NodeVault {
         revoke(options?: Option): Promise<any>;
         revokePrefix(options?: Option): Promise<any>;
         rotate(options?: Option): Promise<any>;
+        gcpLogin(options?: Option): Promise<any>;
         githubLogin(options?: Option): Promise<any>;
         userpassLogin(options?: Option): Promise<any>;
         kubernetesLogin(options?: Option): Promise<any>;
+        awsIamLogin(options?: Option): Promise<any>;
         tokenAccessors(options?: Option): Promise<any>;
         tokenCreate(options?: Option): Promise<any>;
         tokenCreateOrphan(options?: Option): Promise<any>;
@@ -120,6 +122,9 @@ declare namespace NodeVault {
 
         apiVersion?: string;
         endpoint?: string;
+        namespace?: string;
+        noCustomHTTPVerbs?: boolean;
+        pathPrefix?: string;
         token?: string;
         requestOptions?: request.CoreOptions;
     }
