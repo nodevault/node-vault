@@ -1,10 +1,10 @@
 'use strict';
 
-let debug = require('debug')('node-vault');
-let tv4 = require('tv4');
-let commands = require('./commands.js');
-let mustache = require('mustache');
-let rp = require('request-promise-native');
+const originalDebug = require('debug')('node-vault');
+const originalTv4 = require('tv4');
+const originalCommands = require('./commands.js');
+const originalMustache = require('mustache');
+const originalRp = require('request-promise-native');
 
 class VaultError extends Error {}
 
@@ -20,10 +20,10 @@ class ApiResponseError extends VaultError {
 
 module.exports = (config = {}) => {
   // load conditional dependencies
-  debug = config.debug || debug;
-  tv4 = config.tv4 || tv4;
-  commands = config.commands || commands;
-  mustache = config.mustache || mustache;
+  const debug = config.debug || originalDebug;
+  const tv4 = config.tv4 || originalTv4;
+  const commands = config.commands || originalCommands;
+  const mustache = config.mustache || originalMustache;
 
   const rpDefaults = {
     json: true,
@@ -38,7 +38,7 @@ module.exports = (config = {}) => {
     });
   }
 
-  rp = (config['request-promise'] || rp).defaults(rpDefaults);
+  const rp = (config['request-promise'] || originalRp).defaults(rpDefaults);
   const client = {};
 
   function handleVaultResponse(response) {
