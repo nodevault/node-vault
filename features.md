@@ -252,6 +252,11 @@
 `POST /auth/{{mount_point}}{{^mount_point}}radius{{/mount_point}}/login/{{username}}`
 
 
+## vault.certLogin
+
+`POST /auth/cert/login`
+
+
 ## vault.tokenAccessors
 
 `LIST /auth/token/accessors`
