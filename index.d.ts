@@ -4,8 +4,6 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
-import * as request from "request";
-
 declare namespace NodeVault {
     interface Option {
         [p: string]: any;
