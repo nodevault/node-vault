@@ -110,6 +110,7 @@ declare namespace NodeVault {
         encryptData(options?: Option): Promise<any>;
         decryptData(options?: Option): Promise<any>;
         generateDatabaseCredentials(options?: Option): Promise<any>;
+        unwrap(options?: Option): Promise<any>;
     }
 
     interface VaultOptions {
