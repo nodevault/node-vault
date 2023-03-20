@@ -2,9 +2,9 @@
 
 const originalDebug = require('debug')('node-vault');
 const originalTv4 = require('tv4');
-const originalCommands = require('./commands.js');
 const originalMustache = require('mustache');
-const originalRp = require('request-promise-native');
+const originalRequest = require('./request');
+const originalCommands = require('./commands.js');
 
 class VaultError extends Error {}
 
@@ -24,6 +24,16 @@ module.exports = (config = {}) => {
   const tv4 = config.tv4 || originalTv4;
   const commands = config.commands || originalCommands;
   const mustache = config.mustache || originalMustache;
+
+  const originalRp = {
+    defaults: (defaultOpts) => (options) => {
+      const opts = {
+        ...defaultOpts,
+        ...options,
+      };
+      return originalRequest(opts);
+    },
+  };
 
   const rpDefaults = {
     json: true,
