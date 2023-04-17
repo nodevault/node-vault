@@ -1,7 +1,7 @@
 # node-vault
 
 [![Build Status](https://img.shields.io/travis/kr1sp1n/node-vault/master.svg?style=flat-square)](https://travis-ci.org/kr1sp1n/node-vault)
-[![Coverage Status](https://img.shields.io/codecov/c/github/kr1sp1n/node-vault/master.svg?style=flat-square)](https://codecov.io/gh/kr1sp1n/node-vault/branch/master)
+[![Coverage Status](https://img.shields.io/codecov/c/github/nodevault/node-vault/master.svg?style=flat-square)](https://codecov.io/gh/nodevault/node-vault/branch/master)
 [![Download Status](https://img.shields.io/npm/dm/node-vault.svg?style=flat-square)](https://www.npmjs.com/package/node-vault)
 [![Dependency Status](https://img.shields.io/david/kr1sp1n/node-vault.svg?style=flat-square)](https://david-dm.org/kr1sp1n/node-vault)
 [![Open Collective backers and sponsors](https://img.shields.io/opencollective/all/node-vault?style=flat-square)](https://opencollective.com/node-vault/contribute)
