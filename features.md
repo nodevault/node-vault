@@ -2,11 +2,6 @@
 
  This is a generated list of Vault features supported by node-vault.
 
-## vault.test
-
-`GET MY_TEST`
-
-
 ## vault.status
 
 `GET /sys/seal-status`
