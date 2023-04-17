@@ -1,0 +1,28 @@
+name: Tests workflow
+on: [pull_request]
+jobs:
+  run_tests_and_push_to_codecov:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    env:
+      OS: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the stack
+        run: docker-compose up -d
+      - name: Build testing container
+        run: docker build -t tests:${{ github.sha }} .
+      - name: Invoke testing container
+        run: docker run --network container:vault
+         -e VAULT_ADDR=http://vault:8200
+         -v $PWD/coverage:/app/coverage tests:${{ github.sha }} npm run coverage
+      - uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/coverage.json # optional
+          flags: unittests # optional
+          env_vars: OS # optional
+          name: codecov-umbrella # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
