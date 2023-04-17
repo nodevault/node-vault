@@ -6,6 +6,7 @@ npm install
 clear
 echo '[+] Dependencies installed!'
 echo '[+] Running tests...'
-npm t
+npm run test-unit
 clear
 echo '[+] Tests passed!'
+echo '[+] Development environment ready!'
