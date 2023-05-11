@@ -49,6 +49,40 @@ const tokenResponse = {
     required: ['auth'],
 };
 
+const kubernetesRoleResponse = {
+  type: 'object',
+  properties: {
+    auth,
+    name: {
+      type: 'string',
+    },
+    bound_cidrs: {
+      type: 'array',
+    },
+    bound_service_account_names: {
+      type: 'array',
+    },
+    bound_service_account_namespaces: {
+      type: 'array',
+    },
+    ttl: {
+      type: 'integer',
+    },
+    max_ttl: {
+      type: 'integer',
+    },
+    policies: {
+      type: 'array',
+    },
+    num_uses: {
+      type: 'integer',
+    },
+    period: {
+      type: 'integer',
+    },
+  },
+};
+
 const approleResponse = {
     type: 'object',
     properties: {
@@ -154,35 +188,154 @@ module.exports = {
         method: 'PUT',
         path: '/sys/seal',
     },
-    generateRootStatus: {
-        method: 'GET',
-        path: '/sys/generate-root/attempt',
-        schema: {
-            res: {
-                type: 'object',
-                properties: {
-                    started: {
-                        type: 'boolean',
-                    },
-                    nonce: {
-                        type: 'string',
-                    },
-                    progress: {
-                        type: 'integer',
-                        minimum: 0,
-                    },
-                    required: {
-                        type: 'integer',
-                        minimum: 1,
-                    },
-                    pgp_fingerprint: {
-                        type: 'string',
-                    },
-                    complete: {
-                        type: 'boolean',
-                    },
-                },
-                required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete'],
+  },
+  getTokenRole: {
+    method: 'GET',
+    path: '/auth/token/roles/{{role_name}}',
+  },
+  removeTokenRole: {
+    method: 'DELETE',
+    path: '/auth/token/roles/{{role_name}}',
+  },
+  approleRoles: {
+    method: 'LIST',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role',
+    schema: {
+      res: approleResponse,
+    },
+  },
+  addKubernetesRole: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}',
+    schema: {
+      req: {
+        name: {
+          type: 'string',
+        },
+        bound_cidrs: {
+          type: 'array',
+        },
+        bound_service_account_names: {
+          type: 'array',
+        },
+        bound_service_account_namespaces: {
+          type: 'array',
+        },
+        ttl: {
+          type: 'integer',
+        },
+        max_ttl: {
+          type: 'integer',
+        },
+        policies: {
+          type: 'array',
+        },
+        num_uses: {
+          type: 'integer',
+        },
+        period: {
+          type: 'integer',
+        },
+      },
+    },
+  },
+  getKubernetesRole: {
+    method: 'GET',
+    path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}',
+    schema: {
+      res: kubernetesRoleResponse,
+    },
+  },
+  deleteKubernetesRole: {
+    method: 'DELETE',
+    path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}',
+  },
+  addApproleRole: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          bind_secret_id: {
+            type: 'boolean',
+          },
+          bound_cidr_list: {
+            type: 'string',
+          },
+          policies: {
+            type: 'string',
+          },
+          secret_id_num_uses: {
+            type: 'integer',
+          },
+          secret_id_ttl: {
+            type: 'integer',
+          },
+          token_num_uses: {
+            type: 'integer',
+          },
+          token_ttl: {
+            type: 'integer',
+          },
+          token_max_ttl: {
+            type: 'integer',
+          },
+          period: {
+            type: 'integer',
+          },
+        },
+      },
+    },
+  },
+  getApproleRole: {
+    method: 'GET',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}',
+    schema: {
+      res: approleResponse,
+    },
+  },
+  deleteApproleRole: {
+    method: 'DELETE',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}',
+  },
+  getApproleRoleId: {
+    method: 'GET',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id',
+    schema: {
+      res: approleResponse,
+    },
+  },
+  updateApproleRoleId: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          role_id: {
+            type: 'string',
+          },
+        },
+        required: ['role_id'],
+      },
+    },
+  },
+  getApproleRoleSecret: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}' +
+      '/role/{{role_name}}/secret-id',
+    schema: {
+      req: {
+        type: 'object',
+        properties: {
+          metadata: {
+            type: 'string',
+          },
+          cidr_list: {
+            type: 'array',
+            items: {
+              type: 'string',
             },
         },
     },
