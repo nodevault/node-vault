@@ -1,0 +1,11 @@
+name: Check Lint
+on: [pull_request]
+jobs:
+  verify_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm install
+      - name: Run lint
+        run: npm run lint
