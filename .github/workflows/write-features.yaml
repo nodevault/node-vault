@@ -1,0 +1,16 @@
+name: Extract & write features
+on: [pull_request]
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract features
+        shell: bash
+        run: node ./scripts/write-features.js 
+      - uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          add: 'features.md'
+          push: origin HEAD:${{ github.head_ref }} --force-with-lease
+          commit: --signoff

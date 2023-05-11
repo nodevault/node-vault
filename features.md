@@ -27,9 +27,64 @@
 `PUT /sys/seal`
 
 
-## vault.generateRootStatus
+## vault.getTokenRole
 
-`GET /sys/generate-root/attempt`
+`GET /auth/token/roles/{{role_name}}`
+
+
+## vault.removeTokenRole
+
+`DELETE /auth/token/roles/{{role_name}}`
+
+
+## vault.approleRoles
+
+`LIST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role`
+
+
+## vault.addKubernetesRole
+
+`POST /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
+
+
+## vault.getKubernetesRole
+
+`GET /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
+
+
+## vault.deleteKubernetesRole
+
+`DELETE /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
+
+
+## vault.addApproleRole
+
+`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
+
+
+## vault.getApproleRole
+
+`GET /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
+
+
+## vault.deleteApproleRole
+
+`DELETE /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
+
+
+## vault.getApproleRoleId
+
+`GET /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id`
+
+
+## vault.updateApproleRoleId
+
+`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id`
+
+
+## vault.getApproleRoleSecret
+
+`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id`
 
 
 ## vault.generateRootInit
@@ -270,51 +325,6 @@
 ## vault.addTokenRole
 
 `POST /auth/token/roles/{{role_name}}`
-
-
-## vault.getTokenRole
-
-`GET /auth/token/roles/{{role_name}}`
-
-
-## vault.removeTokenRole
-
-`DELETE /auth/token/roles/{{role_name}}`
-
-
-## vault.approleRoles
-
-`LIST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role`
-
-
-## vault.addApproleRole
-
-`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
-
-
-## vault.getApproleRole
-
-`GET /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
-
-
-## vault.deleteApproleRole
-
-`DELETE /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`
-
-
-## vault.getApproleRoleId
-
-`GET /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id`
-
-
-## vault.updateApproleRoleId
-
-`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/role-id`
-
-
-## vault.getApproleRoleSecret
-
-`POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id`
 
 
 ## vault.approleSecretAccessors

@@ -25,6 +25,14 @@ declare namespace NodeVault {
             res?: Option;
         };
     }
+    interface VaultError extends Error { }
+
+    interface ApiResponseError extends VaultError {
+        response: {
+            statusCode: number,
+            body: any
+        }
+    }
 
     interface client {
         handleVaultResponse(res?: { statusCode: number, request: Option, body: any }): Promise<any>;
@@ -75,6 +83,9 @@ declare namespace NodeVault {
         userpassLogin(options?: Option): Promise<any>;
         kubernetesLogin(options?: Option): Promise<any>;
         awsIamLogin(options?: Option): Promise<any>;
+        ldapLogin(options?: Option): Promise<any>;
+        oktaLogin(options?: Option): Promise<any>;
+        radiusLogin(options?: Option): Promise<any>;
         tokenAccessors(options?: Option): Promise<any>;
         tokenCreate(options?: Option): Promise<any>;
         tokenCreateOrphan(options?: Option): Promise<any>;
