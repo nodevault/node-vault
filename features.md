@@ -287,6 +287,21 @@
 `LIST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role`
 
 
+## vault.addKubernetesRole
+
+`POST /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
+
+
+## vault.getKubernetesRole
+
+`GET /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
+
+
+## vault.deleteKubernetesRole
+
+`DELETE /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
+
+
 ## vault.addApproleRole
 
 `POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}`

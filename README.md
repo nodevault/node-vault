@@ -1,9 +1,10 @@
 # node-vault
 
-[![Build Status](https://img.shields.io/travis/kr1sp1n/node-vault/master.svg?style=flat-square)](https://travis-ci.org/kr1sp1n/node-vault)
-[![Coverage Status](https://img.shields.io/codecov/c/github/kr1sp1n/node-vault/master.svg?style=flat-square)](https://codecov.io/gh/kr1sp1n/node-vault/branch/master)
+[![Build Status](https://img.shields.io/github/checks-status/kr1sp1n/node-vault/master.svg?style=flat-square)](https://github.com/nodevault/node-vault/actions?query=branch%3Amaster)
+[![Coverage Status](https://img.shields.io/codecov/c/github/nodevault/node-vault/master.svg?style=flat-square)](https://app.codecov.io/gh/nodevault/node-vault/tree/master)
 [![Download Status](https://img.shields.io/npm/dm/node-vault.svg?style=flat-square)](https://www.npmjs.com/package/node-vault)
-[![Dependency Status](https://img.shields.io/david/kr1sp1n/node-vault.svg?style=flat-square)](https://david-dm.org/kr1sp1n/node-vault)
+[![test](https://img.shields.io/npm/v/node-vault?style=flat-square)](https://www.npmjs.com/package/node-vault)
+[![Dependency Status](https://img.shields.io/librariesio/release/npm/node-vault.svg?style=flat-square)](https://libraries.io/npm/node-vault/)
 [![Open Collective backers and sponsors](https://img.shields.io/opencollective/all/node-vault?style=flat-square)](https://opencollective.com/node-vault/contribute)
 
 A client for the HTTP API of HashiCorp's [Vault] written for Node.js.
