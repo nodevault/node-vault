@@ -1,10 +1,10 @@
 const fs = require('fs');
 const commands = require('../src/commands');
 
-const result = Object.keys(commands).map(name => {
-  const command = commands[name];
+const result = Object.keys(commands).map((name) => {
+    const command = commands[name];
 
-  return `
+    return `
 ## vault.${name}
 
 \`${command.method} ${command.path}\`
