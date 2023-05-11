@@ -25,6 +25,7 @@ jobs:
          -v $PWD/coverage:/app/coverage tests:${{ github.sha }} npm run coverage
       - uses: codecov/codecov-action@v3
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS # optional
           name: codecov-umbrella # optional
           fail_ci_if_error: true # optional (default = false)
