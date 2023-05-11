@@ -25,6 +25,14 @@ declare namespace NodeVault {
             res?: Option;
         };
     }
+    interface VaultError extends Error { }
+
+    interface ApiResponseError extends VaultError {
+        response: {
+            statusCode: number,
+            body: any
+        }
+    }
 
     interface client {
         handleVaultResponse(res?: { statusCode: number, request: Option, body: any }): Promise<any>;
