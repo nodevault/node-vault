@@ -135,6 +135,14 @@ module.exports = {
             type: 'integer',
             minimum: 1,
           },
+          recovery_shares: {
+            type: 'integer',
+            minimum: 1,
+          },
+          recovery_threshold: {
+            type: 'integer',
+            minimum: 1,
+          },
           pgp_keys: {
             type: 'array',
             items: {
@@ -142,8 +150,7 @@ module.exports = {
             },
             uniqueItems: true,
           },
-        },
-        required: ['secret_shares', 'secret_threshold'],
+        },        
       },
       res: {
         type: 'object',
@@ -333,6 +340,10 @@ module.exports = {
   generateDatabaseCredentials: {
     method: 'GET',
     path: '/{{databasePath}}/creds/{{name}}',
+  },
+  raftJoin:{
+    method: 'POST',
+    path: '/sys/storage/raft/join'
   },
   unmount: {
     method: 'DELETE',

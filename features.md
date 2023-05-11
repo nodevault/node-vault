@@ -72,6 +72,11 @@
 `GET /{{databasePath}}/creds/{{name}}`
 
 
+## vault.raftJoin
+
+`POST /sys/storage/raft/join`
+
+
 ## vault.unmount
 
 `DELETE /sys/mounts/{{mount_point}}`
