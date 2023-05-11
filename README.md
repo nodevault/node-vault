@@ -3,6 +3,7 @@
 [![Build Status](https://img.shields.io/github/checks-status/kr1sp1n/node-vault/master.svg?style=flat-square)](https://github.com/nodevault/node-vault/actions?query=branch%3Amaster)
 [![Coverage Status](https://img.shields.io/codecov/c/github/nodevault/node-vault/master.svg?style=flat-square)](https://app.codecov.io/gh/nodevault/node-vault/tree/master)
 [![Download Status](https://img.shields.io/npm/dm/node-vault.svg?style=flat-square)](https://www.npmjs.com/package/node-vault)
+[![test](https://img.shields.io/npm/v/node-vault?style=flat-square)](https://www.npmjs.com/package/node-vault)
 [![Dependency Status](https://img.shields.io/librariesio/release/npm/node-vault.svg?style=flat-square)](https://libraries.io/npm/node-vault/)
 [![Open Collective backers and sponsors](https://img.shields.io/opencollective/all/node-vault?style=flat-square)](https://opencollective.com/node-vault/contribute)
 
