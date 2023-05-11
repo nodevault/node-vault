@@ -40,7 +40,7 @@
     "eslint-plugin-react": "^5.2.2",
     "husky": "^0.14.3",
     "istanbul": "^0.4.5",
-    "mocha": "6.0.2",
+    "mocha": "10.2.0",
     "sinon": "1.17.3",
     "sinon-chai": "^2.8.0"
   },
