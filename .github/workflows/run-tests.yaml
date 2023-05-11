@@ -1,5 +1,10 @@
 name: Tests workflow
-on: [pull_request]
+on: 
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+    
 jobs:
   run_tests_and_push_to_codecov:
     runs-on: ubuntu-latest
