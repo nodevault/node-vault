@@ -49,6 +49,40 @@ const tokenResponse = {
   required: ['auth'],
 };
 
+const kubernetesRoleResponse = {
+  type: 'object',
+  properties: {
+    auth,
+    name: {
+      type: 'string',
+    },
+    bound_cidrs: {
+      type: 'array',
+    },
+    bound_service_account_names: {
+      type: 'array',
+    },
+    bound_service_account_namespaces: {
+      type: 'array',
+    },
+    ttl: {
+      type: 'integer',
+    },
+    max_ttl: {
+      type: 'integer',
+    },
+    policies: {
+      type: 'array',
+    },
+    num_uses: {
+      type: 'integer',
+    },
+    period: {
+      type: 'integer',
+    },
+  },
+};
+
 const approleResponse = {
   type: 'object',
   properties: {
@@ -1024,6 +1058,52 @@ module.exports = {
     schema: {
       res: approleResponse,
     },
+  },
+  addKubernetesRole: {
+    method: 'POST',
+    path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}',
+    schema: {
+      req: {
+        name: {
+          type: 'string',
+        },
+        bound_cidrs: {
+          type: 'array',
+        },
+        bound_service_account_names: {
+          type: 'array',
+        },
+        bound_service_account_namespaces: {
+          type: 'array',
+        },
+        ttl: {
+          type: 'integer',
+        },
+        max_ttl: {
+          type: 'integer',
+        },
+        policies: {
+          type: 'array',
+        },
+        num_uses: {
+          type: 'integer',
+        },
+        period: {
+          type: 'integer',
+        },
+      },
+    },
+  },
+  getKubernetesRole: {
+    method: 'GET',
+    path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}',
+    schema: {
+      res: kubernetesRoleResponse,
+    },
+  },
+  deleteKubernetesRole: {
+    method: 'DELETE',
+    path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}',
   },
   addApproleRole: {
     method: 'POST',
