@@ -194,7 +194,7 @@ describe('node-vault', () => {
                     value: 'world',
                 };
                 const params = {
-                    method: 'PUT',
+                    method: 'POST',
                     uri: getURI(path),
                 };
                 vault.write(path, data)
@@ -208,7 +208,7 @@ describe('node-vault', () => {
                     value: 'world',
                 };
                 const params = {
-                    method: 'PUT',
+                    method: 'POST',
                     uri: getURI(path),
                 };
                 vault.write(path, data)

@@ -117,7 +117,7 @@ module.exports = (config = {}) => {
         const options = { ...config.requestOptions, ...requestOptions };
         options.path = `/${path}`;
         options.json = data;
-        options.method = 'PUT';
+        options.method = 'POST';
         return client.request(options);
     };
 
