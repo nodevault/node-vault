@@ -31,3 +31,4 @@ cov.html
 docs
 dist
 .dccache
+.nyc_output
