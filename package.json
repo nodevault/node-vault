@@ -5,7 +5,7 @@
   "main": "./src/index.js",
   "scripts": {
     "precoverage": "npm run lint",
-    "coverage": "nyc npm run test",
+    "coverage": "nyc --reporter=lcov npm test",
     "lint": "eslint .",
     "test": "mocha",
     "test-unit": "mocha test/unit.js",
