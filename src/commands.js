@@ -732,6 +732,17 @@ module.exports = {
             res: tokenResponse,
         },
     },
+    certLogin: {
+        method: 'POST',
+        path: '/auth/cert/login',
+        tokenSource: true,
+        schema: {
+            req: {
+                type: 'object',
+            },
+            res: tokenResponse,
+        },
+    },  
     tokenAccessors: {
         method: 'LIST',
         path: '/auth/token/accessors',
