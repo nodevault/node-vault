@@ -1,0 +1,28 @@
+name: Security Checks
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  TruffleHog:
+    name: TruffleHog 🐖
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+          

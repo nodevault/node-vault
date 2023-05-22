@@ -21,8 +21,8 @@ WORKDIR /app
 
 # Copy package.json and install dependencies
 COPY package.json /app
-RUN npm install
 COPY . /app
+RUN npm install
 
 # Maintain the stupid shell trick ¯\_(ツ)_/¯
 ENTRYPOINT ["/bin/bash", "--login", "-c"]
