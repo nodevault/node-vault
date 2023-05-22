@@ -18,7 +18,8 @@
 				"eamodio.gitlens",
 				"ms-azuretools.vscode-docker",
 				"github.copilot",
-				"streetsidesoftware.code-spell-checker"
+				"streetsidesoftware.code-spell-checker",
+				"redhat.vscode-yaml"
 			]
 		}
 	}
