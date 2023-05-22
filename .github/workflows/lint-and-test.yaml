@@ -26,8 +26,8 @@ jobs:
     needs: verify_lint
     strategy:
       matrix:
-        # We verify compatibility with the one before, the current and the next LTS
-        node_version: [14, 16, 18]
+        # We verify compatibility for current and previous LTS
+        node_version: [16, 18]
     env:
       NODE_VERSION: ${{ matrix.node_version }}
     steps:

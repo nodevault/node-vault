@@ -2,7 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node-postgres
 {
 	"name": "Node Vault",
-	"image": "mcr.microsoft.com/devcontainers/javascript-node:0-14",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:0-18",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

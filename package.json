@@ -12,6 +12,9 @@
     "predocs": "node scripts/write-features.js",
     "docs": "docco --output docs src/*.js"
   },
+  "engines": {
+    "node": ">= 16.0.0"
+  },
   "directories": {
     "example": "./example",
     "doc": "./docs"
