@@ -1,15 +1,5 @@
 version: '2'
 services:
-  test:
-    build: .
-    command: npm run coverage
-    environment:
-      - VAULT_ADDR=http://vault:8200
-    volumes:
-      - $PWD/coverage:/app/coverage
-    depends_on:
-      - vault
-
   vault:
     container_name: vault
     image: vault:1.12.2
