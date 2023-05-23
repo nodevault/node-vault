@@ -4,14 +4,14 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
-import * as request from "request";
+import * as httpClient from "axios";
 
 declare namespace NodeVault {
-    interface Option {
+    interface Options {
         [p: string]: any;
     }
 
-    interface RequestOption extends Option {
+    interface HttpOptions extends Options {
         path: string;
         method: string;
     }
@@ -20,9 +20,9 @@ declare namespace NodeVault {
         method: string;
         path: string;
         schema?: {
-            req?: Option;
-            query?: Option;
-            res?: Option;
+            req?: Options;
+            query?: Options;
+            res?: Options;
         };
     }
     interface VaultError extends Error { }
@@ -35,94 +35,94 @@ declare namespace NodeVault {
     }
 
     interface client {
-        handleVaultResponse(res?: { statusCode: number, request: Option, body: any }): Promise<any>;
+        handleVaultResponse(res?: { statusCode: number, request: Options, body: any }): Promise<any>;
         apiVersion: string;
         endpoint: string;
         token: string;
 
-        request(requestOptions: RequestOption): Promise<any>;
+        request(HttpOptions: HttpOptions): Promise<any>;
 
-        help(path: string, requestOptions?: Option): Promise<any>;
-        write(path: string, data: any, requestOptions?: Option): Promise<any>;
-        read(path: string, requestOptions?: Option): Promise<any>;
-        list(path: string, requestOptions?: Option): Promise<any>;
-        delete(path: string, requestOptions?: Option): Promise<any>;
+        help(path: string, requestOptions?: Options): Promise<any>;
+        write(path: string, data: any, requestOptions?: Options): Promise<any>;
+        read(path: string, requestOptions?: Options): Promise<any>;
+        list(path: string, requestOptions?: Options): Promise<any>;
+        delete(path: string, requestOptions?: Options): Promise<any>;
 
         generateFunction(name: string, conf: functionConf): void;
 
-        status(options?: Option): Promise<any>;
-        initialized(options?: Option): Promise<any>;
-        init(options?: Option): Promise<any>;
-        unseal(options?: Option): Promise<any>;
-        seal(options?: Option): Promise<any>;
-        generateRootStatus(options?: Option): Promise<any>;
-        generateRootInit(options?: Option): Promise<any>;
-        generateRootCancel(options?: Option): Promise<any>;
-        generateRootUpdate(options?: Option): Promise<any>;
-        mounts(options?: Option): Promise<any>;
-        mount(options?: Option): Promise<any>;
-        unmount(options?: Option): Promise<any>;
-        remount(options?: Option): Promise<any>;
-        policies(options?: Option): Promise<any>;
-        addPolicy(options?: Option): Promise<any>;
-        getPolicy(options?: Option): Promise<any>;
-        removePolicy(options?: Option): Promise<any>;
-        auths(options?: Option): Promise<any>;
-        enableAuth(options?: Option): Promise<any>;
-        disableAuth(options?: Option): Promise<any>;
-        audits(options?: Option): Promise<any>;
-        enableAudit(options?: Option): Promise<any>;
-        disableAudit(options?: Option): Promise<any>;
-        renew(options?: Option): Promise<any>;
-        revoke(options?: Option): Promise<any>;
-        revokePrefix(options?: Option): Promise<any>;
-        rotate(options?: Option): Promise<any>;
-        gcpLogin(options?: Option): Promise<any>;
-        ldapLogin(options?: Option): Promise<any>;
-        githubLogin(options?: Option): Promise<any>;
-        userpassLogin(options?: Option): Promise<any>;
-        kubernetesLogin(options?: Option): Promise<any>;
-        awsIamLogin(options?: Option): Promise<any>;
-        ldapLogin(options?: Option): Promise<any>;
-        oktaLogin(options?: Option): Promise<any>;
-        radiusLogin(options?: Option): Promise<any>;
-        certLogin(options?: Option): Promise<any>;
-        tokenAccessors(options?: Option): Promise<any>;
-        tokenCreate(options?: Option): Promise<any>;
-        tokenCreateOrphan(options?: Option): Promise<any>;
-        tokenCreateRole(options?: Option): Promise<any>;
-        tokenLookup(options?: Option): Promise<any>;
-        tokenLookupAccessor(options?: Option): Promise<any>;
-        tokenLookupSelf(options?: Option): Promise<any>;
-        tokenRenew(options?: Option): Promise<any>;
-        tokenRenewSelf(options?: Option): Promise<any>;
-        tokenRevoke(options?: Option): Promise<any>;
-        tokenRevokeAccessor(options?: Option): Promise<any>;
-        tokenRevokeOrphan(options?: Option): Promise<any>;
-        tokenRevokeSelf(options?: Option): Promise<any>;
-        tokenRoles(options?: Option): Promise<any>;
-        addTokenRole(options?: Option): Promise<any>;
-        getTokenRole(options?: Option): Promise<any>;
-        removeTokenRole(options?: Option): Promise<any>;
-        approleRoles(options?: Option): Promise<any>;
-        addApproleRole(options?: Option): Promise<any>;
-        getApproleRole(options?: Option): Promise<any>;
-        deleteApproleRole(options?: Option): Promise<any>;
-        getApproleRoleId(options?: Option): Promise<any>;
-        updateApproleRoleId(options?: Option): Promise<any>;
-        getApproleRoleSecret(options?: Option): Promise<any>;
-        approleSecretAccessors(options?: Option): Promise<any>;
-        approleSecretLookup(options?: Option): Promise<any>;
-        approleSecretDestroy(options?: Option): Promise<any>;
-        approleSecretAccessorLookup(options?: Option): Promise<any>;
-        approleSecretAccessorDestroy(options?: Option): Promise<any>;
-        approleLogin(options?: Option): Promise<any>;
-        health(options?: Option): Promise<any>;
-        leader(options?: Option): Promise<any>;
-        stepDown(options?: Option): Promise<any>;
-        encryptData(options?: Option): Promise<any>;
-        decryptData(options?: Option): Promise<any>;
-        generateDatabaseCredentials(options?: Option): Promise<any>;
+        status(options?: Options): Promise<any>;
+        initialized(options?: Options): Promise<any>;
+        init(options?: Options): Promise<any>;
+        unseal(options?: Options): Promise<any>;
+        seal(options?: Options): Promise<any>;
+        generateRootStatus(options?: Options): Promise<any>;
+        generateRootInit(options?: Options): Promise<any>;
+        generateRootCancel(options?: Options): Promise<any>;
+        generateRootUpdate(options?: Options): Promise<any>;
+        mounts(options?: Options): Promise<any>;
+        mount(options?: Options): Promise<any>;
+        unmount(options?: Options): Promise<any>;
+        remount(options?: Options): Promise<any>;
+        policies(options?: Options): Promise<any>;
+        addPolicy(options?: Options): Promise<any>;
+        getPolicy(options?: Options): Promise<any>;
+        removePolicy(options?: Options): Promise<any>;
+        auths(options?: Options): Promise<any>;
+        enableAuth(options?: Options): Promise<any>;
+        disableAuth(options?: Options): Promise<any>;
+        audits(options?: Options): Promise<any>;
+        enableAudit(options?: Options): Promise<any>;
+        disableAudit(options?: Options): Promise<any>;
+        renew(options?: Options): Promise<any>;
+        revoke(options?: Options): Promise<any>;
+        revokePrefix(options?: Options): Promise<any>;
+        rotate(options?: Options): Promise<any>;
+        gcpLogin(options?: Options): Promise<any>;
+        ldapLogin(options?: Options): Promise<any>;
+        githubLogin(options?: Options): Promise<any>;
+        userpassLogin(options?: Options): Promise<any>;
+        kubernetesLogin(options?: Options): Promise<any>;
+        awsIamLogin(options?: Options): Promise<any>;
+        ldapLogin(options?: Options): Promise<any>;
+        oktaLogin(options?: Options): Promise<any>;
+        radiusLogin(options?: Options): Promise<any>;
+        certLogin(options?: Options): Promise<any>;
+        tokenAccessors(options?: Options): Promise<any>;
+        tokenCreate(options?: Options): Promise<any>;
+        tokenCreateOrphan(options?: Options): Promise<any>;
+        tokenCreateRole(options?: Options): Promise<any>;
+        tokenLookup(options?: Options): Promise<any>;
+        tokenLookupAccessor(options?: Options): Promise<any>;
+        tokenLookupSelf(options?: Options): Promise<any>;
+        tokenRenew(options?: Options): Promise<any>;
+        tokenRenewSelf(options?: Options): Promise<any>;
+        tokenRevoke(options?: Options): Promise<any>;
+        tokenRevokeAccessor(options?: Options): Promise<any>;
+        tokenRevokeOrphan(options?: Options): Promise<any>;
+        tokenRevokeSelf(options?: Options): Promise<any>;
+        tokenRoles(options?: Options): Promise<any>;
+        addTokenRole(options?: Options): Promise<any>;
+        getTokenRole(options?: Options): Promise<any>;
+        removeTokenRole(options?: Options): Promise<any>;
+        approleRoles(options?: Options): Promise<any>;
+        addApproleRole(options?: Options): Promise<any>;
+        getApproleRole(options?: Options): Promise<any>;
+        deleteApproleRole(options?: Options): Promise<any>;
+        getApproleRoleId(options?: Options): Promise<any>;
+        updateApproleRoleId(options?: Options): Promise<any>;
+        getApproleRoleSecret(options?: Options): Promise<any>;
+        approleSecretAccessors(options?: Options): Promise<any>;
+        approleSecretLookup(options?: Options): Promise<any>;
+        approleSecretDestroy(options?: Options): Promise<any>;
+        approleSecretAccessorLookup(options?: Options): Promise<any>;
+        approleSecretAccessorDestroy(options?: Options): Promise<any>;
+        approleLogin(options?: Options): Promise<any>;
+        health(options?: Options): Promise<any>;
+        leader(options?: Options): Promise<any>;
+        stepDown(options?: Options): Promise<any>;
+        encryptData(options?: Options): Promise<any>;
+        decryptData(options?: Options): Promise<any>;
+        generateDatabaseCredentials(options?: Options): Promise<any>;
     }
 
     interface VaultOptions {
@@ -130,16 +130,14 @@ declare namespace NodeVault {
         tv4?(...args: any[]): any;
         commands?: Array<{ method: string, path: string, scheme: any }>;
         mustache?: any;
-        "request-promise"?: any;
+        httpOptions?: httpClient.AxiosRequestConfig
         Promise?: PromiseConstructor;
-
         apiVersion?: string;
         endpoint?: string;
         namespace?: string;
         noCustomHTTPVerbs?: boolean;
         pathPrefix?: string;
         token?: string;
-        requestOptions?: request.CoreOptions;
     }
 }
 

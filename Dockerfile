@@ -7,8 +7,10 @@ SHELL ["/bin/bash", "--login", "-c"]
 RUN apt update && apt install -y curl
 # Get optional env var to set node version
 ARG SET_NODE_VERSION
-# Set default to node 16.20.0
-ENV NODE_VERSION ${SET_NODE_VERSION:-16.20.0}
+ENV DEFAULT_NODE_VERSION 18.16.0
+
+# Install nvm and node
+ENV NODE_VERSION ${SET_NODE_VERSION:-$DEFAULT_NODE_VERSION}
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 RUN nvm install $NODE_VERSION
 

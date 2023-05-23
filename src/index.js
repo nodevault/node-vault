@@ -1,12 +1,13 @@
 'use strict';
 
-const originalDebug = require('debug')('node-vault');
+const nodeVaultDebug = require('debug')('node-vault');
 const originalTv4 = require('tv4');
 const originalCommands = require('./commands.js');
 const originalMustache = require('mustache');
-const originalRp = require('request-promise-native');
+const axios = require('axios');
 
-class VaultError extends Error {}
+
+class VaultError extends Error { }
 
 class ApiResponseError extends VaultError {
     constructor(message, response) {
@@ -18,27 +19,20 @@ class ApiResponseError extends VaultError {
     }
 }
 
+// Exports the vault client
 module.exports = (config = {}) => {
     // load conditional dependencies
-    const debug = config.debug || originalDebug;
+    const debug = config.debug || nodeVaultDebug;
     const tv4 = config.tv4 || originalTv4;
     const commands = config.commands || originalCommands;
     const mustache = config.mustache || originalMustache;
 
-    const rpDefaults = {
-        json: true,
-        resolveWithFullResponse: true,
-        simple: false,
-        strictSSL: !process.env.VAULT_SKIP_VERIFY,
-    };
-
-    if (config.rpDefaults) {
-        Object.keys(config.rpDefaults).forEach((key) => {
-            rpDefaults[key] = config.rpDefaults[key];
-        });
+    // Skip SSL verification if VAULT_SKIP_VERIFY is set
+    if (process.env.VAULT_SKIP_VERIFY) {
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     }
 
-    const rp = (config['request-promise'] || originalRp).defaults(rpDefaults);
+    const httpClient = axios;
     const client = {};
 
     function handleVaultResponse(response) {
@@ -88,20 +82,26 @@ module.exports = (config = {}) => {
     client.request = (options = {}) => {
         const valid = tv4.validate(options, requestSchema);
         if (!valid) return Promise.reject(tv4.error);
+
+
         let uri = `${client.endpoint}/${client.apiVersion}${client.pathPrefix}${options.path}`;
         // Replace unicode encodings.
         uri = uri.replace(/&#x2F;/g, '/');
+
+
         options.headers = options.headers || {};
+
+
         if (typeof client.token === 'string' && client.token.length) {
             options.headers['X-Vault-Token'] = options.headers['X-Vault-Token'] || client.token;
         }
         if (typeof client.namespace === 'string' && client.namespace.length) {
             options.headers['X-Vault-Namespace'] = client.namespace;
         }
-        options.uri = uri;
-        debug(options.method, uri);
-        if (options.json) debug(options.json);
-        return rp(options).then(client.handleVaultResponse);
+        debug({ options, uri });
+        return httpClient(uri, options)
+            .then(r => r.json())
+            .then(client.handleVaultResponse);
     };
 
     client.help = (path, requestOptions) => {

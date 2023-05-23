@@ -7,7 +7,7 @@
     "coverage": "nyc --reporter=lcov npm test",
     "lint": "eslint .",
     "test": "mocha",
-    "test-unit": "mocha test/unit.js",
+    "test:unit": "mocha test/unit.js",
     "test-watch": "mocha --watch",
     "predocs": "node scripts/write-features.js",
     "docs": "docco --output docs src/*.js"
@@ -24,10 +24,10 @@
     "index.d.ts"
   ],
   "dependencies": {
+    "axios": "^1.4.0",
     "debug": "3.1.0",
     "mustache": "^2.2.1",
     "request": "2.88.0",
-    "request-promise-native": "1.0.7",
     "tv4": "^1.2.7"
   },
   "devDependencies": {
