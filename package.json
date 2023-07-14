@@ -26,12 +26,11 @@
   "dependencies": {
     "debug": "3.1.0",
     "mustache": "^2.2.1",
-    "request": "2.88.0",
-    "request-promise-native": "1.0.7",
+    "postman-request": "^2.88.1-postman.33",
     "tv4": "^1.2.7"
   },
   "devDependencies": {
-    "@types/request": "^2.48.1",
+    "@types/request": "^2.48.8",
     "chai": "3.5.0",
     "dirty-chai": "^1.2.2",
     "docco": "0.8.0",
