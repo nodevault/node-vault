@@ -19,7 +19,8 @@
 				"ms-azuretools.vscode-docker",
 				"github.copilot",
 				"streetsidesoftware.code-spell-checker",
-				"redhat.vscode-yaml"
+				"redhat.vscode-yaml",
+				"GitHub.copilot"
 			]
 		}
 	}
