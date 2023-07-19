@@ -10,28 +10,30 @@ jobs:
     name: Verify lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       # Use node 16
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: 16
       - name: Install dependencies
-        run: npm install
+        # Install deps from lockfile
+        run: npm ci
       # Run lint
       - name: Lint
         run: npm run lint
   run_tests_and_push_to_codecov:
-    name: Run tests and push to codecov
+    # Name with matrix eval
     runs-on: ubuntu-latest
     needs: verify_lint
     strategy:
       matrix:
         # We verify compatibility for current and previous LTS
         node_version: [16, 18]
+    name: "[ Node v ${{ matrix.node_version }} ] Run tests and push to codecov"
     env:
       NODE_VERSION: ${{ matrix.node_version }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build the stack
         run: docker-compose up -d
       - name: Build testing container
