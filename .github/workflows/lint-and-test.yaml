@@ -34,15 +34,20 @@ jobs:
       NODE_VERSION: ${{ matrix.node_version }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          # Fetch all history for all tags and branches
+          fetch-depth: 0
       - name: Build the stack
         run: docker-compose up -d
       - name: Build testing container
         run: docker build -t tests:${{ github.sha }} --build-arg SET_NODE_VERSION=$NODE_VERSION .
       - name: Invoke testing container
         run: docker run --network container:vault
-          -e VAULT_ADDR=http://vault:8200
+          -e VAULT_ADDR=$VAULT_ADDR
           -v $PWD/coverage:/app/coverage tests:${{ github.sha }} "cd /app && npm run coverage"
-      - uses: codecov/codecov-action@v3
+        env:
+          VAULT_ADDR: http://vault:8200
+      - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # tag: 3.1.4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: NODE_VERSION # optional
