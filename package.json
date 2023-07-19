@@ -24,6 +24,7 @@
     "index.d.ts"
   ],
   "dependencies": {
+    "@types/request": "^2.48.1",
     "debug": "3.1.0",
     "mustache": "^2.2.1",
     "request": "2.88.0",
@@ -31,7 +32,6 @@
     "tv4": "^1.2.7"
   },
   "devDependencies": {
-    "@types/request": "^2.48.1",
     "chai": "3.5.0",
     "dirty-chai": "^1.2.2",
     "docco": "0.8.0",
