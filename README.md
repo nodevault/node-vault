@@ -10,13 +10,13 @@
 A client for the HTTP API of HashiCorp's [Vault] written for Node.js.
 
 
-## install
+## Install
 make sure to use node.js version >= 6
 
     npm install node-vault
 
 
-## test
+## Test
 
 Run tests inside docker to do also nice integration testing:
 
@@ -26,9 +26,9 @@ This will create containers for vault, postgres and running the tests inside
 docker.
 
 
-## usage
+## Usage
 
-### init and unseal
+### Init and unseal
 
 ```javascript
 var options = {
@@ -52,7 +52,7 @@ vault.init({ secret_shares: 1, secret_threshold: 1 })
 .catch(console.error);
 ```
 
-### write, read and delete secrets
+### Write, read and delete secrets
 
 ```javascript
 vault.write('secret/hello', { value: 'world', lease: '1s' })
@@ -61,11 +61,11 @@ vault.write('secret/hello', { value: 'world', lease: '1s' })
 .catch(console.error);
 ```
 
-## docs
+## Docs
 Just generate [docco] docs via `npm run docs`.
 
 
-## examples
+## Examples
 Please have a look at the [examples] and the generated [feature list] to see what is already implemented.
 
 Instead of installing all the dependencies like vault itself, postgres and other stuff you can
