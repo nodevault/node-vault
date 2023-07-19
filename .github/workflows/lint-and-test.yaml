@@ -29,7 +29,7 @@ jobs:
       matrix:
         # We verify compatibility for current and previous LTS
         node_version: [16, 18]
-    name: "[ Node v ${{ matrix.node-version }} ] Run tests and push to codecov"
+    name: "[ Node ${{ matrix.node_version }} ] Run tests and push to codecov"
     env:
       NODE_VERSION: ${{ matrix.node_version }}
     steps:
