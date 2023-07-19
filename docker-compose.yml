@@ -2,7 +2,7 @@ version: '2'
 services:
   vault:
     container_name: vault
-    image: vault:1.12.2
+    image: vault:1.13.3
     volumes:
       - $PWD/example:/tmp/example
       - $PWD/logs/:/tmp/logs
@@ -15,7 +15,7 @@ services:
       - postgres
 
   postgres:
-    image: postgres:15.1
+    image: postgres:15.3
     ports:
       - "5433:5432"
     environment:
