@@ -20,7 +20,8 @@
 				"github.copilot",
 				"streetsidesoftware.code-spell-checker",
 				"redhat.vscode-yaml",
-				"GitHub.copilot"
+				"GitHub.copilot",
+				"yzhang.markdown-all-in-one"
 			]
 		}
 	}

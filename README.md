@@ -1,6 +1,6 @@
 # node-vault
 
-[![Build Status](https://img.shields.io/github/checks-status/kr1sp1n/node-vault/master.svg?style=flat-square)](https://github.com/nodevault/node-vault/actions?query=branch%3Amaster)
+[![Build Status](https://img.shields.io/github/checks-status/nodevault/node-vault/master.svg?style=flat-square)](https://github.com/nodevault/node-vault/actions?query=branch%3Amaster)
 [![Coverage Status](https://img.shields.io/codecov/c/github/nodevault/node-vault/master.svg?style=flat-square)](https://app.codecov.io/gh/nodevault/node-vault/tree/master)
 [![Download Status](https://img.shields.io/npm/dm/node-vault.svg?style=flat-square)](https://www.npmjs.com/package/node-vault)
 [![test](https://img.shields.io/npm/v/node-vault?style=flat-square)](https://www.npmjs.com/package/node-vault)
@@ -11,20 +11,24 @@ A client for the HTTP API of HashiCorp's [Vault] written for Node.js.
 
 
 ## Install
-make sure to use node.js version >= 6
+Prerequisites:
+ - NodeJS >= `16.0.0`
 
-    npm install node-vault
+```bash
+npm install -S node-vault
+```
+
+> The year is 2023; If, for whatever reason, you need to use an older version of node.js (yet still `>= 6.x`), use `node-vault <= v0.10.0`
+>
+> Please note that `node-vault <= v0.10.0` contains multiple vulnerabilities ☠️
 
 
 ## Test
 
-Run tests inside docker to do also nice integration testing:
-
-    docker-compose up --force-recreate test
-
-This will create containers for vault, postgres and running the tests inside
-docker.
-
+Run tests using docker-compose (includes vault, postgres and running the tests inside) with:
+```bash
+docker-compose up --force-recreate test
+```
 
 ## Usage
 
@@ -34,7 +38,7 @@ docker.
 var options = {
   apiVersion: 'v1', // default
   endpoint: 'http://127.0.0.1:8200', // default
-  token: '1234' // optional client token; can be fetched after valid initialization of the server
+  token: 'MY_TOKEN' // optional client token; can be fetched after valid initialization of the server
 };
 
 // get new instance of the client
@@ -72,7 +76,7 @@ Instead of installing all the dependencies like vault itself, postgres and other
 use [docker] and [docker-compose] to link and run multiple docker containers with all of its dependencies.
 
 ```bash
-git clone git@github.com:kr1sp1n/node-vault.git
+git clone git@github.com:nodevault/node-vault.git
 cd node-vault
 docker-compose up vault
 ```
@@ -116,11 +120,11 @@ const vault = require('node-vault')(options);
 
 [![Backers](https://opencollective.com/node-vault/tiers/backers.svg?avatarHeight=80&width=600)](https://opencollective.com/node-vault/contribute)
 
-[examples]: https://github.com/kr1sp1n/node-vault/tree/master/example
-[docker-compose.yml]: https://github.com/kr1sp1n/node-vault/tree/master/docker-compose.yml
+[examples]: https://github.com/nodevault/node-vault/tree/master/example
+[docker-compose.yml]: https://github.com/nodevault/node-vault/tree/master/docker-compose.yml
 [Vault]: https://vaultproject.io/
 [docker-compose]: https://www.docker.com/docker-compose
 [docker]: http://docs.docker.com/
 [docker toolbox]: https://www.docker.com/toolbox
 [docco]: http://jashkenas.github.io/docco
-[feature list]: https://github.com/kr1sp1n/node-vault/tree/master/features.md
+[feature list]: https://github.com/nodevault/node-vault/tree/master/features.md
