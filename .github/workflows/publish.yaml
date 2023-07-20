@@ -17,6 +17,8 @@ jobs:
     permissions:
       contents: write
       packages: write
+    # Use the semver as the job name
+    name: "Release ${{ github.event.inputs.semver }}"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
