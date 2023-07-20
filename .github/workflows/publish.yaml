@@ -24,6 +24,8 @@ jobs:
           ssh-private-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
 
       - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ github.event.inputs.nodeVersion }}
