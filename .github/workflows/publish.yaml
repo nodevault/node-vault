@@ -39,13 +39,17 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           npm version ${{ github.event.inputs.semver }}
-          VERSION=`cat package.json | grep version | tr -d " " | cut -d":" -f2 | tr -d "\","` >> $GITHUB_ENV
           git push && git push --tags
 
       - name: Publish
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+      - run: |
+          echo VERSION=$(cat package.json | grep version | tr -d " " | cut -d":" -f2 | tr -d "\",") >> $GITHUB_ENV
+        shell: bash
+        name: Set version as env var
 
       - uses: actions/create-release@v1
         name: Release
