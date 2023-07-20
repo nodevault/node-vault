@@ -1,0 +1,38 @@
+name: Node.js Package Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      semver:
+        description: "The semantic version to bump (patch, minor, major)"
+        required: true
+        default: "patch"
+      nodeVersion:
+        description: "The Node.js version to use"
+        required: true
+        default: "16.x"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ github.event.inputs.nodeVersion }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Bump version and push tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          npm version ${{ github.event.inputs.semver }}
+          git push && git push --tags
+        env:
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
