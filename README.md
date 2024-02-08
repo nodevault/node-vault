@@ -64,6 +64,16 @@ vault.write('secret/hello', { value: 'world', lease: '1s' })
 .then( () => vault.delete('secret/hello'))
 .catch(console.error);
 ```
+### Kubernetes Auth Example
+```javascript
+
+//if vault kubernets endpoint is /auth/example-cluster/login and role is example-role
+//read token from default token mount path
+const token = await fs.readFileSync('/var/run/secrets/kubernetes.io/serviceaccount/token', { encoding: 'utf8' });
+vault.kubernetesLogin({role: 'example-role' ,
+            jwt: token,
+            kubernetesPath: 'example-cluster'})
+```
 
 ## Docs
 Just generate [docco] docs via `npm run docs`.
