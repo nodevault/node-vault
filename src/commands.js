@@ -205,7 +205,7 @@ module.exports = {
     },
     addKubernetesRole: {
         method: 'POST',
-        path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}',
+        path: '/auth/{{mount_point}}{{^mount_point}}{{kubernetesPath}}{{/mount_point}}/role/{{ role_name }}',
         schema: {
             req: {
                 name: {
@@ -240,14 +240,14 @@ module.exports = {
     },
     getKubernetesRole: {
         method: 'GET',
-        path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}',
+        path: '/auth/{{mount_point}}{{^mount_point}}{{kubernetesPath}}{{/mount_point}}/role/{{ role_name }}',
         schema: {
             res: kubernetesRoleResponse,
         },
     },
     deleteKubernetesRole: {
         method: 'DELETE',
-        path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}',
+        path: '/auth/{{mount_point}}{{^mount_point}}{{kubernetesPath}}{{/mount_point}}/role/{{ role_name }}',
     },
     addApproleRole: {
         method: 'POST',
@@ -611,7 +611,7 @@ module.exports = {
     },
     kubernetesLogin: {
         method: 'POST',
-        path: '/auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/login',
+        path: '/auth/{{mount_point}}{{^mount_point}}{{kubernetesPath}}{{/mount_point}}/login',
         tokenSource: true,
         schema: {
             req: {
@@ -742,7 +742,7 @@ module.exports = {
             },
             res: tokenResponse,
         },
-    },  
+    },
     tokenAccessors: {
         method: 'LIST',
         path: '/auth/token/accessors',
