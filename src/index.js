@@ -6,6 +6,8 @@ const originalCommands = require('./commands.js');
 const originalMustache = require('mustache');
 const util = require('util');
 const request = require('postman-request');
+const { randomBytes } = require('crypto');
+const http = require('http');
 
 class VaultError extends Error {}
 
@@ -243,6 +245,53 @@ module.exports = (config = {}) => {
     // going the functional way first defining a wrapper function
     const assignFunctions = (commandName) => generateFunction(commandName, commands[commandName]);
     Object.keys(commands).forEach(assignFunctions);
+
+    client['oidcFlow'] = () => import('open')
+        .then(({default: open}) => {
+            const oidcCallbackPath = '/oidc/callback';
+            const serverConfig = {
+                host: 'localhost',
+                port: 8250,
+                protocol: 'http'
+            }
+            return new Promise((done, reject) => {
+                const client_nonce = randomBytes(20).toString('hex').slice(20);
+
+                const server = http.createServer((req, res) => {
+                    const responseUrl = new URL(req.url, `${serverConfig.protocol}://${serverConfig.host}`)
+                    if (responseUrl.pathname === oidcCallbackPath) {
+                        res.write('Signed in via your OIDC provider\nYou can now close this window and start using Vault.');
+                        res.end();
+                        const code = responseUrl.searchParams.get('code')
+                        const state = responseUrl.searchParams.get('state')
+                        client.oidcCallback({
+                            state,
+                            code,
+                            client_nonce,
+                        })
+                            .then(() => {
+                                server.close(done);
+                            })
+                            .catch(reject)
+                    }
+                    if (!res.writableEnded) {
+                        res.end();
+                    }
+                });
+
+                server.listen(serverConfig.port,() => {});
+
+                client.oidcAuthUrl({
+                    redirect_uri: `${serverConfig.protocol}://${serverConfig.host}:${serverConfig.port}${oidcCallbackPath}`,
+                    client_nonce,
+                })
+                    .then((r) => {
+                        console.log(`Complete the login via your OIDC provider. Launching browser to: \n\n${r.data.auth_url}\n\n if browser does not open automatically, please copy paste the above URL`)
+                        open(r.data.auth_url)
+                    })
+                    .catch(reject)
+            })
+        })
 
     return client;
 };
