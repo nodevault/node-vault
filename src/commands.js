@@ -743,6 +743,26 @@ module.exports = {
             res: tokenResponse,
         },
     },
+    jwtLogin: {
+        method: 'POST',
+        path: '/auth/{{mount_point}}{{^mount_point}}jwt{{/mount_point}}/login',
+        tokenSource: true,
+        schema: {
+            req: {
+                type: 'object',
+                properties: {
+                    role: {
+                        type: 'string',
+                    },
+                    jwt: {
+                        type: 'string',
+                    },
+                },
+                required: ['role', 'jwt'],
+            },
+            res: tokenResponse,
+        },
+    },
     tokenAccessors: {
         method: 'LIST',
         path: '/auth/token/accessors',
