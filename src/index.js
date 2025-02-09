@@ -75,6 +75,7 @@ module.exports = (config = {}) => {
     client.token = config.token || process.env.VAULT_TOKEN;
     client.noCustomHTTPVerbs = config.noCustomHTTPVerbs || false;
     client.namespace = config.namespace || process.env.VAULT_NAMESPACE;
+    client.kubernetesPath = config.kubernetesPath || 'kubernetes';
 
     const requestSchema = {
         type: 'object',

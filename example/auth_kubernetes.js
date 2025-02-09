@@ -9,6 +9,7 @@ const kubernetesCaCert = process.env.K8S_CA_CERT || 'k8s-ca-certificate-data';
 
 const appName = process.env.APP_NAME || 'some-app';
 const appServiceAccountSecretToken = process.env.APP_SVC_ACCT_SECRET_TOKEN || 'app-k8s-token';
+const kubernetesPath = process.env.APP_SVC_ACCT_SECRET_TOKEN || 'kubernetes';
 
 vault.auths()
     .then((result) => {
@@ -19,7 +20,7 @@ vault.auths()
             description: 'Kubernetes auth',
         });
     })
-    .then(() => vault.write('auth/kubernetes/config', {
+    .then(() => vault.write('auth/${kubernetesPath}/config', {
         token_reviewer_jwt: vaultServicAccountSecretToken,
         kubernetes_host: kubernetesHostUrl,
         kubernetes_ca_cert: kubernetesCaCert,
@@ -28,12 +29,12 @@ vault.auths()
         name: appName,
         rules: `path "secret/${appName}/*" { capabilities = ["read"] }`,
     }))
-    .then(() => vault.write(`auth/kubernetes/role/${appName}`, {
+    .then(() => vault.write(`auth/${kubernetesPath}/role/${appName}`, {
         bound_service_account_names: appName,
         bound_service_account_namespaces: 'default',
         policies: appName,
         ttl: '1h',
     }))
-    .then(() => vault.kubernetesLogin({ role: appName, jwt: appServiceAccountSecretToken }))
+    .then(() => vault.kubernetesLogin({ role: appName, jwt: appServiceAccountSecretToken, kubernetesPath: kubernetesPath  }))
     .then(console.log)
     .catch((err) => console.error(err.message));

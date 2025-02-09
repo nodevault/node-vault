@@ -87,6 +87,7 @@ declare namespace NodeVault {
         oktaLogin(options?: Option): Promise<any>;
         radiusLogin(options?: Option): Promise<any>;
         certLogin(options?: Option): Promise<any>;
+        jwtLogin(options?: Option): Promise<any>;
         tokenAccessors(options?: Option): Promise<any>;
         tokenCreate(options?: Option): Promise<any>;
         tokenCreateOrphan(options?: Option): Promise<any>;
