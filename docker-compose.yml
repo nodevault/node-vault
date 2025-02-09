@@ -13,6 +13,8 @@ services:
       - "8200:8200"
     depends_on:
       - postgres
+    networks:
+      - vault-network
 
   postgres:
     image: postgres:15.3
@@ -21,3 +23,10 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: test
+    networks:
+      - vault-network
+
+networks:
+  vault-network:
+    name: vault-network
+    driver: bridge
