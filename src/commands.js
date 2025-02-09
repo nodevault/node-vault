@@ -1278,6 +1278,73 @@ module.exports = {
             res: approleResponse,
         },
     },
+    oidcAuthUrl: {
+        method: 'POST',
+        path: '/auth/oidc/oidc/auth_url',
+        schema: {
+            req: {
+                type: 'object',
+                properties: {
+                    redirect_uri: {
+                        type: 'string'
+                    },
+                    client_nonce: {
+                        type: 'string'
+                    },
+                    role: {
+                        type: 'string'
+                    }
+                },
+                required: ['redirect_uri']
+            },
+            res: {
+                type: 'object',
+                properties: {
+                    request_id: {
+                        type: 'string'
+                    },
+                    data: {
+                        type: 'object',
+                        properties: {
+                            auth_url: {
+                                type: 'string'
+                            }
+                        },
+                        required: ['auth_url']
+                    }
+                },
+                required: ['request_id', 'data']
+            }
+        }
+    },
+    oidcCallback: {
+        method: 'GET',
+        path: '/auth/oidc/oidc/callback',
+        tokenSource: true,
+        schema: {
+            query: {
+                type: 'object',
+                properties: {
+                    state: {
+                        type: 'string',
+                    },
+                    code: {
+                        type: 'string',
+                    },
+                    client_nonce: {
+                        type: 'string'
+                    }
+                },
+                required: ['state', 'code']
+            },
+            res: {
+                type: 'object',
+                properties: {
+                    auth,
+                }
+            }
+        }
+    },
     health: {
         method: 'GET',
         path: '/sys/health',
