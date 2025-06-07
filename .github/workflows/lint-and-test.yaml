@@ -58,5 +58,5 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: NODE_VERSION # optional
           name: codecov-umbrella # optional
-          fail_ci_if_error: true # optional (default = false)
+          fail_ci_if_error: ${{ github.ref == 'refs/heads/master' }} # fail on master, don't fail on other branches
           verbose: true # optional (default = false)
