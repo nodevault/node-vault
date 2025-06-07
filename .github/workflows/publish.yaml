@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610
         with:
           node-version: ${{ github.event.inputs.nodeVersion }}
           registry-url: "https://registry.npmjs.org"
@@ -44,7 +44,7 @@ jobs:
         shell: bash
         name: Set version as env var
 
-      - uses: actions/create-release@v1
+      - uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
         name: Release
         id: create_release
         env:
