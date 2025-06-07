@@ -30,7 +30,7 @@
     "tv4": "^1.3.0"
   },
   "devDependencies": {
-    "@types/request": "^2.48.8",
+    "@types/request": "^2.48.12",
     "chai": "^4.3.7",
     "dirty-chai": "^2.0.1",
     "docco": "^0.9.1",
@@ -42,7 +42,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/kr1sp1n/node-vault.git"
+    "url": "git://github.com/nodevault/node-vault.git"
   },
   "keywords": [
     "vault",
@@ -51,8 +51,9 @@
     "manage",
     "client"
   ],
-  "author": "kr1sp1n <krispin@posteo.de> (https://github.com/kr1sp1n)",
   "contributors": [
+    "kr1sp1n (https://github.com/kr1sp1n)",
+    "Aviad Hahami (https://github.com/aviadhahami)",
     "Adam Kelsall (https://github.com/adamkelsall)",
     "Alex Early (https://github.com/aearly)",
     "Brandon Ros (https://github.com/brandonros)",
@@ -88,7 +89,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kr1sp1n/node-vault/issues"
+    "url": "https://github.com/nodevault/node-vault/issues"
   },
-  "homepage": "https://github.com/kr1sp1n/node-vault"
+  "homepage": "https://github.com/nodevault/node-vault"
 }
