@@ -1,5 +1,5 @@
 // Type definitions for node-vault 0.9.8
-// Project: https://github.com/kr1sp1n/node-vault
+// Project: https://github.com/nodevault/node-vault
 // Definitions by: Jianrong Yu <https://github.com/YuJianrong>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
