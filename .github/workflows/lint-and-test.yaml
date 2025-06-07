@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      # Use node 16
+      # Use node 18
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
       - name: Install dependencies
         # Install deps from lockfile
         run: npm ci
@@ -29,7 +29,8 @@ jobs:
     strategy:
       matrix:
         # We verify compatibility for current and previous LTS
-        node_version: [16, 18]
+        # Jun 2025 -> Still supporting node 16 tho it was EOL on September 11, 2023
+        node_version: [16, 18, 20, 22, 23, 24]
     name: "[ Node ${{ matrix.node_version }} ] Run tests and push to codecov"
     env:
       NODE_VERSION: ${{ matrix.node_version }}

@@ -13,7 +13,7 @@
     "docs": "docco --output docs src/*.js"
   },
   "engines": {
-    "node": ">= 16.0.0"
+    "node": ">= 18.0.0"
   },
   "directories": {
     "example": "./example",
