@@ -1,6 +1,6 @@
 name: Extract & write features
 on:
-  pull_request:
+  push:
     branches:
       - master
     paths:
