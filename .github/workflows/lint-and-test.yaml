@@ -53,10 +53,10 @@ jobs:
           -v $PWD/coverage:/app/coverage tests:${{ github.sha }} "cd /app && npm run coverage"
         env:
           VAULT_ADDR: http://vault:8200
-      - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # tag: 3.1.4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          env_vars: NODE_VERSION # optional
-          name: codecov-umbrella # optional
-          fail_ci_if_error: ${{ github.ref == 'refs/heads/master' }} # fail on master, don't fail on other branches
-          verbose: true # optional (default = false)
+      # - uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # tag: 3.1.4
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     env_vars: NODE_VERSION # optional
+      #     name: codecov-umbrella # optional
+      #     fail_ci_if_error: ${{ github.ref == 'refs/heads/master' }} # fail on master, don't fail on other branches
+      #     verbose: true # optional (default = false)
