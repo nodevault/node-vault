@@ -4,13 +4,23 @@ on:
   workflow_dispatch:
     inputs:
       semver:
-        description: "The semantic version to bump (patch, minor, major)"
+        description: "The semantic version to bump"
         required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
         default: "patch"
       nodeVersion:
         description: "The Node.js version to use"
         required: true
-        default: "16.x"
+        type: choice
+        options:
+          - "18.x"
+          - "20.x"
+          - "22.x"
+        default: "20.x"
 
 jobs:
   release:
