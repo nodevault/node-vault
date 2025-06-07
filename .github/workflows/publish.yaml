@@ -20,7 +20,7 @@ on:
           - "18.x"
           - "20.x"
           - "22.x"
-        default: "20.x"
+        default: "18.x"
 
 jobs:
   release:
@@ -32,22 +32,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
       - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610
         with:
           node-version: ${{ github.event.inputs.nodeVersion }}
           registry-url: "https://registry.npmjs.org"
 
-      - name: Bump node-vault version
+      - name: Bump and commit version
         run: |
-          npm version ${{ github.event.inputs.semver }}
-
-      - name: Push changes
-        uses: EndBug/add-and-commit@1bad3abcf0d6ec49a5857d124b0bfb52dc7bb081 # tag: v9.1.3
-        with:
-          default_author: github-actions
-          add: "package.json package-lock.json"
-          commit: --signoff
-          message: "chore(release): bump version to ${{ github.event.inputs.semver }}"
+          git config --global user.email "github-actions[bot]@github.com"
+          git config --global user.name "github-actions[bot]"
+          npm version ${{ github.event.inputs.semver }} --message "chore(release): bump version to %s"
+          git push --follow-tags
 
       - name: Publish
         run: npm publish
