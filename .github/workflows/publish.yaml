@@ -53,12 +53,7 @@ jobs:
         run: |
           echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
 
-      - uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e
+      - uses: softprops/action-gh-release@aec2ec56f94eb8180ceec724245f64ef008b89f5
         name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
-          draft: false
-          prerelease: false
+          name: Release ${{ env.VERSION }}
