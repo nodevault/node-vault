@@ -1,59 +1,73 @@
-name: Publish to NPM
+name: Publish NPM and Release (on merged PR)
 
 on:
-  workflow_dispatch:
-    inputs:
-      semver:
-        description: "The semantic version to bump"
-        required: true
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
-        default: "patch"
-      nodeVersion:
-        description: "The Node.js version to use"
-        required: true
-        type: choice
-        options:
-          - "18.x"
-          - "20.x"
-          - "22.x"
-        default: "18.x"
+  pull_request:
+    types:
+      - closed
 
 jobs:
   release:
+    if: ${{ github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' }}
     permissions:
       contents: write
+      packages: write
       id-token: write
 
-    # Use the semver as the job name
-    name: "Release ${{ github.event.inputs.semver }}"
+    name: Publish on master (patch)
     runs-on: ubuntu-latest
+    concurrency:
+      group: publish-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
       - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610
         with:
-          node-version: ${{ github.event.inputs.nodeVersion }}
-          registry-url: "https://registry.npmjs.org"
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Bump and commit version
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Compute patch version, update package.json locally, tag and push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global user.email "github-actions[bot]@github.com"
-          git config --global user.name "github-actions[bot]"
-          npm version ${{ github.event.inputs.semver }} --message "chore(release): bump version to %s"
-          git push --follow-tags
+          set -euo pipefail
+          git config user.email "github-actions[bot]@github.com"
+          git config user.name "github-actions[bot]"
 
-      - name: Publish
-        run: npm publish
+          # Read current version
+          CURR=$(node -p "require('./package.json').version")
+          echo "Current version: $CURR"
+
+          # Bump package.json locally without creating a git tag or commit
+          npm version patch --no-git-tag-version -m "chore(release): bump version to %s"
+
+          # New version from updated package.json
+          VERSION=$(node -p "require('./package.json').version")
+          TAG="v${VERSION}"
+          echo "Bumped to version: $VERSION"
+
+          # Create annotated tag from HEAD and push only the tag (do not push commits to protected branch)
+          git tag -a "$TAG" -m "chore(release): $TAG"
+          git push origin "$TAG"
+
+      - name: Publish to npm (OIDC)
+        run: |
+          npm publish
 
       - name: Set version as env var
-        run: |
-          echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+        run: echo "VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
 
-      - uses: softprops/action-gh-release@aec2ec56f94eb8180ceec724245f64ef008b89f5
-        name: Release
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@aec2ec56f94eb8180ceec724245f64ef008b89f5
         with:
+          tag_name: v${{ env.VERSION }}
           name: Release ${{ env.VERSION }}
