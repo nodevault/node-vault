@@ -1,0 +1,83 @@
+name: Update Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      semver:
+        description: "The semantic version to bump"
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: "patch"
+      nodeVersion:
+        description: "The Node.js version to use"
+        required: true
+        type: choice
+        options:
+          - "18.x"
+          - "20.x"
+          - "22.x"
+        default: "18.x"
+
+jobs:
+  release:
+    permissions:
+      contents: write
+      pull-requests: read
+
+    name: Update and publish version ${{ github.event.inputs.semver }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610
+        with:
+          node-version: ${{ github.event.inputs.nodeVersion }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Create release branch, bump version and push
+        env:
+          SEMVER: ${{ github.event.inputs.semver }}
+        run: |
+          set -euo pipefail
+          git config --global user.email "github-actions[bot]@github.com"
+          git config --global user.name "github-actions[bot]"
+
+          # Create a unique release branch so the bump commit and tag are isolated
+          BRANCH="release-${SEMVER}-$(date +%s)"
+          git checkout -b "$BRANCH"
+
+
+          # Bump version but do NOT create a git tag on the branch
+          npm version "$SEMVER" --no-git-tag-version --allow-same-version --message "chore(release): bump version to %s"
+
+          # Commit package.json and package-lock.json (if present) and push branch
+          git add package.json package-lock.json || true
+          git commit -m "chore(release): bump version" || true
+          git push --set-upstream origin "$BRANCH"
+
+          # Read the new version for PR title/body and persist values for next step
+          VERSION=$(node -p "require('./package.json').version")
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Provide PR creation link
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          PR_LINK="https://github.com/${GITHUB_REPOSITORY}/compare/master...${BRANCH}?expand=1"
+          echo "Open this URL to create the PR: ${PR_LINK}"
+          {
+            echo "## Version bump branch created";
+            echo "Branch: ${BRANCH}";
+            echo "Version: ${VERSION}";
+            echo "";
+            echo "[Create the pull request now](${PR_LINK})";
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,59 +1,90 @@
-name: Publish to NPM
+name: Publish NPM and Release (on merged PR)
 
 on:
-  workflow_dispatch:
-    inputs:
-      semver:
-        description: "The semantic version to bump"
-        required: true
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
-        default: "patch"
-      nodeVersion:
-        description: "The Node.js version to use"
-        required: true
-        type: choice
-        options:
-          - "18.x"
-          - "20.x"
-          - "22.x"
-        default: "18.x"
+  pull_request:
+    types:
+      - closed
 
 jobs:
   release:
+    if: ${{ github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master' }}
     permissions:
       contents: write
+      packages: write
       id-token: write
 
-    # Use the semver as the job name
-    name: "Release ${{ github.event.inputs.semver }}"
+    name: Publish on master (patch)
     runs-on: ubuntu-latest
+    concurrency:
+      group: publish-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
       - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610
         with:
-          node-version: ${{ github.event.inputs.nodeVersion }}
-          registry-url: "https://registry.npmjs.org"
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Bump and commit version
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Detect version bump in merged PR
+        id: detect
         run: |
-          git config --global user.email "github-actions[bot]@github.com"
-          git config --global user.name "github-actions[bot]"
-          npm version ${{ github.event.inputs.semver }} --message "chore(release): bump version to %s"
-          git push --follow-tags
+          set -euo pipefail
+          VERSION=$(node -p "require('./package.json').version")
+          PREV_JSON=$(git show HEAD^:package.json 2>/dev/null || true)
+          if [ -z "$PREV_JSON" ]; then
+            echo "No previous package.json found; treating as release"
+            echo "release=true" >> $GITHUB_OUTPUT
+          else
+            PREV_VERSION=$(printf "%s" "$PREV_JSON" | node -e "let s=''; process.stdin.on('data',d=>s+=d); process.stdin.on('end',()=>console.log(JSON.parse(s).version));")
+            echo "current: $VERSION, previous: $PREV_VERSION"
+            if [ "$VERSION" != "$PREV_VERSION" ]; then
+              echo "release=true" >> $GITHUB_OUTPUT
+            else
+              echo "release=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Publish
-        run: npm publish
+      - name: Create annotated tag from package.json and push
+        if: ${{ steps.detect.outputs.release == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.email "github-actions[bot]@github.com"
+          git config user.name "github-actions[bot]"
+
+          TAG="v${VERSION}"
+          echo "Creating annotated tag $TAG from current HEAD"
+          git tag -a "$TAG" -m "chore(release): $TAG"
+          git push origin "$TAG"
+
+      - name: Publish to npm (OIDC)
+        if: ${{ steps.detect.outputs.release == 'true' }}
+        run: |
+          npm publish
 
       - name: Set version as env var
-        run: |
-          echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+        run: echo "VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
 
-      - uses: softprops/action-gh-release@aec2ec56f94eb8180ceec724245f64ef008b89f5
-        name: Release
+      - name: Create GitHub release
+        if: ${{ steps.detect.outputs.release == 'true' }}
+        uses: softprops/action-gh-release@aec2ec56f94eb8180ceec724245f64ef008b89f5
         with:
+          tag_name: v${{ env.VERSION }}
           name: Release ${{ env.VERSION }}
+
+      - name: No version bump detected — skipping publish
+        if: ${{ steps.detect.outputs.release != 'true' }}
+        run: |
+          echo "No package.json version bump detected in merged PR; skipping tagging and publish."
