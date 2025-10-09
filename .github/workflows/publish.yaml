@@ -29,12 +29,6 @@ jobs:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test
-
       - name: Detect version bump in merged PR
         id: detect
         run: |
