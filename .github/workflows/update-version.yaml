@@ -1,0 +1,80 @@
+name: Update Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      semver:
+        description: "The semantic version to bump"
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: "patch"
+      nodeVersion:
+        description: "The Node.js version to use"
+        required: true
+        type: choice
+        options:
+          - "18.x"
+          - "20.x"
+          - "22.x"
+        default: "18.x"
+
+jobs:
+  release:
+    permissions:
+      contents: write
+
+    name: Update and publish version ${{ github.event.inputs.semver }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610
+        with:
+          node-version: ${{ github.event.inputs.nodeVersion }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Create release branch, bump version and push
+        env:
+          SEMVER: ${{ github.event.inputs.semver }}
+        run: |
+          set -euo pipefail
+          git config --global user.email "github-actions[bot]@github.com"
+          git config --global user.name "github-actions[bot]"
+
+          # Create a unique release branch so the bump commit and tag are isolated
+          BRANCH="release-${SEMVER}-$(date +%s)"
+          git checkout -b "$BRANCH"
+
+          # Bump version (creates commit and tag)
+          npm version "$SEMVER" --message "chore(release): bump version to %s"
+
+          # Push the new branch (do not push tags here; tags are created but will be managed on merge/release)
+          git push --set-upstream origin "$BRANCH"
+
+          # Read the new version for PR title/body and persist values for next step
+          VERSION=$(node -p "require('./package.json').version")
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Create PR with gh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SEMVER: ${{ github.event.inputs.semver }}
+        run: |
+          set -euo pipefail
+          PR_TITLE="chore(release): bump version to ${VERSION}"
+          PR_BODY="Automated version bump to ${VERSION} (triggered by workflow_dispatch)."
+
+          # Write body to a temp file to preserve newlines
+          printf "%s\n\nSemantic bump: %s\n" "$PR_BODY" "$SEMVER" > /tmp/pr_body.md
+
+          echo "Creating PR: ${PR_TITLE} from ${BRANCH} into master"
+          gh pr create --title "$PR_TITLE" --body-file /tmp/pr_body.md --base master --head "$BRANCH" --repo "$GITHUB_REPOSITORY"
