@@ -26,6 +26,7 @@ jobs:
   release:
     permissions:
       contents: write
+      id-token: write
 
     # Use the semver as the job name
     name: "Release ${{ github.event.inputs.semver }}"
@@ -47,8 +48,6 @@ jobs:
 
       - name: Publish
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
       - name: Set version as env var
         run: |
