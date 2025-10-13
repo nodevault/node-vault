@@ -127,6 +127,15 @@ module.exports = (config = {}) => {
         return client.request(options);
     };
 
+    client.update = (path, data, requestOptions) => {
+        debug('update %o to %s', data, path);
+        const options = { ...config.requestOptions, ...requestOptions };
+        options.path = `/${path}`;
+        options.json = data;
+        options.method = 'PATCH';
+        return client.request(options);
+    };
+
     client.read = (path, requestOptions) => {
         debug(`read ${path}`);
         const options = { ...config.requestOptions, ...requestOptions };
