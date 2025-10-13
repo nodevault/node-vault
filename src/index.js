@@ -133,6 +133,7 @@ module.exports = (config = {}) => {
         options.path = `/${path}`;
         options.json = data;
         options.method = 'PATCH';
+        options.headers = { 'Content-Type': 'application/merge-patch+json' };
         return client.request(options);
     };
 
