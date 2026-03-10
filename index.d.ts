@@ -47,6 +47,7 @@ declare namespace NodeVault {
         read(path: string, requestOptions?: Option): Promise<any>;
         list(path: string, requestOptions?: Option): Promise<any>;
         delete(path: string, requestOptions?: Option): Promise<any>;
+        update(path: string, data: any, requestOptions?: Option): Promise<any>;
 
         generateFunction(name: string, conf: functionConf): void;
 
