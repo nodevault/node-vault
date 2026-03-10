@@ -7,9 +7,9 @@ process.env.DEBUG = 'node-vault'; // switch on debug mode
 const vault = require('./../src/index')({
     requestOptions: {
         agentOptions: {
-            cert: 'mycert',
-            key: 'mykey',
-            passphrase: 'password',
+            cert: '<path-to-cert>',
+            key: '<path-to-key>',
+            passphrase: '<your-passphrase>',
             securityOptions: 'SSL_OP_NO_SSLv3',
         },
     },
@@ -21,9 +21,9 @@ const perCallOptions = {
         'X-HELLO': 'world',
     },
     agentOptions: {
-        cert: 'mycert',
-        key: 'mykey',
-        passphrase: 'password',
+        cert: '<path-to-cert>',
+        key: '<path-to-key>',
+        passphrase: '<your-passphrase>',
         securityOptions: 'SSL_OP_NO_SSLv3',
     },
 };
