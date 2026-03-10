@@ -1,10 +1,10 @@
-// Type definitions for node-vault 0.9.8
+// Type definitions for node-vault 0.10.9
 // Project: https://github.com/nodevault/node-vault
 // Definitions by: Jianrong Yu <https://github.com/YuJianrong>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
-import * as request from "request";
+import * as request from "postman-request";
 
 declare namespace NodeVault {
     interface Option {
