@@ -120,13 +120,49 @@ const SocksProxyAgent = require('socks-proxy-agent');
 const agent = new SocksProxyAgent(`socks://127.0.0.1:${socks4Port}`, true);
 const options = {
   apiVersion: 'v1',
-  rpOptions: {
+  requestOptions: {
     agent,
   },
 };
 
 const vault = require('node-vault')(options);
 ```
+
+## Custom SSL/TLS Configuration
+
+If you encounter SSL errors after upgrading to Node 18+ (e.g., `EPROTO` errors related to
+`unsafe legacy renegotiation disabled`), you can pass SSL/TLS options via `requestOptions`
+or `rpDefaults` when initializing the client:
+
+```javascript
+const vault = require('node-vault')({
+  apiVersion: 'v1',
+  endpoint: 'https://vault.example.com:8200',
+  token: 'MY_TOKEN',
+  requestOptions: {
+    agentOptions: {
+      securityOptions: 'SSL_OP_LEGACY_SERVER_CONNECT',
+    },
+  },
+});
+```
+
+The `requestOptions` object is passed through to the underlying HTTP library
+([postman-request](https://www.npmjs.com/package/postman-request)) for every request. You can
+use it to configure any supported request option, including `agentOptions`, custom `headers`,
+or a custom `agent`.
+
+You can also pass request options per-call to any method:
+
+```javascript
+vault.read('secret/hello', {
+  agentOptions: {
+    securityOptions: 'SSL_OP_LEGACY_SERVER_CONNECT',
+  },
+});
+```
+
+See [example/pass_request_options.js](example/pass_request_options.js) for more examples.
 
 [![Backers](https://opencollective.com/node-vault/tiers/backers.svg?avatarHeight=80&width=600)](https://opencollective.com/node-vault/contribute)
 
