@@ -4,8 +4,8 @@ const originalDebug = require('debug')('node-vault');
 const originalTv4 = require('tv4');
 const originalCommands = require('./commands.js');
 const originalMustache = require('mustache');
-const util = require('util');
-const request = require('postman-request');
+const axios = require('axios');
+const https = require('https');
 
 class VaultError extends Error {}
 
@@ -42,7 +42,46 @@ module.exports = (config = {}) => {
     const rp = (() => {
         if (config['request-promise'])
             return config['request-promise'].defaults(rpDefaults);
-        return util.promisify(request.defaults(rpDefaults));
+
+        const httpsAgent = rpDefaults.strictSSL === false
+            ? new https.Agent({ rejectUnauthorized: false })
+            : undefined;
+
+        const instance = axios.create({
+            // Accept all HTTP status codes (equivalent to request's simple: false)
+            // so that vault response handling logic can process non-2xx responses.
+            validateStatus: () => true,
+            ...(httpsAgent ? { httpsAgent } : {}),
+            ...(rpDefaults.timeout ? { timeout: rpDefaults.timeout } : {}),
+        });
+
+        return function requestWrapper(options) {
+            const axiosOptions = {
+                method: options.method,
+                url: options.uri,
+                headers: { ...options.headers },
+            };
+
+            if (options.json && typeof options.json === 'object') {
+                axiosOptions.data = options.json;
+            }
+
+            return instance(axiosOptions).then((response) => {
+                let requestPath;
+                try {
+                    requestPath = new URL(options.uri).pathname;
+                } catch (_e) {
+                    requestPath = options.uri;
+                }
+                return {
+                    statusCode: response.status,
+                    body: response.data,
+                    request: {
+                        path: requestPath,
+                    },
+                };
+            });
+        };
     })();
     const client = {};
 

@@ -4,7 +4,7 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
-import * as request from "postman-request";
+import type { AxiosRequestConfig } from "axios";
 
 declare namespace NodeVault {
     interface Option {
@@ -141,7 +141,7 @@ declare namespace NodeVault {
         noCustomHTTPVerbs?: boolean;
         pathPrefix?: string;
         token?: string;
-        requestOptions?: request.CoreOptions;
+        requestOptions?: AxiosRequestConfig;
     }
 }
 
