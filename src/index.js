@@ -48,6 +48,8 @@ module.exports = (config = {}) => {
             : undefined;
 
         const instance = axios.create({
+            // Accept all HTTP status codes (equivalent to request's simple: false)
+            // so that vault response handling logic can process non-2xx responses.
             validateStatus: () => true,
             ...(httpsAgent ? { httpsAgent } : {}),
             ...(rpDefaults.timeout ? { timeout: rpDefaults.timeout } : {}),
@@ -64,13 +66,21 @@ module.exports = (config = {}) => {
                 axiosOptions.data = options.json;
             }
 
-            return instance(axiosOptions).then((response) => ({
-                statusCode: response.status,
-                body: response.data,
-                request: {
-                    path: new URL(options.uri).pathname,
-                },
-            }));
+            return instance(axiosOptions).then((response) => {
+                let requestPath;
+                try {
+                    requestPath = new URL(options.uri).pathname;
+                } catch (_e) {
+                    requestPath = options.uri;
+                }
+                return {
+                    statusCode: response.status,
+                    body: response.data,
+                    request: {
+                        path: requestPath,
+                    },
+                };
+            });
         };
     })();
     const client = {};
