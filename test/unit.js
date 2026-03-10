@@ -295,6 +295,142 @@ describe('node-vault', () => {
             });
         });
 
+        describe('config.requestOptions forwarding', () => {
+            let requestWithOpts = null;
+            let vaultWithOpts = null;
+
+            const agentOpts = {
+                securityOptions: 'SSL_OP_LEGACY_SERVER_CONNECT',
+            };
+
+            function getURIWithOpts(path) {
+                return [vaultWithOpts.endpoint, vaultWithOpts.apiVersion, path].join('/');
+            }
+
+            function assertRequestWithOpts(thisRequest, params, done) {
+                return () => {
+                    thisRequest.should.have.calledOnce();
+                    thisRequest.calledWithMatch(params).should.be.ok();
+                    return done();
+                };
+            }
+
+            beforeEach(() => {
+                requestWithOpts = sinon.stub();
+                const resp = sinon.stub();
+                resp.statusCode = 200;
+
+                requestWithOpts.returns({
+                    then(fn) {
+                        return fn(resp);
+                    },
+                    catch(fn) {
+                        return fn();
+                    },
+                });
+
+                vaultWithOpts = index({
+                    endpoint: 'http://localhost:8200',
+                    token: '123',
+                    'request-promise': {
+                        defaults: () => requestWithOpts,
+                    },
+                    requestOptions: {
+                        agentOptions: agentOpts,
+                    },
+                });
+            });
+
+            it('should forward agentOptions from config.requestOptions in help()', (done) => {
+                const path = 'sys/policy';
+                const params = {
+                    method: 'GET',
+                    uri: `${getURIWithOpts(path)}?help=1`,
+                    agentOptions: agentOpts,
+                };
+                vaultWithOpts.help(path)
+                    .then(assertRequestWithOpts(requestWithOpts, params, done))
+                    .catch(done);
+            });
+
+            it('should forward agentOptions from config.requestOptions in read()', (done) => {
+                const path = 'secret/hello';
+                const params = {
+                    method: 'GET',
+                    uri: getURIWithOpts(path),
+                    agentOptions: agentOpts,
+                };
+                vaultWithOpts.read(path)
+                    .then(assertRequestWithOpts(requestWithOpts, params, done))
+                    .catch(done);
+            });
+
+            it('should forward agentOptions from config.requestOptions in write()', (done) => {
+                const path = 'secret/hello';
+                const params = {
+                    method: 'POST',
+                    uri: getURIWithOpts(path),
+                    agentOptions: agentOpts,
+                };
+                vaultWithOpts.write(path, { value: 'world' })
+                    .then(assertRequestWithOpts(requestWithOpts, params, done))
+                    .catch(done);
+            });
+
+            it('should forward agentOptions from config.requestOptions in delete()', (done) => {
+                const path = 'secret/hello';
+                const params = {
+                    method: 'DELETE',
+                    uri: getURIWithOpts(path),
+                    agentOptions: agentOpts,
+                };
+                vaultWithOpts.delete(path)
+                    .then(assertRequestWithOpts(requestWithOpts, params, done))
+                    .catch(done);
+            });
+
+            it('should forward agentOptions from config.requestOptions in list()', (done) => {
+                const path = 'secret/hello';
+                const params = {
+                    method: 'LIST',
+                    uri: getURIWithOpts(path),
+                    agentOptions: agentOpts,
+                };
+                vaultWithOpts.list(path)
+                    .then(assertRequestWithOpts(requestWithOpts, params, done))
+                    .catch(done);
+            });
+
+            it('should forward agentOptions from config.requestOptions in generated functions', (done) => {
+                const name = 'myTestFunction';
+                vaultWithOpts.generateFunction(name, {
+                    method: 'GET',
+                    path: '/myroute',
+                });
+                const params = {
+                    agentOptions: agentOpts,
+                };
+                vaultWithOpts[name]()
+                    .then(assertRequestWithOpts(requestWithOpts, params, done))
+                    .catch(done);
+            });
+
+            it('should allow per-call requestOptions to override config.requestOptions', (done) => {
+                const path = 'secret/hello';
+                const overrideOpts = {
+                    securityOptions: 'SSL_OP_NO_SSLv3',
+                };
+                const params = {
+                    method: 'GET',
+                    uri: getURIWithOpts(path),
+                    agentOptions: overrideOpts,
+                };
+                vaultWithOpts.read(path, { agentOptions: overrideOpts })
+                    .then(assertRequestWithOpts(requestWithOpts, params, done))
+                    .catch(done);
+            });
+        });
+
         describe('unwrap(options)', () => {
             it('should return original response', (done) => {
                 const path = 'sys/wrapping/unwrap';
