@@ -217,6 +217,36 @@ describe('node-vault', () => {
             });
         });
 
+        describe('update(path, data, options)', () => {
+            it('should update data to path', (done) => {
+                const path = 'secret/hello';
+                const data = {
+                    value: 'everyone',
+                };
+                const params = {
+                    method: 'PATCH',
+                    uri: getURI(path),
+                };
+                vault.update(path, data)
+                    .then(assertRequest(request, params, done))
+                    .catch(done);
+            });
+
+            it('should handle undefined options', (done) => {
+                const path = 'secret/hello';
+                const data = {
+                    value: 'everyone',
+                };
+                const params = {
+                    method: 'PATCH',
+                    uri: getURI(path),
+                };
+                vault.update(path, data)
+                    .then(assertRequest(request, params, done))
+                    .catch(done);
+            });
+        });
+
         describe('read(path, options)', () => {
             it('should read data from path', (done) => {
                 const path = 'secret/hello';

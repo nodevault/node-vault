@@ -26,7 +26,7 @@
   "dependencies": {
     "debug": "^4.3.4",
     "mustache": "^4.2.0",
-    "postman-request": "2.88.1-postman.42",
+    "postman-request": "2.88.1-postman.48",
     "tv4": "^1.3.0"
   },
   "devDependencies": {
@@ -79,6 +79,7 @@
     "Sean Gallavan (https://github.com/seangallavan)",
     "seyfert (https://github.com/seyfert)",
     "Simon Boulet (https://github.com/siboulet)",
+    "skeletonz28 (https://github.com/skeletonz28)",
     "Tim Robinson (https://github.com/timjrobinson)",
     "Tom Vogel (https://github.com/tavogel)",
     "Trevor Robinson (https://github.com/trevorr)",
