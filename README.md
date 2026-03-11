@@ -1,9 +1,9 @@
 # node-vault
 
-[![Build Status](https://img.shields.io/github/checks-status/nodevault/node-vault/master.svg?style=flat-square)](https://github.com/nodevault/node-vault/actions?query=branch%3Amaster)
-[![Coverage Status](https://img.shields.io/codecov/c/github/nodevault/node-vault/master.svg?style=flat-square)](https://app.codecov.io/gh/nodevault/node-vault/tree/master)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/nodevault/node-vault/lint-and-test.yaml?branch=master&style=flat-square)](https://github.com/nodevault/node-vault/actions/workflows/lint-and-test.yaml)
 [![Download Status](https://img.shields.io/npm/dm/node-vault.svg?style=flat-square)](https://www.npmjs.com/package/node-vault)
 [![NPM Version](https://img.shields.io/npm/v/node-vault?style=flat-square)](https://www.npmjs.com/package/node-vault)
+[![License](https://img.shields.io/npm/l/node-vault?style=flat-square)](https://github.com/nodevault/node-vault/blob/master/LICENSE)
 [![Dependency Status](https://img.shields.io/librariesio/release/npm/node-vault.svg?style=flat-square)](https://libraries.io/npm/node-vault/)
 [![Open Collective backers and sponsors](https://img.shields.io/opencollective/all/node-vault?style=flat-square)](https://opencollective.com/node-vault/contribute)
 
@@ -237,7 +237,7 @@ const vault = require('node-vault')({
 [examples]: https://github.com/nodevault/node-vault/tree/master/example
 [docker-compose.yml]: https://github.com/nodevault/node-vault/tree/master/docker-compose.yml
 [Vault]: https://vaultproject.io/
-[docker-compose]: https://www.docker.com/docker-compose
-[docker]: http://docs.docker.com/
+[docker-compose]: https://docs.docker.com/compose/
+[docker]: https://docs.docker.com/
 [docco]: http://jashkenas.github.io/docco
 [feature list]: https://github.com/nodevault/node-vault/tree/master/features.md
