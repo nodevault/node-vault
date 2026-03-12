@@ -56,7 +56,6 @@ declare namespace NodeVault {
         init(options?: Option): Promise<any>;
         unseal(options?: Option): Promise<any>;
         seal(options?: Option): Promise<any>;
-        generateRootStatus(options?: Option): Promise<any>;
         generateRootInit(options?: Option): Promise<any>;
         generateRootCancel(options?: Option): Promise<any>;
         generateRootUpdate(options?: Option): Promise<any>;
@@ -78,13 +77,13 @@ declare namespace NodeVault {
         revoke(options?: Option): Promise<any>;
         revokePrefix(options?: Option): Promise<any>;
         rotate(options?: Option): Promise<any>;
+        unwrap(options?: Option): Promise<any>;
         gcpLogin(options?: Option): Promise<any>;
         ldapLogin(options?: Option): Promise<any>;
         githubLogin(options?: Option): Promise<any>;
         userpassLogin(options?: Option): Promise<any>;
         kubernetesLogin(options?: Option): Promise<any>;
         awsIamLogin(options?: Option): Promise<any>;
-        ldapLogin(options?: Option): Promise<any>;
         oktaLogin(options?: Option): Promise<any>;
         radiusLogin(options?: Option): Promise<any>;
         certLogin(options?: Option): Promise<any>;
@@ -106,6 +105,9 @@ declare namespace NodeVault {
         addTokenRole(options?: Option): Promise<any>;
         getTokenRole(options?: Option): Promise<any>;
         removeTokenRole(options?: Option): Promise<any>;
+        addKubernetesRole(options?: Option): Promise<any>;
+        getKubernetesRole(options?: Option): Promise<any>;
+        deleteKubernetesRole(options?: Option): Promise<any>;
         approleRoles(options?: Option): Promise<any>;
         addApproleRole(options?: Option): Promise<any>;
         getApproleRole(options?: Option): Promise<any>;
