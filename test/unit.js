@@ -1001,7 +1001,7 @@ describe('node-vault', () => {
         });
 
         it('should forward httpsAgent from requestOptions to axios', () => {
-            const customAgent = new https.Agent({ rejectUnauthorized: false });
+            const customAgent = new https.Agent({ keepAlive: true });
             const vault = index({
                 endpoint: 'http://localhost:8200',
                 token: '123',
