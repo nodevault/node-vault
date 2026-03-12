@@ -738,6 +738,96 @@ describe('node-vault', () => {
             });
         });
 
+        describe('transit commands', () => {
+            it('should have rewrapData function', () => {
+                vault.rewrapData.should.be.a('function');
+            });
+
+            it('should have transitCreateKey function', () => {
+                vault.transitCreateKey.should.be.a('function');
+            });
+
+            it('should have transitReadKey function', () => {
+                vault.transitReadKey.should.be.a('function');
+            });
+
+            it('should have transitListKeys function', () => {
+                vault.transitListKeys.should.be.a('function');
+            });
+
+            it('should have transitDeleteKey function', () => {
+                vault.transitDeleteKey.should.be.a('function');
+            });
+
+            it('should call rewrapData with correct path and method', (done) => {
+                const params = {
+                    method: 'POST',
+                    path: '/transit/rewrap/mykey',
+                };
+                vault.rewrapData({ name: 'mykey', ciphertext: 'vault:v1:abc' })
+                    .then(assertRequest(request, params, done))
+                    .catch(done);
+            });
+
+            it('should call transitListKeys with correct method', (done) => {
+                const params = {
+                    method: 'LIST',
+                    path: '/transit/keys',
+                };
+                vault.transitListKeys()
+                    .then(assertRequest(request, params, done))
+                    .catch(done);
+            });
+
+            it('should call transitReadKey with correct path', (done) => {
+                const params = {
+                    method: 'GET',
+                    path: '/transit/keys/mykey',
+                };
+                vault.transitReadKey({ name: 'mykey' })
+                    .then(assertRequest(request, params, done))
+                    .catch(done);
+            });
+
+            it('should call transitCreateKey with correct path and method', (done) => {
+                const params = {
+                    method: 'POST',
+                    path: '/transit/keys/mykey',
+                };
+                vault.transitCreateKey({ name: 'mykey', type: 'aes256-gcm96' })
+                    .then(assertRequest(request, params, done))
+                    .catch(done);
+            });
+
+            it('should call transitDeleteKey with correct path and method', (done) => {
+                const params = {
+                    method: 'DELETE',
+                    path: '/transit/keys/mykey',
+                };
+                vault.transitDeleteKey({ name: 'mykey' })
+                    .then(assertRequest(request, params, done))
+                    .catch(done);
+            });
+        });
+
+        describe('commands export', () => {
+            it('should expose commands object on client', () => {
+                vault.commands.should.be.an('object');
+            });
+
+            it('should include encryptData in commands', () => {
+                vault.commands.encryptData.should.be.an('object');
+                vault.commands.encryptData.method.should.equal('POST');
+                vault.commands.encryptData.path.should.equal('/transit/encrypt/{{name}}');
+            });
+
+            it('should include rewrapData in commands', () => {
+                vault.commands.rewrapData.should.be.an('object');
+                vault.commands.rewrapData.method.should.equal('POST');
+                vault.commands.rewrapData.path.should.equal('/transit/rewrap/{{name}}');
+            });
+        });
+
         describe('request(options)', () => {
             it('should reject if options are undefined', (done) => {
                 vault.request()

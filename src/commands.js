@@ -451,6 +451,26 @@ module.exports = {
         method: 'POST',
         path: '/transit/decrypt/{{name}}',
     },
+    rewrapData: {
+        method: 'POST',
+        path: '/transit/rewrap/{{name}}',
+    },
+    transitCreateKey: {
+        method: 'POST',
+        path: '/transit/keys/{{name}}',
+    },
+    transitReadKey: {
+        method: 'GET',
+        path: '/transit/keys/{{name}}',
+    },
+    transitListKeys: {
+        method: 'LIST',
+        path: '/transit/keys',
+    },
+    transitDeleteKey: {
+        method: 'DELETE',
+        path: '/transit/keys/{{name}}',
+    },
     generateDatabaseCredentials: {
         method: 'GET',
         path: '/{{databasePath}}/creds/{{name}}',
