@@ -50,6 +50,7 @@ declare namespace NodeVault {
         update(path: string, data: any, requestOptions?: Option): Promise<any>;
 
         generateFunction(name: string, conf: functionConf): void;
+        commands: { [name: string]: functionConf };
 
         status(options?: Option): Promise<any>;
         initialized(options?: Option): Promise<any>;
@@ -124,13 +125,18 @@ declare namespace NodeVault {
         stepDown(options?: Option): Promise<any>;
         encryptData(options?: Option): Promise<any>;
         decryptData(options?: Option): Promise<any>;
+        rewrapData(options?: Option): Promise<any>;
+        transitCreateKey(options?: Option): Promise<any>;
+        transitReadKey(options?: Option): Promise<any>;
+        transitListKeys(options?: Option): Promise<any>;
+        transitDeleteKey(options?: Option): Promise<any>;
         generateDatabaseCredentials(options?: Option): Promise<any>;
     }
 
     interface VaultOptions {
         debug?(...args: any[]): any;
         tv4?(...args: any[]): any;
-        commands?: Array<{ method: string, path: string, scheme: any }>;
+        commands?: { [name: string]: functionConf };
         mustache?: any;
         "request-promise"?: any;
         Promise?: PromiseConstructor;

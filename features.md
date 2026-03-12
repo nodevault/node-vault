@@ -44,17 +44,17 @@
 
 ## vault.addKubernetesRole
 
-`POST /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
+`POST /auth/{{mount_point}}{{^mount_point}}{{kubernetesPath}}{{/mount_point}}/role/{{ role_name }}`
 
 
 ## vault.getKubernetesRole
 
-`GET /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
+`GET /auth/{{mount_point}}{{^mount_point}}{{kubernetesPath}}{{/mount_point}}/role/{{ role_name }}`
 
 
 ## vault.deleteKubernetesRole
 
-`DELETE /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/role/{{ role_name }}`
+`DELETE /auth/{{mount_point}}{{^mount_point}}{{kubernetesPath}}{{/mount_point}}/role/{{ role_name }}`
 
 
 ## vault.addApproleRole
@@ -120,6 +120,31 @@
 ## vault.decryptData
 
 `POST /transit/decrypt/{{name}}`
+
+
+## vault.rewrapData
+
+`POST /transit/rewrap/{{name}}`
+
+
+## vault.transitCreateKey
+
+`POST /transit/keys/{{name}}`
+
+
+## vault.transitReadKey
+
+`GET /transit/keys/{{name}}`
+
+
+## vault.transitListKeys
+
+`LIST /transit/keys`
+
+
+## vault.transitDeleteKey
+
+`DELETE /transit/keys/{{name}}`
 
 
 ## vault.generateDatabaseCredentials
@@ -224,7 +249,7 @@
 
 ## vault.kubernetesLogin
 
-`POST /auth/{{mount_point}}{{^mount_point}}kubernetes{{/mount_point}}/login`
+`POST /auth/{{mount_point}}{{^mount_point}}{{kubernetesPath}}{{/mount_point}}/login`
 
 
 ## vault.awsIamLogin
@@ -255,6 +280,11 @@
 ## vault.certLogin
 
 `POST /auth/cert/login`
+
+
+## vault.jwtLogin
+
+`POST /auth/{{mount_point}}{{^mount_point}}jwt{{/mount_point}}/login`
 
 
 ## vault.tokenAccessors

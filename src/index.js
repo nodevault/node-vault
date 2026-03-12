@@ -286,6 +286,7 @@ module.exports = (config = {}) => {
     }
 
     client.generateFunction = generateFunction;
+    client.commands = commands;
 
     // protecting global object properties from being added
     // enforcing the immutable rule: https://github.com/airbnb/javascript#iterators-and-generators
