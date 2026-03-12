@@ -861,6 +861,7 @@ describe('node-vault', () => {
         const https = require('https');
         const axios = require('axios');
         let axiosInstanceStub;
+        let axiosCreateStub;
         let agentSpy;
 
         beforeEach(() => {
@@ -869,7 +870,7 @@ describe('node-vault', () => {
                 status: 200,
                 data: {},
             });
-            sinon.stub(axios, 'create').returns(axiosInstanceStub);
+            axiosCreateStub = sinon.stub(axios, 'create').returns(axiosInstanceStub);
             agentSpy = sinon.spy(https, 'Agent');
         });
 
@@ -877,23 +878,22 @@ describe('node-vault', () => {
             sinon.restore();
         });
 
-        it('should create httpsAgent with ca option from config.requestOptions', () => {
-            const vault = index({
+        it('should create default httpsAgent with ca option from config.requestOptions', () => {
+            index({
                 endpoint: 'http://localhost:8200',
                 token: '123',
                 requestOptions: {
                     ca: 'my-custom-ca-cert',
                 },
             });
-            return vault.read('secret/hello').then(() => {
-                agentSpy.should.have.been.called();
-                const agentArgs = agentSpy.lastCall.args[0];
-                expect(agentArgs).to.have.property('ca', 'my-custom-ca-cert');
-            });
+            agentSpy.should.have.been.called();
+            const agentArgs = agentSpy.lastCall.args[0];
+            expect(agentArgs).to.have.property('ca', 'my-custom-ca-cert');
+            expect(axiosCreateStub.lastCall.args[0]).to.have.property('httpsAgent');
         });
 
-        it('should create httpsAgent with cert and key from config.requestOptions', () => {
-            const vault = index({
+        it('should create default httpsAgent with cert and key from config.requestOptions', () => {
+            index({
                 endpoint: 'http://localhost:8200',
                 token: '123',
                 requestOptions: {
@@ -902,17 +902,15 @@ describe('node-vault', () => {
                     passphrase: 'secret',
                 },
             });
-            return vault.read('secret/hello').then(() => {
-                agentSpy.should.have.been.called();
-                const agentArgs = agentSpy.lastCall.args[0];
-                expect(agentArgs).to.have.property('cert', 'client-cert');
-                expect(agentArgs).to.have.property('key', 'client-key');
-                expect(agentArgs).to.have.property('passphrase', 'secret');
-            });
+            agentSpy.should.have.been.called();
+            const agentArgs = agentSpy.lastCall.args[0];
+            expect(agentArgs).to.have.property('cert', 'client-cert');
+            expect(agentArgs).to.have.property('key', 'client-key');
+            expect(agentArgs).to.have.property('passphrase', 'secret');
         });
 
-        it('should create httpsAgent from agentOptions in config.requestOptions', () => {
-            const vault = index({
+        it('should create default httpsAgent from agentOptions in config.requestOptions', () => {
+            index({
                 endpoint: 'http://localhost:8200',
                 token: '123',
                 requestOptions: {
@@ -922,12 +920,10 @@ describe('node-vault', () => {
                     },
                 },
             });
-            return vault.read('secret/hello').then(() => {
-                agentSpy.should.have.been.called();
-                const agentArgs = agentSpy.lastCall.args[0];
-                expect(agentArgs).to.have.property('securityOptions', 'SSL_OP_NO_SSLv3');
-                expect(agentArgs).to.have.property('cert', 'agent-cert');
-            });
+            agentSpy.should.have.been.called();
+            const agentArgs = agentSpy.lastCall.args[0];
+            expect(agentArgs).to.have.property('securityOptions', 'SSL_OP_NO_SSLv3');
+            expect(agentArgs).to.have.property('cert', 'agent-cert');
         });
 
         it('should allow per-call TLS options to override config.requestOptions', () => {
@@ -939,7 +935,11 @@ describe('node-vault', () => {
                 },
             });
             return vault.read('secret/hello', { ca: 'override-ca' }).then(() => {
-                agentSpy.should.have.been.called();
+                // Per-call override creates a new per-request agent
+                const axiosCallArg = axiosInstanceStub.firstCall.args[0];
+                expect(axiosCallArg).to.have.property('httpsAgent');
+                expect(axiosCallArg.httpsAgent).to.be.an.instanceOf(https.Agent);
+                // The last agent created should have the override value
                 const agentArgs = agentSpy.lastCall.args[0];
                 expect(agentArgs).to.have.property('ca', 'override-ca');
             });
@@ -956,7 +956,7 @@ describe('node-vault', () => {
             });
         });
 
-        it('should pass httpsAgent to axios per-request options', () => {
+        it('should reuse default httpsAgent when config TLS options are unchanged', () => {
             const vault = index({
                 endpoint: 'http://localhost:8200',
                 token: '123',
@@ -964,26 +964,26 @@ describe('node-vault', () => {
                     ca: 'my-ca',
                 },
             });
+            const agentCountAfterInit = agentSpy.callCount;
             return vault.read('secret/hello').then(() => {
+                // No new agent should be created for request with same config options
                 const axiosCallArg = axiosInstanceStub.firstCall.args[0];
-                expect(axiosCallArg).to.have.property('httpsAgent');
-                expect(axiosCallArg.httpsAgent).to.be.an.instanceOf(https.Agent);
+                expect(axiosCallArg).to.not.have.property('httpsAgent');
+                expect(agentSpy.callCount).to.equal(agentCountAfterInit);
             });
         });
 
         it('should handle strictSSL: false in requestOptions', () => {
-            const vault = index({
+            index({
                 endpoint: 'http://localhost:8200',
                 token: '123',
                 requestOptions: {
                     strictSSL: false,
                 },
             });
-            return vault.read('secret/hello').then(() => {
-                agentSpy.should.have.been.called();
-                const agentArgs = agentSpy.lastCall.args[0];
-                expect(agentArgs).to.have.property('rejectUnauthorized', false);
-            });
+            agentSpy.should.have.been.called();
+            const agentArgs = agentSpy.lastCall.args[0];
+            expect(agentArgs).to.have.property('rejectUnauthorized', false);
         });
     });
 });

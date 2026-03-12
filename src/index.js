@@ -48,8 +48,33 @@ module.exports = (config = {}) => {
             baseAgentOptions.rejectUnauthorized = false;
         }
 
-        const defaultHttpsAgent = Object.keys(baseAgentOptions).length > 0
-            ? new https.Agent(baseAgentOptions)
+        // Properties that map to https.Agent options for backward compatibility
+        // with the former postman-request / request library API.
+        const tlsOptionKeys = ['ca', 'cert', 'key', 'passphrase', 'pfx'];
+
+        // Build the default agent from base options + config.requestOptions TLS
+        // settings so the common case (no per-call overrides) reuses one agent.
+        const configReqOpts = config.requestOptions || {};
+        const defaultAgentOpts = { ...baseAgentOptions };
+        let hasDefaultTls = Object.keys(baseAgentOptions).length > 0;
+
+        tlsOptionKeys.forEach((prop) => {
+            if (configReqOpts[prop] !== undefined) {
+                defaultAgentOpts[prop] = configReqOpts[prop];
+                hasDefaultTls = true;
+            }
+        });
+        if (configReqOpts.agentOptions !== undefined) {
+            Object.assign(defaultAgentOpts, configReqOpts.agentOptions);
+            hasDefaultTls = true;
+        }
+        if (configReqOpts.strictSSL !== undefined) {
+            defaultAgentOpts.rejectUnauthorized = configReqOpts.strictSSL !== false;
+            hasDefaultTls = true;
+        }
+
+        const defaultHttpsAgent = hasDefaultTls
+            ? new https.Agent(defaultAgentOpts)
             : undefined;
 
         const instance = axios.create({
@@ -60,9 +85,17 @@ module.exports = (config = {}) => {
             ...(rpDefaults.timeout ? { timeout: rpDefaults.timeout } : {}),
         });
 
-        // Properties that map to https.Agent options for backward compatibility
-        // with the former postman-request / request library API.
-        const tlsOptionKeys = ['ca', 'cert', 'key', 'passphrase', 'pfx'];
+        // Snapshot config-level TLS references so we can detect per-call overrides.
+        const configTlsSnapshot = {};
+        tlsOptionKeys.forEach((prop) => {
+            if (configReqOpts[prop] !== undefined) configTlsSnapshot[prop] = configReqOpts[prop];
+        });
+        if (configReqOpts.agentOptions !== undefined) {
+            configTlsSnapshot.agentOptions = configReqOpts.agentOptions;
+        }
+        if (configReqOpts.strictSSL !== undefined) {
+            configTlsSnapshot.strictSSL = configReqOpts.strictSSL;
+        }
 
         return function requestWrapper(options) {
             const axiosOptions = {
@@ -75,30 +108,31 @@ module.exports = (config = {}) => {
                 axiosOptions.data = options.json;
             }
 
-            // Map request-style TLS options to a per-request httpsAgent
+            // Only create a per-request httpsAgent when per-call TLS options
+            // differ from the config defaults already baked into the instance.
+            let hasOverride = false;
             const perRequestAgentOpts = {};
-            let hasPerRequestTls = false;
 
             tlsOptionKeys.forEach((prop) => {
                 if (options[prop] !== undefined) {
                     perRequestAgentOpts[prop] = options[prop];
-                    hasPerRequestTls = true;
+                    if (options[prop] !== configTlsSnapshot[prop]) hasOverride = true;
                 }
             });
 
             if (options.agentOptions !== undefined) {
                 Object.assign(perRequestAgentOpts, options.agentOptions);
-                hasPerRequestTls = true;
+                if (options.agentOptions !== configTlsSnapshot.agentOptions) hasOverride = true;
             }
 
             if (options.strictSSL !== undefined) {
                 perRequestAgentOpts.rejectUnauthorized = options.strictSSL !== false;
-                hasPerRequestTls = true;
+                if (options.strictSSL !== configTlsSnapshot.strictSSL) hasOverride = true;
             }
 
-            if (hasPerRequestTls) {
+            if (hasOverride) {
                 axiosOptions.httpsAgent = new https.Agent({
-                    ...baseAgentOptions,
+                    ...defaultAgentOpts,
                     ...perRequestAgentOpts,
                 });
             }
