@@ -43,17 +43,26 @@ module.exports = (config = {}) => {
         if (config['request-promise'])
             return config['request-promise'].defaults(rpDefaults);
 
-        const httpsAgent = rpDefaults.strictSSL === false
-            ? new https.Agent({ rejectUnauthorized: false })
+        const baseAgentOptions = {};
+        if (rpDefaults.strictSSL === false) {
+            baseAgentOptions.rejectUnauthorized = false;
+        }
+
+        const defaultHttpsAgent = Object.keys(baseAgentOptions).length > 0
+            ? new https.Agent(baseAgentOptions)
             : undefined;
 
         const instance = axios.create({
             // Accept all HTTP status codes (equivalent to request's simple: false)
             // so that vault response handling logic can process non-2xx responses.
             validateStatus: () => true,
-            ...(httpsAgent ? { httpsAgent } : {}),
+            ...(defaultHttpsAgent ? { httpsAgent: defaultHttpsAgent } : {}),
             ...(rpDefaults.timeout ? { timeout: rpDefaults.timeout } : {}),
         });
+
+        // Properties that map to https.Agent options for backward compatibility
+        // with the former postman-request / request library API.
+        const tlsOptionKeys = ['ca', 'cert', 'key', 'passphrase', 'pfx'];
 
         return function requestWrapper(options) {
             const axiosOptions = {
@@ -64,6 +73,34 @@ module.exports = (config = {}) => {
 
             if (options.json && typeof options.json === 'object') {
                 axiosOptions.data = options.json;
+            }
+
+            // Map request-style TLS options to a per-request httpsAgent
+            const perRequestAgentOpts = {};
+            let hasPerRequestTls = false;
+
+            tlsOptionKeys.forEach((prop) => {
+                if (options[prop] !== undefined) {
+                    perRequestAgentOpts[prop] = options[prop];
+                    hasPerRequestTls = true;
+                }
+            });
+
+            if (options.agentOptions !== undefined) {
+                Object.assign(perRequestAgentOpts, options.agentOptions);
+                hasPerRequestTls = true;
+            }
+
+            if (options.strictSSL !== undefined) {
+                perRequestAgentOpts.rejectUnauthorized = options.strictSSL !== false;
+                hasPerRequestTls = true;
+            }
+
+            if (hasPerRequestTls) {
+                axiosOptions.httpsAgent = new https.Agent({
+                    ...baseAgentOptions,
+                    ...perRequestAgentOpts,
+                });
             }
 
             return instance(axiosOptions).then((response) => {
