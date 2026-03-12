@@ -108,6 +108,14 @@ module.exports = (config = {}) => {
                 axiosOptions.data = options.json;
             }
 
+            // Forward axios-native options when provided directly.
+            if (options.timeout !== undefined) {
+                axiosOptions.timeout = options.timeout;
+            }
+            if (options.httpAgent !== undefined) {
+                axiosOptions.httpAgent = options.httpAgent;
+            }
+
             // Only create a per-request httpsAgent when per-call TLS options
             // differ from the config defaults already baked into the instance.
             let hasOverride = false;
@@ -135,6 +143,9 @@ module.exports = (config = {}) => {
                     ...defaultAgentOpts,
                     ...perRequestAgentOpts,
                 });
+            } else if (options.httpsAgent !== undefined) {
+                // Allow passing a pre-built httpsAgent directly (e.g. for proxies).
+                axiosOptions.httpsAgent = options.httpsAgent;
             }
 
             return instance(axiosOptions).then((response) => {

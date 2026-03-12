@@ -20,6 +20,7 @@ declare namespace NodeVault {
         pfx?: string | Buffer | Array<string | Buffer>;
         strictSSL?: boolean;
         agentOptions?: { [p: string]: any };
+        timeout?: number;
     }
 
     interface RequestOption extends Option {

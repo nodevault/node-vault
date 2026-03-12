@@ -985,5 +985,50 @@ describe('node-vault', () => {
             const agentArgs = agentSpy.lastCall.args[0];
             expect(agentArgs).to.have.property('rejectUnauthorized', false);
         });
+
+        it('should forward timeout from requestOptions to axios', () => {
+            const vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    timeout: 5000,
+                },
+            });
+            return vault.read('secret/hello').then(() => {
+                const axiosCallArg = axiosInstanceStub.firstCall.args[0];
+                expect(axiosCallArg).to.have.property('timeout', 5000);
+            });
+        });
+
+        it('should forward httpsAgent from requestOptions to axios', () => {
+            const customAgent = new https.Agent({ rejectUnauthorized: false });
+            const vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    httpsAgent: customAgent,
+                },
+            });
+            return vault.read('secret/hello').then(() => {
+                const axiosCallArg = axiosInstanceStub.firstCall.args[0];
+                expect(axiosCallArg).to.have.property('httpsAgent', customAgent);
+            });
+        });
+
+        it('should forward httpAgent from requestOptions to axios', () => {
+            const http = require('http');
+            const customAgent = new http.Agent();
+            const vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    httpAgent: customAgent,
+                },
+            });
+            return vault.read('secret/hello').then(() => {
+                const axiosCallArg = axiosInstanceStub.firstCall.args[0];
+                expect(axiosCallArg).to.have.property('httpAgent', customAgent);
+            });
+        });
     });
 });
