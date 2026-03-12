@@ -11,6 +11,18 @@ declare namespace NodeVault {
         [p: string]: any;
     }
 
+    /** Backward-compatible TLS options from the former request/postman-request API. */
+    interface TlsOptions {
+        ca?: string | Buffer | Array<string | Buffer>;
+        cert?: string | Buffer | Array<string | Buffer>;
+        key?: string | Buffer | Array<string | Buffer>;
+        passphrase?: string;
+        pfx?: string | Buffer | Array<string | Buffer>;
+        strictSSL?: boolean;
+        agentOptions?: { [p: string]: any };
+        timeout?: number;
+    }
+
     interface RequestOption extends Option {
         path: string;
         method: string;
@@ -149,7 +161,7 @@ declare namespace NodeVault {
         noCustomHTTPVerbs?: boolean;
         pathPrefix?: string;
         token?: string;
-        requestOptions?: AxiosRequestConfig;
+        requestOptions?: AxiosRequestConfig & TlsOptions;
     }
 }
 

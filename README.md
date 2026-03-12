@@ -251,10 +251,10 @@ const vault = require('node-vault')({
 });
 ```
 
-The `requestOptions` object is passed through to the underlying HTTP library
-([postman-request](https://www.npmjs.com/package/postman-request)) for every request. You can
-use it to configure any supported request option, including `agentOptions`, custom `headers`,
-or a custom `agent`.
+The `requestOptions` object supports TLS/SSL options (`ca`, `cert`, `key`, `passphrase`,
+`agentOptions`, `strictSSL`) as well as `timeout`, `httpsAgent`, and `httpAgent`. TLS options
+are mapped to an `https.Agent` and applied to every request. You can also pass native
+[axios](https://axios-http.com/) request options such as custom `headers`.
 
 You can also pass request options per-call to any method:
 

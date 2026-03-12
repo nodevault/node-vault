@@ -856,4 +856,179 @@ describe('node-vault', () => {
             });
         });
     });
+
+    describe('axios TLS options forwarding', () => {
+        const https = require('https');
+        const axios = require('axios');
+        let axiosInstanceStub;
+        let axiosCreateStub;
+        let agentSpy;
+
+        beforeEach(() => {
+            // Stub axios.create to return a controllable instance stub
+            axiosInstanceStub = sinon.stub().resolves({
+                status: 200,
+                data: {},
+            });
+            axiosCreateStub = sinon.stub(axios, 'create').returns(axiosInstanceStub);
+            agentSpy = sinon.spy(https, 'Agent');
+        });
+
+        afterEach(() => {
+            sinon.restore();
+        });
+
+        it('should create default httpsAgent with ca option from config.requestOptions', () => {
+            index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    ca: 'my-custom-ca-cert',
+                },
+            });
+            agentSpy.should.have.been.called();
+            const agentArgs = agentSpy.lastCall.args[0];
+            expect(agentArgs).to.have.property('ca', 'my-custom-ca-cert');
+            expect(axiosCreateStub.lastCall.args[0]).to.have.property('httpsAgent');
+        });
+
+        it('should create default httpsAgent with cert and key from config.requestOptions', () => {
+            index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    cert: 'client-cert',
+                    key: 'client-key',
+                    passphrase: 'secret',
+                },
+            });
+            agentSpy.should.have.been.called();
+            const agentArgs = agentSpy.lastCall.args[0];
+            expect(agentArgs).to.have.property('cert', 'client-cert');
+            expect(agentArgs).to.have.property('key', 'client-key');
+            expect(agentArgs).to.have.property('passphrase', 'secret');
+        });
+
+        it('should create default httpsAgent from agentOptions in config.requestOptions', () => {
+            index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    agentOptions: {
+                        securityOptions: 'SSL_OP_NO_SSLv3',
+                        cert: 'agent-cert',
+                    },
+                },
+            });
+            agentSpy.should.have.been.called();
+            const agentArgs = agentSpy.lastCall.args[0];
+            expect(agentArgs).to.have.property('securityOptions', 'SSL_OP_NO_SSLv3');
+            expect(agentArgs).to.have.property('cert', 'agent-cert');
+        });
+
+        it('should allow per-call TLS options to override config.requestOptions', () => {
+            const vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    ca: 'default-ca',
+                },
+            });
+            return vault.read('secret/hello', { ca: 'override-ca' }).then(() => {
+                // Per-call override creates a new per-request agent
+                const axiosCallArg = axiosInstanceStub.firstCall.args[0];
+                expect(axiosCallArg).to.have.property('httpsAgent');
+                expect(axiosCallArg.httpsAgent).to.be.an.instanceOf(https.Agent);
+                // The last agent created should have the override value
+                const agentArgs = agentSpy.lastCall.args[0];
+                expect(agentArgs).to.have.property('ca', 'override-ca');
+            });
+        });
+
+        it('should not create per-request httpsAgent when no TLS options are present', () => {
+            const vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+            });
+            return vault.read('secret/hello').then(() => {
+                const axiosCallArg = axiosInstanceStub.firstCall.args[0];
+                expect(axiosCallArg).to.not.have.property('httpsAgent');
+            });
+        });
+
+        it('should reuse default httpsAgent when config TLS options are unchanged', () => {
+            const vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    ca: 'my-ca',
+                },
+            });
+            const agentCountAfterInit = agentSpy.callCount;
+            return vault.read('secret/hello').then(() => {
+                // No new agent should be created for request with same config options
+                const axiosCallArg = axiosInstanceStub.firstCall.args[0];
+                expect(axiosCallArg).to.not.have.property('httpsAgent');
+                expect(agentSpy.callCount).to.equal(agentCountAfterInit);
+            });
+        });
+
+        it('should handle strictSSL: false in requestOptions', () => {
+            index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    strictSSL: false,
+                },
+            });
+            agentSpy.should.have.been.called();
+            const agentArgs = agentSpy.lastCall.args[0];
+            expect(agentArgs).to.have.property('rejectUnauthorized', false);
+        });
+
+        it('should forward timeout from requestOptions to axios', () => {
+            const vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    timeout: 5000,
+                },
+            });
+            return vault.read('secret/hello').then(() => {
+                const axiosCallArg = axiosInstanceStub.firstCall.args[0];
+                expect(axiosCallArg).to.have.property('timeout', 5000);
+            });
+        });
+
+        it('should forward httpsAgent from requestOptions to axios', () => {
+            const customAgent = new https.Agent({ keepAlive: true });
+            const vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    httpsAgent: customAgent,
+                },
+            });
+            return vault.read('secret/hello').then(() => {
+                const axiosCallArg = axiosInstanceStub.firstCall.args[0];
+                expect(axiosCallArg).to.have.property('httpsAgent', customAgent);
+            });
+        });
+
+        it('should forward httpAgent from requestOptions to axios', () => {
+            const http = require('http');
+            const customAgent = new http.Agent();
+            const vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                requestOptions: {
+                    httpAgent: customAgent,
+                },
+            });
+            return vault.read('secret/hello').then(() => {
+                const axiosCallArg = axiosInstanceStub.firstCall.args[0];
+                expect(axiosCallArg).to.have.property('httpAgent', customAgent);
+            });
+        });
+    });
 });

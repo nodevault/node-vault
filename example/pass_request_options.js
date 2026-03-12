@@ -3,7 +3,8 @@
 process.env.DEBUG = 'node-vault'; // switch on debug mode
 
 // Pass request options at initialization time.
-// These options are forwarded to postman-request for every request.
+// TLS options (ca, cert, key, passphrase, agentOptions) are mapped to an
+// https.Agent and forwarded to axios for every request.
 const vault = require('./../src/index')({
     requestOptions: {
         agentOptions: {
