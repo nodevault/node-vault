@@ -405,3 +405,8 @@
 ## vault.stepDown
 
 `PUT /sys/step-down`
+
+
+## vault.destroySecretVersions
+
+`POST /{{mount_point}}{{^mount_point}}secret{{/mount_point}}/destroy/{{path}}`
