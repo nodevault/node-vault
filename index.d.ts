@@ -46,6 +46,22 @@ declare namespace NodeVault {
         }
     }
 
+    interface TokenRenewalOptions {
+        /** Initial TTL in seconds. If omitted, tokenLookupSelf is called. */
+        ttl?: number;
+        /** Increment to request when renewing. */
+        increment?: number | string;
+        /** Fraction of TTL at which to renew (default 0.8). */
+        renewFraction?: number;
+    }
+
+    interface LeaseRenewalOptions {
+        /** Increment to request when renewing. */
+        increment?: number;
+        /** Fraction of TTL at which to renew (default 0.8). */
+        renewFraction?: number;
+    }
+
     interface client {
         handleVaultResponse(res?: { statusCode: number, request: Option, body: any }): Promise<any>;
         apiVersion: string;
@@ -63,6 +79,26 @@ declare namespace NodeVault {
 
         generateFunction(name: string, conf: functionConf): void;
         commands: { [name: string]: functionConf };
+
+        // EventEmitter methods
+        on(event: string | symbol, listener: (...args: any[]) => void): this;
+        once(event: string | symbol, listener: (...args: any[]) => void): this;
+        off(event: string | symbol, listener: (...args: any[]) => void): this;
+        removeListener(event: string | symbol, listener: (...args: any[]) => void): this;
+        removeAllListeners(event?: string | symbol): this;
+        emit(event: string | symbol, ...args: any[]): boolean;
+        listeners(event: string | symbol): Function[];
+        listenerCount(event: string | symbol): number;
+        eventNames(): Array<string | symbol>;
+
+        // Token renewal
+        startTokenRenewal(options?: TokenRenewalOptions): Promise<any>;
+        stopTokenRenewal(): void;
+
+        // Lease renewal
+        startLeaseRenewal(leaseId: string, leaseDuration: number, options?: LeaseRenewalOptions): void;
+        stopLeaseRenewal(leaseId: string): void;
+        stopAllRenewals(): void;
 
         status(options?: Option): Promise<any>;
         initialized(options?: Option): Promise<any>;

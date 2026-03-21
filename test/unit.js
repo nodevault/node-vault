@@ -1089,4 +1089,261 @@ describe('node-vault', () => {
             });
         });
     });
+
+    describe('dynamic credential management', () => {
+        let request;
+        let response;
+        let vault;
+        let clock;
+
+        beforeEach(() => {
+            clock = sinon.useFakeTimers();
+            request = sinon.stub();
+            response = sinon.stub();
+            response.statusCode = 200;
+
+            request.returns({
+                then(fn) {
+                    return fn(response);
+                },
+                catch(fn) {
+                    return fn();
+                },
+            });
+
+            vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                'request-promise': {
+                    defaults: () => request,
+                },
+            });
+        });
+
+        afterEach(() => {
+            vault.stopAllRenewals();
+            clock.restore();
+        });
+
+        describe('EventEmitter', () => {
+            it('should support on/emit', (done) => {
+                vault.on('test-event', (data) => {
+                    data.should.equal('hello');
+                    done();
+                });
+                vault.emit('test-event', 'hello');
+            });
+
+            it('should support once', (done) => {
+                let count = 0;
+                vault.once('test-event', () => {
+                    count += 1;
+                });
+                vault.emit('test-event');
+                vault.emit('test-event');
+                count.should.equal(1);
+                done();
+            });
+
+            it('should support removeListener', (done) => {
+                let count = 0;
+                const listener = () => { count += 1; };
+                vault.on('test-event', listener);
+                vault.removeListener('test-event', listener);
+                vault.emit('test-event');
+                count.should.equal(0);
+                done();
+            });
+        });
+
+        describe('startTokenRenewal', () => {
+            it('should schedule renewal at renewFraction of TTL when ttl option is given', async () => {
+                response.body = { auth: { client_token: '456', lease_duration: 100, renewable: true } };
+                vault.startTokenRenewal({ ttl: 100 });
+                // With default renewFraction of 0.8, delay = 80 seconds
+                await clock.tickAsync(79 * 1000);
+                // tokenRenewSelf should not have been called yet
+                request.callCount.should.equal(0);
+            });
+
+            it('should call tokenRenewSelf when the timer fires', async () => {
+                response.body = { auth: { client_token: '456', lease_duration: 100, renewable: true } };
+                vault.startTokenRenewal({ ttl: 100 });
+                await clock.tickAsync(80 * 1000); // 80% of 100
+                // tokenRenewSelf should have been called
+                request.calledOnce.should.be.ok();
+            });
+
+            it('should emit token:renewed on successful renewal', (done) => {
+                response.body = { auth: { client_token: '456', lease_duration: 100, renewable: true } };
+                vault.on('token:renewed', (result) => {
+                    result.auth.client_token.should.equal('456');
+                    done();
+                });
+                vault.startTokenRenewal({ ttl: 100 });
+                clock.tickAsync(80 * 1000);
+            });
+
+            it('should reschedule after successful renewal', async () => {
+                response.body = { auth: { client_token: '456', lease_duration: 200, renewable: true } };
+                vault.startTokenRenewal({ ttl: 100 });
+                await clock.tickAsync(80 * 1000); // First renewal fires
+                request.callCount.should.equal(1);
+                // Next renewal at 80% of 200 = 160s
+                await clock.tickAsync(160 * 1000);
+                request.callCount.should.equal(2);
+            });
+
+            it('should emit token:expired when token is not renewable', (done) => {
+                response.body = { auth: { client_token: '456', lease_duration: 0, renewable: false } };
+                vault.on('token:expired', () => {
+                    done();
+                });
+                vault.startTokenRenewal({ ttl: 100 });
+                clock.tickAsync(80 * 1000);
+            });
+
+            it('should emit token:error:renew when renewal fails', (done) => {
+                response.statusCode = 500;
+                response.body = { errors: ['renewal failed'] };
+                response.request = { path: '/auth/token/renew-self' };
+                vault.on('token:error:renew', (err) => {
+                    err.message.should.equal('renewal failed');
+                    done();
+                });
+                vault.startTokenRenewal({ ttl: 100 });
+                clock.tickAsync(80 * 1000);
+            });
+
+            it('should look up current token TTL when ttl option is not given', async () => {
+                response.body = { data: { ttl: 50 } };
+                await vault.startTokenRenewal();
+                // tokenLookupSelf should be called
+                request.calledOnce.should.be.ok();
+            });
+
+            it('should use custom renewFraction', async () => {
+                response.body = { auth: { client_token: '456', lease_duration: 100, renewable: true } };
+                vault.startTokenRenewal({ ttl: 100, renewFraction: 0.5 });
+                await clock.tickAsync(49 * 1000);
+                request.callCount.should.equal(0);
+                await clock.tickAsync(1 * 1000); // 50s total
+                request.callCount.should.equal(1);
+            });
+
+            it('should pass increment to tokenRenewSelf', async () => {
+                response.body = { auth: { client_token: '456', lease_duration: 100, renewable: true } };
+                vault.startTokenRenewal({ ttl: 100, increment: 3600 });
+                await clock.tickAsync(80 * 1000);
+                request.calledOnce.should.be.ok();
+            });
+        });
+
+        describe('stopTokenRenewal', () => {
+            it('should cancel the scheduled token renewal', async () => {
+                response.body = { auth: { client_token: '456', lease_duration: 100, renewable: true } };
+                vault.startTokenRenewal({ ttl: 100 });
+                vault.stopTokenRenewal();
+                await clock.tickAsync(80 * 1000);
+                request.callCount.should.equal(0);
+            });
+
+            it('should be safe to call when no renewal is active', () => {
+                vault.stopTokenRenewal(); // should not throw
+            });
+        });
+
+        describe('startLeaseRenewal', () => {
+            it('should throw if leaseId is missing', () => {
+                expect(() => vault.startLeaseRenewal(null, 100)).to.throw('leaseId is required');
+            });
+
+            it('should throw if leaseId is empty string', () => {
+                expect(() => vault.startLeaseRenewal('', 100)).to.throw('leaseId is required');
+            });
+
+            it('should throw if leaseDuration is not positive', () => {
+                expect(() => vault.startLeaseRenewal('lease-1', 0)).to.throw('leaseDuration must be positive');
+            });
+
+            it('should schedule renewal at renewFraction of lease duration', async () => {
+                response.body = { lease_id: 'lease-1', lease_duration: 100, renewable: true };
+                vault.startLeaseRenewal('lease-1', 100);
+                await clock.tickAsync(79 * 1000);
+                request.callCount.should.equal(0);
+                await clock.tickAsync(1 * 1000);
+                request.callCount.should.equal(1);
+            });
+
+            it('should emit lease:renewed on successful renewal', (done) => {
+                response.body = { lease_id: 'lease-1', lease_duration: 100, renewable: true };
+                vault.on('lease:renewed', (data) => {
+                    data.leaseId.should.equal('lease-1');
+                    done();
+                });
+                vault.startLeaseRenewal('lease-1', 100);
+                clock.tickAsync(80 * 1000);
+            });
+
+            it('should emit lease:expired when lease is not renewable', (done) => {
+                response.body = { lease_id: 'lease-1', lease_duration: 0, renewable: false };
+                vault.on('lease:expired', (data) => {
+                    data.leaseId.should.equal('lease-1');
+                    done();
+                });
+                vault.startLeaseRenewal('lease-1', 100);
+                clock.tickAsync(80 * 1000);
+            });
+
+            it('should emit lease:error:renew when renewal fails', (done) => {
+                response.statusCode = 500;
+                response.body = { errors: ['lease renewal failed'] };
+                response.request = { path: '/sys/leases/renew' };
+                vault.on('lease:error:renew', (data) => {
+                    data.leaseId.should.equal('lease-1');
+                    data.error.message.should.equal('lease renewal failed');
+                    done();
+                });
+                vault.startLeaseRenewal('lease-1', 100);
+                clock.tickAsync(80 * 1000);
+            });
+
+            it('should manage multiple leases independently', async () => {
+                response.body = { lease_duration: 100, renewable: true };
+                vault.startLeaseRenewal('lease-1', 100);
+                vault.startLeaseRenewal('lease-2', 200);
+                // At t=80s: lease-1 renews (80% of 100s)
+                await clock.tickAsync(80 * 1000);
+                request.callCount.should.equal(1);
+                // At t=160s: lease-1 renews again (80% of 100s) + lease-2 renews (80% of 200s)
+                await clock.tickAsync(80 * 1000);
+                request.callCount.should.equal(3);
+            });
+        });
+
+        describe('stopLeaseRenewal', () => {
+            it('should cancel renewal for a specific lease', async () => {
+                response.body = { lease_duration: 100, renewable: true };
+                vault.startLeaseRenewal('lease-1', 100);
+                vault.stopLeaseRenewal('lease-1');
+                await clock.tickAsync(80 * 1000);
+                request.callCount.should.equal(0);
+            });
+
+            it('should be safe to call with unknown lease id', () => {
+                vault.stopLeaseRenewal('unknown-lease'); // should not throw
+            });
+        });
+
+        describe('stopAllRenewals', () => {
+            it('should stop both token and lease renewals', async () => {
+                response.body = { auth: { client_token: '456', lease_duration: 100, renewable: true } };
+                vault.startTokenRenewal({ ttl: 100 });
+                vault.startLeaseRenewal('lease-1', 100);
+                vault.stopAllRenewals();
+                await clock.tickAsync(80 * 1000);
+                request.callCount.should.equal(0);
+            });
+        });
+    });
 });

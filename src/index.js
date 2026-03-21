@@ -6,6 +6,7 @@ const originalCommands = require('./commands.js');
 const originalMustache = require('mustache');
 const axios = require('axios');
 const https = require('https');
+const EventEmitter = require('events');
 
 class VaultError extends Error {}
 
@@ -165,7 +166,7 @@ module.exports = (config = {}) => {
             });
         };
     })();
-    const client = {};
+    const client = new EventEmitter();
 
     function handleVaultResponse(response) {
         if (!response) return Promise.reject(new VaultError('No response passed'));
@@ -377,6 +378,155 @@ module.exports = (config = {}) => {
     // going the functional way first defining a wrapper function
     const assignFunctions = (commandName) => generateFunction(commandName, commands[commandName]);
     Object.keys(commands).forEach(assignFunctions);
+
+    // -- Token renewal management --
+    let tokenRenewalTimer = null;
+
+    /**
+     * Start automatic token renewal.
+     * @param {Object} [opts={}] - Options
+     * @param {number} [opts.ttl] - Initial TTL in seconds. If omitted,
+     *   tokenLookupSelf is called to determine the current TTL.
+     * @param {number|string} [opts.increment] - Increment to request when
+     *   renewing (forwarded to tokenRenewSelf).
+     * @param {number} [opts.renewFraction=0.8] - Fraction of TTL at which
+     *   to renew (0 < renewFraction < 1).
+     * @returns {Promise} Resolves once the first renewal is scheduled.
+     *
+     * Events emitted:
+     *   'token:renewed'      – successful renewal, receives the response.
+     *   'token:error:renew'  – renewal failed, receives the error.
+     *   'token:expired'      – token is no longer renewable.
+     */
+    client.startTokenRenewal = (opts = {}) => {
+        const renewFraction = opts.renewFraction || 0.8;
+        const increment = opts.increment;
+
+        client.stopTokenRenewal();
+
+        function scheduleRenewal(ttl) {
+            const delay = Math.max(1, Math.floor(ttl * renewFraction)) * 1000;
+            tokenRenewalTimer = setTimeout(() => {
+                const renewArgs = increment != null ? { increment } : {};
+                client.tokenRenewSelf(renewArgs)
+                    .then((result) => {
+                        client.emit('token:renewed', result);
+                        const newTtl = result.auth && result.auth.lease_duration;
+                        const renewable = result.auth && result.auth.renewable;
+                        if (newTtl > 0 && renewable !== false) {
+                            scheduleRenewal(newTtl);
+                        } else {
+                            tokenRenewalTimer = null;
+                            client.emit('token:expired');
+                        }
+                    })
+                    .catch((err) => {
+                        tokenRenewalTimer = null;
+                        client.emit('token:error:renew', err);
+                    });
+            }, delay);
+            if (tokenRenewalTimer.unref) tokenRenewalTimer.unref();
+        }
+
+        const ttl = opts.ttl;
+        if (ttl != null && ttl > 0) {
+            scheduleRenewal(ttl);
+            return Promise.resolve();
+        }
+
+        return client.tokenLookupSelf().then((result) => {
+            const currentTtl = result.data && result.data.ttl;
+            if (currentTtl > 0) {
+                scheduleRenewal(currentTtl);
+            }
+            return result;
+        });
+    };
+
+    /**
+     * Stop automatic token renewal.
+     */
+    client.stopTokenRenewal = () => {
+        if (tokenRenewalTimer) {
+            clearTimeout(tokenRenewalTimer);
+            tokenRenewalTimer = null;
+        }
+    };
+
+    // -- Lease renewal management --
+    const leaseTimers = {};
+
+    /**
+     * Start automatic lease renewal.
+     * @param {string} leaseId - The lease ID to renew.
+     * @param {number} leaseDuration - Initial lease duration in seconds.
+     * @param {Object} [opts={}] - Options
+     * @param {number} [opts.increment] - Increment to request on renewal.
+     * @param {number} [opts.renewFraction=0.8] - Fraction of TTL at which
+     *   to renew (0 < renewFraction < 1).
+     *
+     * Events emitted:
+     *   'lease:renewed'      – successful renewal, receives { leaseId, result }.
+     *   'lease:error:renew'  – renewal failed, receives { leaseId, error }.
+     *   'lease:expired'      – lease is no longer renewable, receives { leaseId }.
+     */
+    client.startLeaseRenewal = (leaseId, leaseDuration, opts = {}) => {
+        if (!leaseId) throw new VaultError('leaseId is required');
+        if (!leaseDuration || leaseDuration <= 0) throw new VaultError('leaseDuration must be positive');
+
+        const renewFraction = opts.renewFraction || 0.8;
+        const increment = opts.increment;
+
+        client.stopLeaseRenewal(leaseId);
+
+        function scheduleRenewal(duration) {
+            const delay = Math.max(1, Math.floor(duration * renewFraction)) * 1000;
+            const timer = setTimeout(() => {
+                const renewArgs = { lease_id: leaseId };
+                if (increment != null) renewArgs.increment = increment;
+                client.renew(renewArgs)
+                    .then((result) => {
+                        client.emit('lease:renewed', { leaseId, result });
+                        if (result.lease_duration > 0 && result.renewable !== false) {
+                            scheduleRenewal(result.lease_duration);
+                        } else {
+                            delete leaseTimers[leaseId];
+                            client.emit('lease:expired', { leaseId });
+                        }
+                    })
+                    .catch((err) => {
+                        delete leaseTimers[leaseId];
+                        client.emit('lease:error:renew', { leaseId, error: err });
+                    });
+            }, delay);
+            if (timer.unref) timer.unref();
+            leaseTimers[leaseId] = timer;
+        }
+
+        scheduleRenewal(leaseDuration);
+    };
+
+    /**
+     * Stop automatic renewal for a specific lease.
+     * @param {string} leaseId - The lease ID to stop renewing.
+     */
+    client.stopLeaseRenewal = (leaseId) => {
+        if (leaseTimers[leaseId]) {
+            clearTimeout(leaseTimers[leaseId]);
+            delete leaseTimers[leaseId];
+        }
+    };
+
+    /**
+     * Stop all automatic renewals (token + all leases).
+     */
+    client.stopAllRenewals = () => {
+        client.stopTokenRenewal();
+        Object.keys(leaseTimers).forEach((id) => {
+            clearTimeout(leaseTimers[id]);
+            delete leaseTimers[id];
+        });
+    };
 
     return client;
 };
