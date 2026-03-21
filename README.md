@@ -48,6 +48,8 @@ const vault = require('node-vault')({
 });
 ```
 
+> **Note:** Trailing slashes in the `endpoint` URL (e.g. `http://127.0.0.1:8200/`) are automatically stripped to prevent malformed request URIs.
+
 ### Environment Variables
 
 The client reads the following environment variables as defaults:
