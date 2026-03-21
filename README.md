@@ -86,6 +86,44 @@ vault.init({ secret_shares: 1, secret_threshold: 1 })
   .catch(console.error);
 ```
 
+### Unseal a vault that is already initialized
+
+If the vault server has been restarted or sealed, you can unseal it using
+the unseal keys from the original initialization. If the vault was initialized
+with `secret_threshold > 1`, you must call `unseal` multiple times with
+different keys until the threshold is met.
+
+```javascript
+const vault = require('node-vault')({
+  apiVersion: 'v1',
+  endpoint: 'http://127.0.0.1:8200',
+});
+
+// unseal vault server with a single key
+vault.unseal({ key: 'my-unseal-key' })
+  .then(console.log)
+  .catch(console.error);
+```
+
+When the vault requires multiple unseal keys (threshold > 1):
+
+```javascript
+vault.unseal({ key: 'first-unseal-key' })
+  .then((result) => {
+    // result.sealed will be true until enough keys are provided
+    console.log('Sealed:', result.sealed);
+    console.log('Progress:', result.progress + '/' + result.t);
+    return vault.unseal({ key: 'second-unseal-key' });
+  })
+  .then((result) => {
+    // once the threshold is met, sealed will be false
+    console.log('Sealed:', result.sealed);
+  })
+  .catch(console.error);
+```
+
+See [example/unseal.js](example/unseal.js) for a working example.
+
 ### Write, read, update and delete secrets
 
 ```javascript
