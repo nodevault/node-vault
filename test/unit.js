@@ -111,6 +111,38 @@ describe('node-vault', () => {
             const vault = index(vaultConfig);
             vault.endpoint.should.equal('http://localhost:8200');
         });
+
+        it('should not produce double slashes in request URI when endpoint has trailing slash', (done) => {
+            const request = sinon.stub();
+            const response = sinon.stub();
+            response.statusCode = 200;
+            request.returns({
+                then(fn) {
+                    return fn(response);
+                },
+                catch(fn) {
+                    return fn();
+                },
+            });
+
+            const vault = index({
+                endpoint: 'http://localhost:8200/',
+                token: '123',
+                'request-promise': {
+                    defaults: () => request,
+                },
+            });
+
+            vault.read('secret/hello')
+                .then(() => {
+                    request.should.have.calledOnce();
+                    const uri = request.firstCall.args[0].uri;
+                    uri.should.equal('http://localhost:8200/v1/secret/hello');
+                    uri.should.not.contain('//v1');
+                    done();
+                })
+                .catch(done);
+        });
     });
 
     describe('client', () => {
