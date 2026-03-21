@@ -198,6 +198,8 @@ module.exports = (config = {}) => {
     client.namespace = config.namespace || process.env.VAULT_NAMESPACE;
     client.kubernetesPath = config.kubernetesPath || 'kubernetes';
 
+    client.endpoint = client.endpoint.replace(/\/$/, '');
+
     const requestSchema = {
         type: 'object',
         properties: {
