@@ -145,6 +145,7 @@ declare namespace NodeVault {
         transitListKeys(options?: Option): Promise<any>;
         transitDeleteKey(options?: Option): Promise<any>;
         generateDatabaseCredentials(options?: Option): Promise<any>;
+        destroySecretVersions(options?: Option): Promise<any>;
     }
 
     interface VaultOptions {

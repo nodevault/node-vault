@@ -1374,4 +1374,23 @@ module.exports = {
         method: 'PUT',
         path: '/sys/step-down',
     },
+    destroySecretVersions: {
+        method: 'POST',
+        path: '/{{mount_point}}{{^mount_point}}secret{{/mount_point}}/destroy/{{path}}',
+        schema: {
+            req: {
+                type: 'object',
+                properties: {
+                    versions: {
+                        type: 'array',
+                        items: {
+                            type: 'integer',
+                        },
+                        minItems: 1,
+                    },
+                },
+                required: ['versions'],
+            },
+        },
+    },
 }

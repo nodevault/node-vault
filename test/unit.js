@@ -868,6 +868,32 @@ describe('node-vault', () => {
             });
         });
 
+        describe('KV v2 commands', () => {
+            it('should have destroySecretVersions function', () => {
+                vault.destroySecretVersions.should.be.a('function');
+            });
+
+            it('should call destroySecretVersions with correct path and method', (done) => {
+                const params = {
+                    method: 'POST',
+                    path: '/secret/destroy/my-secret',
+                };
+                vault.destroySecretVersions({ path: 'my-secret', versions: [1, 2] })
+                    .then(assertRequest(request, params, done))
+                    .catch(done);
+            });
+
+            it('should call destroySecretVersions with custom mount point', (done) => {
+                const params = {
+                    method: 'POST',
+                    path: '/custom-kv/destroy/my-secret',
+                };
+                vault.destroySecretVersions({ mount_point: 'custom-kv', path: 'my-secret', versions: [1, 2] })
+                    .then(assertRequest(request, params, done))
+                    .catch(done);
+            });
+        });
+
         describe('commands export', () => {
             it('should expose commands object on client', () => {
                 vault.commands.should.be.an('object');
