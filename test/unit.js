@@ -1258,6 +1258,10 @@ describe('node-vault', () => {
                 expect(() => vault.startLeaseRenewal(null, 100)).to.throw('leaseId is required');
             });
 
+            it('should throw if leaseId is empty string', () => {
+                expect(() => vault.startLeaseRenewal('', 100)).to.throw('leaseId is required');
+            });
+
             it('should throw if leaseDuration is not positive', () => {
                 expect(() => vault.startLeaseRenewal('lease-1', 0)).to.throw('leaseDuration must be positive');
             });
@@ -1308,10 +1312,12 @@ describe('node-vault', () => {
                 response.body = { lease_duration: 100, renewable: true };
                 vault.startLeaseRenewal('lease-1', 100);
                 vault.startLeaseRenewal('lease-2', 200);
-                await clock.tickAsync(80 * 1000); // Only lease-1 should renew
+                // At t=80s: lease-1 renews (80% of 100s)
+                await clock.tickAsync(80 * 1000);
                 request.callCount.should.equal(1);
-                await clock.tickAsync(80 * 1000); // lease-2 should renew at 160s
-                request.callCount.should.equal(3); // lease-1 renewed again + lease-2 first renewal
+                // At t=160s: lease-1 renews again (80% of 100s) + lease-2 renews (80% of 200s)
+                await clock.tickAsync(80 * 1000);
+                request.callCount.should.equal(3);
             });
         });
 
