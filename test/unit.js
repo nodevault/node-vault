@@ -143,6 +143,72 @@ describe('node-vault', () => {
                 })
                 .catch(done);
         });
+
+        it('should default the kubernetes mount point in kubernetesLogin path', (done) => {
+            const request = sinon.stub();
+            const response = sinon.stub();
+            response.statusCode = 200;
+            response.body = { auth: { client_token: 'test-token' } };
+            request.returns({
+                then(fn) {
+                    return fn(response);
+                },
+                catch(fn) {
+                    return fn();
+                },
+            });
+
+            const vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                'request-promise': {
+                    defaults: () => request,
+                },
+            });
+
+            vault.kubernetesLogin({ role: 'my-role', jwt: 'my-jwt' })
+                .then(() => {
+                    request.should.have.calledOnce();
+                    const uri = request.firstCall.args[0].uri;
+                    uri.should.equal('http://localhost:8200/v1/auth/kubernetes/login');
+                    uri.should.not.contain('/auth//login');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should use a custom kubernetesPath in kubernetesLogin path', (done) => {
+            const request = sinon.stub();
+            const response = sinon.stub();
+            response.statusCode = 200;
+            response.body = { auth: { client_token: 'test-token' } };
+            request.returns({
+                then(fn) {
+                    return fn(response);
+                },
+                catch(fn) {
+                    return fn();
+                },
+            });
+
+            const vault = index({
+                endpoint: 'http://localhost:8200',
+                token: '123',
+                kubernetesPath: 'k8s-prod',
+                'request-promise': {
+                    defaults: () => request,
+                },
+            });
+
+            vault.kubernetesLogin({ role: 'my-role', jwt: 'my-jwt' })
+                .then(() => {
+                    request.should.have.calledOnce();
+                    const uri = request.firstCall.args[0].uri;
+                    uri.should.equal('http://localhost:8200/v1/auth/k8s-prod/login');
+                    done();
+                })
+                .catch(done);
+        });
     });
 
     describe('client', () => {
