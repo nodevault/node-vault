@@ -960,6 +960,106 @@ describe('node-vault', () => {
             });
         });
 
+        describe('auth and sys commands', () => {
+            it('should send addKubernetesRole settings as the request body', (done) => {
+                const settings = {
+                    bound_service_account_names: 'app',
+                    bound_service_account_namespaces: ['default'],
+                    audience: 'vault',
+                    token_policies: ['read-only'],
+                    token_ttl: '1h',
+                    token_bound_cidrs: ['10.0.0.0/8'],
+                };
+                vault.addKubernetesRole({ role_name: 'my-role', ...settings })
+                    .then(() => {
+                        request.should.have.calledOnce();
+                        const options = request.firstCall.args[0];
+                        options.method.should.equal('POST');
+                        options.path.should.equal('/auth/kubernetes/role/my-role');
+                        options.json.should.deep.equal(settings);
+                        done();
+                    })
+                    .catch(done);
+            });
+
+            it('should still send the deprecated addKubernetesRole field names', (done) => {
+                const settings = { policies: 'read-only,audit', ttl: 3600, num_uses: 5 };
+                vault.addKubernetesRole({ role_name: 'my-role', ...settings })
+                    .then(() => {
+                        request.firstCall.args[0].json.should.deep.equal(settings);
+                        done();
+                    })
+                    .catch(done);
+            });
+
+            it('should reject addKubernetesRole settings of the wrong type without a request', (done) => {
+                vault.addKubernetesRole({ role_name: 'my-role', token_num_uses: 'many' })
+                    .then(() => done(new Error('expected a validation error')))
+                    .catch((err) => {
+                        err.message.should.contain('Invalid type');
+                        request.should.not.have.been.called();
+                        done();
+                    })
+                    .catch(done);
+            });
+
+            it('should not send per-call requestOptions as the certLogin body', (done) => {
+                response.body = { auth: { client_token: 'cert-token' } };
+                vault.certLogin({ requestOptions: { cert: 'client-cert', key: 'client-key' } })
+                    .then(() => {
+                        const options = request.firstCall.args[0];
+                        options.path.should.equal('/auth/cert/login');
+                        expect(options.json).to.be.undefined();
+                        options.cert.should.equal('client-cert');
+                        done();
+                    })
+                    .catch(done);
+            });
+
+            it('should send the certLogin role name as the request body', (done) => {
+                response.body = { auth: { client_token: 'cert-token' } };
+                vault.certLogin({ name: 'web' })
+                    .then(() => {
+                        request.should.have.calledOnce();
+                        const options = request.firstCall.args[0];
+                        options.method.should.equal('POST');
+                        options.path.should.equal('/auth/cert/login');
+                        options.json.should.deep.equal({ name: 'web' });
+                        vault.token.should.equal('cert-token');
+                        done();
+                    })
+                    .catch(done);
+            });
+
+            it('should call generateRootStatus with correct path and method', (done) => {
+                const params = {
+                    method: 'GET',
+                    path: '/sys/generate-root/attempt',
+                };
+                vault.generateRootStatus()
+                    .then(assertRequest(request, params, done))
+                    .catch(done);
+            });
+        });
+
+        describe('command definitions', () => {
+            // extendOptions only forwards args named in schema.req/query.properties,
+            // so a schema without them silently breaks its command.
+            it('should declare an object schema with properties for every req and query', () => {
+                const malformed = [];
+                Object.keys(vault.commands).forEach((name) => {
+                    const { schema } = vault.commands[name];
+                    ['req', 'query'].forEach((part) => {
+                        const s = schema && schema[part];
+                        if (s && (s.type !== 'object' || !s.properties || typeof s.properties !== 'object')) {
+                            malformed.push(`${name}.schema.${part}`);
+                        }
+                    });
+                });
+                malformed.should.deep.equal([]);
+            });
+        });
+
         describe('commands export', () => {
             it('should expose commands object on client', () => {
                 vault.commands.should.be.an('object');

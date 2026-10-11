@@ -87,6 +87,11 @@
 `POST /auth/{{mount_point}}{{^mount_point}}approle{{/mount_point}}/role/{{role_name}}/secret-id`
 
 
+## vault.generateRootStatus
+
+`GET /sys/generate-root/attempt`
+
+
 ## vault.generateRootInit
 
 `PUT /sys/generate-root/attempt`
