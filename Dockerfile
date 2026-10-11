@@ -1,5 +1,5 @@
 # Use a slim Debian-based image as the base
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 # Begin the shell trick
 SHELL ["/bin/bash", "--login", "-c"]
