@@ -341,8 +341,9 @@ module.exports = (config = {}) => {
         client[name] = (args = {}) => {
             const options = { ...config.requestOptions, ...args.requestOptions };
             options.method = conf.method;
-            // replace args in path.
-            options.path = mustache.render(conf.path, args);
+            // replace args in path. kubernetesPath lives on the client (not in
+            // args), so inject it into the template context; args still win.
+            options.path = mustache.render(conf.path, { kubernetesPath: client.kubernetesPath, ...args });
             // no schema object -> no validation
             if (!conf.schema) {
                 if (options.method === 'POST' || options.method === 'PUT') {
