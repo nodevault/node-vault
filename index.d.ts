@@ -105,6 +105,7 @@ declare namespace NodeVault {
         init(options?: Option): Promise<any>;
         unseal(options?: Option): Promise<any>;
         seal(options?: Option): Promise<any>;
+        generateRootStatus(options?: Option): Promise<any>;
         generateRootInit(options?: Option): Promise<any>;
         generateRootCancel(options?: Option): Promise<any>;
         generateRootUpdate(options?: Option): Promise<any>;

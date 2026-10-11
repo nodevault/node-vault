@@ -208,32 +208,72 @@ module.exports = {
         path: '/auth/{{mount_point}}{{^mount_point}}{{kubernetesPath}}{{/mount_point}}/role/{{ role_name }}',
         schema: {
             req: {
-                name: {
-                    type: 'string',
-                },
-                bound_cidrs: {
-                    type: 'array',
-                },
-                bound_service_account_names: {
-                    type: 'array',
-                },
-                bound_service_account_namespaces: {
-                    type: 'array',
-                },
-                ttl: {
-                    type: 'integer',
-                },
-                max_ttl: {
-                    type: 'integer',
-                },
-                policies: {
-                    type: 'array',
-                },
-                num_uses: {
-                    type: 'integer',
-                },
-                period: {
-                    type: 'integer',
+                type: 'object',
+                properties: {
+                    bound_service_account_names: {
+                        type: ['array', 'string'],
+                    },
+                    bound_service_account_namespaces: {
+                        type: ['array', 'string'],
+                    },
+                    bound_service_account_namespace_selector: {
+                        type: 'string',
+                    },
+                    audience: {
+                        type: 'string',
+                    },
+                    alias_name_source: {
+                        type: 'string',
+                    },
+                    alias_metadata: {
+                        type: ['object', 'array'],
+                    },
+                    token_policies: {
+                        type: ['array', 'string'],
+                    },
+                    token_ttl: {
+                        type: ['integer', 'string'],
+                    },
+                    token_max_ttl: {
+                        type: ['integer', 'string'],
+                    },
+                    token_explicit_max_ttl: {
+                        type: ['integer', 'string'],
+                    },
+                    token_period: {
+                        type: ['integer', 'string'],
+                    },
+                    token_bound_cidrs: {
+                        type: ['array', 'string'],
+                    },
+                    token_num_uses: {
+                        type: 'integer',
+                    },
+                    token_no_default_policy: {
+                        type: 'boolean',
+                    },
+                    token_type: {
+                        type: 'string',
+                    },
+                    // Deprecated aliases of the token_* fields; Vault still accepts them.
+                    policies: {
+                        type: ['array', 'string'],
+                    },
+                    ttl: {
+                        type: ['integer', 'string'],
+                    },
+                    max_ttl: {
+                        type: ['integer', 'string'],
+                    },
+                    period: {
+                        type: ['integer', 'string'],
+                    },
+                    bound_cidrs: {
+                        type: ['array', 'string'],
+                    },
+                    num_uses: {
+                        type: 'integer',
+                    },
                 },
             },
         },
@@ -339,6 +379,38 @@ module.exports = {
                     },
                 },
             }
+        },
+    },
+    generateRootStatus: {
+        method: 'GET',
+        path: '/sys/generate-root/attempt',
+        schema: {
+            res: {
+                type: 'object',
+                properties: {
+                    started: {
+                        type: 'boolean',
+                    },
+                    nonce: {
+                        type: 'string',
+                    },
+                    progress: {
+                        type: 'integer',
+                        minimum: 0,
+                    },
+                    required: {
+                        type: 'integer',
+                        minimum: 1,
+                    },
+                    pgp_fingerprint: {
+                        type: 'string',
+                    },
+                    complete: {
+                        type: 'boolean',
+                    },
+                },
+                required: ['started', 'nonce', 'progress', 'required', 'pgp_fingerprint', 'complete'],
+            },
         },
     },
     generateRootInit: {
@@ -759,6 +831,11 @@ module.exports = {
         schema: {
             req: {
                 type: 'object',
+                properties: {
+                    name: {
+                        type: 'string',
+                    },
+                },
             },
             res: tokenResponse,
         },
