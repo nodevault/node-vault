@@ -91,5 +91,8 @@
   "bugs": {
     "url": "https://github.com/nodevault/node-vault/issues"
   },
-  "homepage": "https://github.com/nodevault/node-vault"
+  "homepage": "https://github.com/nodevault/node-vault",
+  "overrides": {
+    "serialize-javascript": "^7.1.2"
+  }
 }
